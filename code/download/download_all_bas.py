@@ -40,6 +40,7 @@ def download_all_BAS():
                 # TODO: Consider checking filesize for complete download, rather than checking file exists?
                 #    However, that would require somehow having the metadata for expected file size, and IIRC, that may differ slightly
                 #    on different filesystems.
+                #    => `wget -c` may be the answer to this! Let wget check sizes.
                 dest_filepath = "{}/{}".format(dest_dir, flight['name'])
                 if os.path.exists(dest_filepath):
                     print("Skipping {}: file already exists with size {}"

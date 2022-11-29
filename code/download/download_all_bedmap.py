@@ -32,21 +32,25 @@ def download_file(filename, url, dest_dir):
                 # If saving to a temp file, get rid of --no-clobber, since the file will already have been created.
                 wget_cmd = ["wget", "--quiet", "--output-document",
                             temp_file.name, "{}".format(url)]
-
                 subprocess.check_call(wget_cmd)
                 move_cmd = ["mv", temp_file.name, dest_filepath]
                 subprocess.check_call(move_cmd)
                 print("Got {}!".format(filename))
         except subprocess.CalledProcessError as ex:
-            print("Failed to download BEDMAP1: {}".format(ex))
+            print("Failed to download BEDMAP: {}".format(ex))
 
 
 def download_rammada(doi, dest_dir):
     '''
     Find and download all links formatted like data entries on a given rammada page.
-
-
     '''
+    try:
+        pp = pathlib.Path(dest_dir)
+        pp.mkdir(parents=True, exist_ok=True)
+    except FileExistsError as ex:
+        raise Exception(
+            "Could not create {}. Error: {}".format(dest_dir, ex))
+
     data_link = 'https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=' + \
         doi.split('/')[-1]
     reqs = requests.get(data_link)
@@ -65,23 +69,23 @@ def download_rammada(doi, dest_dir):
         download_file(ff, uu, dest_dir)
 
 
-def download_all_bedmap():
+def download_all_bedmap(bedmap_data_dir):
     bedmap1_doi = "https://doi.org/10.5285/f64815ec-4077-4432-9f55-0ce230f46029"
     bedmap2_doi = "https://doi.org/10.5285/2fd95199-365e-4da1-ae26-3b6d48b3e6ac"
     bedmap3_doi = "https://doi.org/10.5285/91523ff9-d621-46b3-87f7-ffb6efcd1847"
 
-    # These directories should be set by the top-level configuration
-    data_dir = "/Volumes/RadarData"
-
-    bedmap1_dest_dir = os.path.join(data_dir, "BEDMAP", "BEDMAP1")
+    bedmap1_dest_dir = os.path.join(bedmap_data_dir, "BEDMAP1")
     download_rammada(bedmap1_doi, bedmap1_dest_dir)
 
-    bedmap2_dest_dir = os.path.join(data_dir, "BEDMAP", "BEDMAP2")
+    bedmap2_dest_dir = os.path.join(bedmap_data_dir, "BEDMAP2")
     download_rammada(bedmap2_doi, bedmap2_dest_dir)
 
-    bedmap3_dest_dir = os.path.join(data_dir, "BEDMAP", "BEDMAP3")
+    bedmap3_dest_dir = os.path.join(bedmap_data_dir, "BEDMAP3")
     download_rammada(bedmap3_doi, bedmap3_dest_dir)
 
 
 if __name__ == "__main__":
-    download_all_bedmap()
+    # These directories should be set by the top-level configuration
+    data_dir = "/Volumes/RadarData"
+    bedmap_data_dir = os.path.join(data_dir, "BEDMAP_new")
+    download_all_bedmap(bedmap_data_dir)
