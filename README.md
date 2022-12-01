@@ -10,7 +10,9 @@ RadarWrangler's output is the QGIS layer that serves as the data index for both 
 ## Structure of RadarWrangler repo
 
 * code
-  * data_exploration: jupyter notebooks
+  * data_exploration: jupyter notebooks exploring available data
+  * download: download available data
+  * index: create QGIS layer that serves as index for QIceRadar
 
 
 * data: input/configuration files

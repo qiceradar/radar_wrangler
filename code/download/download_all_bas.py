@@ -8,10 +8,10 @@ import subprocess
 import tempfile
 
 
-# These directories will be set by the top-level configuration
+# These directories will eventually be set by the top-level configuration
 code_dir = "/Users/lindzey/Documents/QIceRadar"
 index_dir = "{}/radar_wrangler/data".format(code_dir)
-radargram_dir = "/Volumes/RadarData"
+radargram_dir = "/Volumes/RadarData/ANTARCTIC"
 
 
 def download_all_BAS():
@@ -47,6 +47,7 @@ def download_all_BAS():
                           .format(flight['name'], os.path.getsize(dest_filepath)))
                     continue
                 try:
+
                     # Create a temporary file to avoid having to clean up partial downloads.
                     # This may not be ideal if the temporary file is created in a different filesystem than the
                     # output file belongs in. (I expect to eventually be downloading data to an external drive/NAS)

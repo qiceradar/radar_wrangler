@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 from bs4 import BeautifulSoup   # For parsing html and extracting the links
+import pathlib  # for creating directory data will be saved to
 import requests  # For downloading index page
 import subprocess
 
@@ -42,6 +43,12 @@ def download_awi():
         for dataset_id in dataset_ids:
             dest_dir = "/Volumes/RadarData/{}/AWI/{}".format(pole, dataset_id)
             print("saving to: {}".format(dest_dir))
+
+            try:
+                pp = pathlib.Path(dest_dir)
+                pp.mkdir(parents=True, exist_ok=True)
+            except FileExistsError as ex:
+                raise Exception("Could not create {}.".format(dest_dir))
 
             # if dataset_id in [907146, 942989, 928569, 949391, 914258]:
             #    continue
