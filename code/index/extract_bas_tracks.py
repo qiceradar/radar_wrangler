@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from radar_index_utils import subsample_tracks
+from radar_index_utils import subsample_tracks, subsample_tracks_rdp, subsample_tracks_uniform
 
 import netCDF4 as nc
 import os
@@ -41,8 +41,18 @@ def subsample_bas(data_directory, index_directory):
             lat = dd.variables['latitude_layerData'][:].data
             lon = dd.variables['longitude_layerData'][:].data
             min_spacing = 200
-            sub_lat, sub_lon = subsample_tracks(lat, lon, min_spacing)
-            xx, yy = ps71.transform(sub_lon, sub_lat)
+            # sub_lat, sub_lon = subsample_tracks(lat, lon, min_spacing)
+            # sx, sy = ps71.transform(sub_lon, sub_lat)
+
+            xx, yy = ps71.transform(lon, lat)
+            epsilon = 25
+            sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
+            sampling_factor = 5
+            if sampling_factor*len(sx) > len(xx):
+                print(
+                    "RDP yielded {} / {} points for {}. Decimating.".format(len(sx), len(xx), filename))
+                sx = xx[::10]
+                sy = yy[::10]
 
             # Preserve alll available metadata when exporting into format
             # that QGIS can use as a layer data source
@@ -55,7 +65,7 @@ def subsample_bas(data_directory, index_directory):
                     for field in fields]
                 fp.writelines(metadata)
                 fp.write("ps71_easting, ps71_northing\n")
-                data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(xx, yy)]
+                data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sx, sy)]
                 fp.writelines(data)
 
 
