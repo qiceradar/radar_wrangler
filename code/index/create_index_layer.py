@@ -22,7 +22,7 @@ import os
 import random
 
 import qgis
-from qgis.core import (QgsApplication, QgsLayerDefinition,
+from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem, QgsLayerDefinition,
                        QgsLayerTreeGroup, QgsMarkerSymbol, QgsProject, QgsVectorLayer)
 
 ###########
@@ -96,10 +96,47 @@ available_campaigns = {
     # 'BAS_2019_Thwaites_AIR_BM3': 'BAS/ITGC_2019',
 
     ####################################
-    ##              BAS               ##
+    ##              LDEO              ##
     ####################################
-
     'LDEO_2007_AGAP-GAMBIT_AIR_BM2': 'LDEO/AGAP_GAMBIT',
+
+    ####################################
+    ##              UTIG              ##
+    ####################################
+    # "UTIG_1991_CASERTZ_AIR_BM2":
+    # "UTIG_1998_West-Marie-Byrd-Land_AIR_BM2":
+    # "UTIG_1999_SOAR-LVS-WLK_AIR_BM2":
+    # "UTIG_2000_Robb-Glacier_AIR_BM2":
+
+    # The AGASEA data release is missing a bunch of transit/turn lines
+    # that DO appear in BEDMAP.
+    "UTIG_2004_AGASEA_AIR_BM2": "UTIG/AGASEA",
+
+    # Looks partially, but not completely, in ICECAP release
+    # "UTIG_2009_Darwin-Hatherton_AIR_BM3":
+
+    # This is ALMOST a subset of 2010 ICECAP, but there are 3 ASE
+    # radials that only appear in the BM2 data.
+    # "UTIG_2008_ICECAP_AIR_BM2":
+    # "UTIG_2010_ICECAP_AIR_BM3":
+
+    # "UTIG_2013_GIMBLE_AIR_BM3":
+
+    # EAGLE mostly matches BEDMAP. netCDF files are there, but the
+    # extracted lines seem to be missing:
+    # * most of PEL/JKB2n/Y18a
+    # * all of PEL/JKB2n/Y20a
+    "UTIG_2015_EAGLE_AIR_BM3": "UTIG/EAGLE",
+
+    # OIA is mostly good. I know i'm missing 2 files and need to track them down.
+    # Additionally, some of the files have issues:
+    # * OIA/JKB2n/X60a has good data when plotted in jupyter, but the
+    #   extracted path is simply [nan,nan]
+    #   => the first 1180 traces have 'nan' for lat/lon
+    # * OIA/JKB2n/X51a seems half missing, even though I've downloaded
+    #   both granules. The turn on the southing end of the survey wasn't
+    #   a turn -- F13T07a and F13T08a are both towards northing.
+    "UTIG_2016_OLDICE_AIR_BM3": "UTIG/OIA",
 }
 
 
@@ -120,6 +157,26 @@ def count_skip_lines(filepath):
     return skip_lines
 
 
+def layer_from_kml(layer_name, kml_filepath, color):
+    # URI does require THREE slashes; there will be one already in filepath
+    # TODO: Look into pathlib.Path.as_uri()
+    kml_uri = "file://{}|layername={}|geometrytype=LineString25D".format(
+        kml_filepath, layer_name)
+    print("Trying to create layer from {}".format(kml_uri))
+    kml_layer = QgsVectorLayer(kml_uri, layer_name, "ogr")
+    # Using Lon/Lat rather than PS71 for consistency between arctic/antarctic
+    kml_layer.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(4326))
+
+    print("kml layer: {}".format(kml_layer))
+    print("type of layer: {}".format(type(kml_layer)))
+    kml_layer.updateExtents()
+    #kml_symbol = kml_layer.renderer().symbol()
+    # kml_symbol.setColor(color)
+    # print("kml symbol: {}".format(kml_symbol))
+    # layer.renderer().setSymbol(symbol)
+    return kml_layer
+
+
 def layer_from_csv(layer_name, csv_filepath, color):
     # URI does require THREE slashes; there will be one already in filepath
     skip_lines = count_skip_lines(csv_filepath)
@@ -129,7 +186,7 @@ def layer_from_csv(layer_name, csv_filepath, color):
     layer = QgsVectorLayer(uri, layer_name, "delimitedtext")
     symbol = QgsMarkerSymbol.createSimple({'name': 'circle',
                                            'color': color,
-                                           'outline_style': 'no',
+                                          'outline_style': 'no',
                                            'size': '1',
                                            'size_unit': 'Point',
                                            })
@@ -170,12 +227,70 @@ def add_bedmap_layers(root_group, data_dir):
 
             # TODO: per-campaign symbol colors!?
             # * unavailable - salmon: 251, 154, 153
+            salmon = "251,154,153,255"
             # * unknown - grey 136,136,136
+            grey = "136,136,136,255"
             # * unsupported - NYI
             # * available - not displayed (will be blue: 31,120,180, but that's for the individual institution plotting code to handle.
-            layer = layer_from_csv(campaign, filepath, '136,136,136,255')
+            blue = "31,120,138,255"
+            layer = layer_from_csv(campaign, filepath, salmon)
+            # TODO: I think it'll be more manageable for debugging if all points
+            #     are unchecked by default
+            # layer.setItemVisibilityChecked(False)
             QgsProject.instance().addMapLayer(layer, False)
             institution_group.addLayer(layer)
+
+
+def add_kml_layers(provider: str, root_group, data_dir: str):
+    """
+    For now, all providers have the same structure:
+    Campaign, then flight/line.
+    This may change if/when we need to propery match granules to LDEO/CRESIS/etc.
+    Data
+    """
+    # Use '.' to eliminate the annoying .DS_Store directory
+    campaigns = [ff for ff in os.listdir(data_dir)
+                 if os.path.isdir(os.path.join(data_dir, ff)) and not ff.startswith('.')]
+    campaigns.sort()
+    # Want them in reverse-alpabetical order so when inserted at pos 0
+    # they will be above any bedmap layers.
+    campaigns.reverse()
+
+    # TODO: This needs to find the provider group first, and only add it if necessary
+    provider_index = [idx for idx, child in enumerate(root_group.children())
+                      if child.name() == provider]
+    if len(provider_index) == 0:
+        print("Could not find {} group in root's children: {}".format(
+            provider, root_group.children()))
+        provider_group = root_group.addGroup(provider)
+        provider_group.setExpanded(False)
+    else:
+        print("Reusing BEDMAP's {} group!".format(provider))
+        provider_group = root_group.children()[provider_index[0]]
+        if type(provider_group) != QgsLayerTreeGroup:
+            raise Exception(
+                "Child named {} exists, but is not a group".format(provider))
+
+    for campaign in campaigns:
+        print("Processing campaign: {}".format(campaign))
+        campaign_group = provider_group.insertGroup(0, campaign)
+        campaign_group.setExpanded(False)
+        campaign_dir = os.path.join(data_dir, campaign)
+        filenames = [ff for ff in os.listdir(campaign_dir)
+                     if ff.endswith("kml")]
+        filenames.sort()
+        for filename in filenames:
+            if filename.startswith('.'):
+                print("skipping: {}".format(filename))
+                continue
+            segment = filename.strip(".kml")
+            filepath = os.path.join(campaign_dir, filename)
+            flight_layer = layer_from_kml(segment, filepath, '31,120,180,255')
+            # flight_layer.setItemVisibilityChecked(False)
+            QgsProject.instance().addMapLayer(flight_layer, False)
+            campaign_group.addLayer(flight_layer)
+            renderer = flight_layer.renderer()
+            print("After adding to the map, renderer: {}".format(renderer))
 
 
 def add_provider_layers(provider: str, root_group, data_dir: str):
@@ -189,6 +304,9 @@ def add_provider_layers(provider: str, root_group, data_dir: str):
     campaigns = [ff for ff in os.listdir(data_dir)
                  if os.path.isdir(os.path.join(data_dir, ff)) and not ff.startswith('.')]
     campaigns.sort()
+    # Want them in reverse-alpabetical order so when inserted at pos 0
+    # they will be above any bedmap layers.
+    campaigns.reverse()
 
     # TODO: This needs to find the BAS group first, and only add it if necessary
     provider_index = [idx for idx, child in enumerate(root_group.children())
@@ -207,7 +325,7 @@ def add_provider_layers(provider: str, root_group, data_dir: str):
 
     for campaign in campaigns:
         print("Processing campaign: {}".format(campaign))
-        campaign_group = provider_group.addGroup(campaign)
+        campaign_group = provider_group.insertGroup(0, campaign)
         campaign_group.setExpanded(False)
         campaign_dir = os.path.join(data_dir, campaign)
         filenames = [ff for ff in os.listdir(campaign_dir)
@@ -220,13 +338,30 @@ def add_provider_layers(provider: str, root_group, data_dir: str):
             segment = filename.strip(".csv")
             filepath = os.path.join(campaign_dir, filename)
             flight_layer = layer_from_csv(segment, filepath, '31,120,180,255')
+            # flight_layer.setItemVisibilityChecked(False)
             QgsProject.instance().addMapLayer(flight_layer, False)
             campaign_group.addLayer(flight_layer)
 
 
+# Tryign to run this within the Python Console.
+# Unfortunately, it really didn't like that any better.
+"""
+print("Creating root")
+root = QgsProject.instance().layerTreeRoot()
+qiceradar_group = root.insertGroup(0, "QIceRadar Index")
+index_directory = "/Users/lindzey/Documents/QIceRadar/data_index"
+add_kml_layers("UTIG", qiceradar_group,
+               os.path.join(index_directory, "ANTARCTIC", "UTIG"))
+layer_file = os.path.join(index_directory, "testing.qlr")
+print("Saving layer to: {}".format(layer_file))
+QgsLayerDefinition.exportLayerDefinition(layer_file, [qiceradar_group])
+"""
+
+
 if __name__ == "__main__":
     # Initialize QGIS. Needs to be in main to stay in scope
-    qgs = QgsApplication([], False)
+    # qgs = QgsApplication([], False)
+    qgs = QgsApplication([], True)
     qgs.initQgis()
     root = QgsProject.instance().layerTreeRoot()
     qiceradar_group = root.insertGroup(0, "QIceRadar Index")
@@ -238,12 +373,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create Antarctic map!
-    add_bedmap_layers(qiceradar_group, args.index_directory)
-    add_provider_layers("BAS", qiceradar_group,
-                        os.path.join(args.index_directory, "ANTARCTIC", "BAS"))
-    add_provider_layers("LDEO", qiceradar_group,
-                        os.path.join(args.index_directory, "ANTARCTIC", "LDEO"))
+    # add_bedmap_layers(qiceradar_group, args.index_directory)
+    # add_provider_layers("BAS", qiceradar_group,
+    #                   os.path.join(args.index_directory, "ANTARCTIC", "BAS"))
+    # add_provider_layers("LDEO", qiceradar_group,
+    #                    os.path.join(args.index_directory, "ANTARCTIC", "LDEO"))
+    add_kml_layers("UTIG", qiceradar_group,
+                   os.path.join(args.index_directory, "ANTARCTIC", "UTIG"))
 
-    layer_file = os.path.join(args.index_directory, "qiceradar_index.qlr")
+    layer_file = os.path.join(args.index_directory, "testing.qlr")
 
     QgsLayerDefinition.exportLayerDefinition(layer_file, [qiceradar_group])
