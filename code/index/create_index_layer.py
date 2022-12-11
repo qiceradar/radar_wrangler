@@ -96,9 +96,58 @@ available_campaigns = {
     # 'BAS_2019_Thwaites_AIR_BM3': 'BAS/ITGC_2019',
 
     ####################################
+    ##            CRESIS              ##
+    ####################################
+    'CRESIS_2009_AntarcticaTO_AIR_BM3.csv': 'CRESIS/2009_Antarctica_TO',
+    'CRESIS_2009_Thwaites_AIR_BM3.csv': 'CRESIS/2009_Antarctica_TO',
+    'CRESIS_2013_Siple-Coast_AIR_BM3.csv': 'CRESIS/2013_Antarctica_Basler',
+
+
+    ####################################
+    ##            KOPRI               ##
+    ####################################
+    # Unfortunately, the KOPRI/KRT1 survey release didn't include Campbell glacier (which is in the bedmap release)
+    # It's also missing all of the Nansen lines.
+    # 'KOPRI_2017_KRT1_AIR_BM3.csv': '',
+	# 'KOPRI_2018_KRT2_AIR_BM3.csv': '',
+
+    ####################################
     ##              LDEO              ##
     ####################################
+    # CRESIS also released some of this data via data.cresis.ku.edu, but it was missing a few transects
     'LDEO_2007_AGAP-GAMBIT_AIR_BM2': 'LDEO/AGAP_GAMBIT',
+
+    # According to Studinger, the Recovery Lakes survey was part of the
+    # AGAP-GAMBIT one, but the lines weren't released in the same dataset.
+    # 'LDEO_2007_Recovery-Lakes_AIR_BM2.csv': '',
+    # 'LDEO_2015_ROSETTA_AIR_BM3.csv': '',
+
+
+    ####################################
+    ##              NASA              ##
+    ####################################
+
+    # TODO: Should I download these data from NSIDC, rather than treating
+    #       them like the rest of the cresis data?
+
+    # Some of the lines are missing in the CRESIS data, but I think those
+    # are all due to my throwing out granules with single bad Longitude coords.
+    #'NASA_2002_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2002_Antarctica_P3Chile',
+    'NASA_2004_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2004_Antarctica_P3Chile',
+    # There's one line that doesn't appear in the CRESIS data,
+    # and a polar orbit flight that's not in the NASA layer
+    'NASA_2009_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2009_Antarctica_DC8',
+    # Exactly the same as 2009 -- a few lines missing in each direction
+    'NASA_2010_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2010_Antarctica_DC8',
+    # It looks like this was accidentally a copy of the 2002_ICEBRIDGE??
+    #'NASA_2011_ICEBRIDGE_AIR_BM2.csv': '',
+    'NASA_2013_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2013_Antarctica_P3',
+    'NASA_2014_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2014_Antarctica_DC8',
+    'NASA_2016_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2016_Antarctica_DC8',
+    'NASA_2017_ICEBRIDGE_AIR_BM3.csv': ('CRESIS/2017_Antarctica_P3', 'CRESIS/2017_Antarctica_Basler'),
+    'NASA_2018_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2018_Antarctica_DC8',
+    'NASA_2019_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2019_Antarctica_GV',
+
 
     ####################################
     ##              UTIG              ##
@@ -117,9 +166,12 @@ available_campaigns = {
 
     # This is ALMOST a subset of 2010 ICECAP, but there are 3 ASE
     # radials that only appear in the BM2 data.
-    # "UTIG_2008_ICECAP_AIR_BM2":
-    # "UTIG_2010_ICECAP_AIR_BM3":
+    # The data released at NSIDC is missing a few transects, so we want to keep plotting this.
+    # "UTIG_2008_ICECAP_AIR_BM2": "UTIG/ICECAP",
+    # "UTIG_2010_ICECAP_AIR_BM3": "UTIG/ICECAP",
 
+    # 4 Gimble lines made it into the ICECAP release, but I haven't
+    # found anything else.
     # "UTIG_2013_GIMBLE_AIR_BM3":
 
     # EAGLE mostly matches BEDMAP. netCDF files are there, but the
@@ -128,7 +180,6 @@ available_campaigns = {
     # * all of PEL/JKB2n/Y20a
     "UTIG_2015_EAGLE_AIR_BM3": "UTIG/EAGLE",
 
-    # OIA is mostly good. I know i'm missing 2 files and need to track them down.
     # Additionally, some of the files have issues:
     # * OIA/JKB2n/X60a has good data when plotted in jupyter, but the
     #   extracted path is simply [nan,nan]
@@ -162,13 +213,10 @@ def layer_from_kml(layer_name, kml_filepath, color):
     # TODO: Look into pathlib.Path.as_uri()
     kml_uri = "file://{}|layername={}|geometrytype=LineString25D".format(
         kml_filepath, layer_name)
-    print("Trying to create layer from {}".format(kml_uri))
     kml_layer = QgsVectorLayer(kml_uri, layer_name, "ogr")
     # Using Lon/Lat rather than PS71 for consistency between arctic/antarctic
     kml_layer.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(4326))
 
-    print("kml layer: {}".format(kml_layer))
-    print("type of layer: {}".format(type(kml_layer)))
     kml_layer.updateExtents()
     #kml_symbol = kml_layer.renderer().symbol()
     # kml_symbol.setColor(color)
@@ -232,7 +280,7 @@ def add_bedmap_layers(root_group, data_dir):
             grey = "136,136,136,255"
             # * unsupported - NYI
             # * available - not displayed (will be blue: 31,120,180, but that's for the individual institution plotting code to handle.
-            blue = "31,120,138,255"
+            blue = "31,120,188,255"
             layer = layer_from_csv(campaign, filepath, salmon)
             # TODO: I think it'll be more manageable for debugging if all points
             #     are unchecked by default
