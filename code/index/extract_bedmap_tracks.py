@@ -19,15 +19,14 @@ def load_lat_lon(filepath):
     return lat, lon
 
 
-def subsample_bedmap():
-    data_dir = "/Volumes/RadarData/BEDMAP"
-    output_dir = "/Users/lindzey/Documents/QIceRadar/data_index/subsampled_bedmap"
-    min_spacing = 200  # meters between successive points
+def subsample_bedmap(data_directory, index_directory, force):
+    bedmap_dir = os.path.join(data_directory, "ANTARCTIC", "BEDMAP")
+    output_dir = os.path.join(index_directory, "ANTARCTIC", "BEDMAP")
 
     institutions = {}
 
-    for compilation in os.listdir(data_dir):
-        compilation_dir = os.path.join(data_dir, compilation)
+    for compilation in os.listdir(bedmap_dir):
+        compilation_dir = os.path.join(bedmap_dir, compilation)
         for filename in os.listdir(compilation_dir):
             if filename.startswith('.'):
                 continue
@@ -50,6 +49,7 @@ def subsample_bedmap():
             institutions[institution].append((year, campaign, air, filepath))
 
     ps71 = pyproj.Proj('epsg:3031')
+    min_spacing = 200  # meters between successive points
 
     for institution, campaigns in institutions.items():
         print("Subsampling {}".format(institution))
@@ -62,19 +62,28 @@ def subsample_bedmap():
             except FileExistsError as ex:
                 raise Exception(
                     "Could not create {}: {}.".format(institution_dir, ex))
-            outfilename = datafilepath.split("/")[-1]
-            outfilepath = os.path.join(institution_dir, outfilename)
-            lat, lon = load_lat_lon(datafilepath)
-            lat, lon = subsample_tracks(lat, lon, min_spacing)
-            xx, yy = ps71.transform(lon, lat)
-            with open(datafilepath, 'r') as in_fp, open(outfilepath, 'w') as out_fp:
-                for _ in range(18):
-                    line = in_fp.readline()
-                    out_fp.write(line)
-                out_fp.write("ps71_easting, ps71_northing\n")
-                out_fp.writelines(["{},{}\n".format(pt[0], pt[1])
-                                  for pt in zip(xx, yy)])
+            out_filename = datafilepath.split("/")[-1]
+            out_filepath = os.path.join(institution_dir, out_filename)
+            if force or not os.path.exists(out_filepath):
+                lat, lon = load_lat_lon(datafilepath)
+                lat, lon = subsample_tracks(lat, lon, min_spacing)
+                xx, yy = ps71.transform(lon, lat)
+                with open(datafilepath, 'r') as in_fp, open(out_filepath, 'w') as out_fp:
+                    for _ in range(18):
+                        line = in_fp.readline()
+                        out_fp.write(line)
+                    out_fp.write("ps71_easting, ps71_northing\n")
+                    out_fp.writelines(["{},{}\n".format(pt[0], pt[1])
+                                      for pt in zip(xx, yy)])
 
 
 if __name__ == "__main__":
-    subsample_bedmap()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data_directory",
+                        help="Root directory for all QIceRadar-managed radargrams.")
+    parser.add_argument("index_directory",
+                        help="Root directory for generated subsampled files")
+    parser.add_argument("--force", action="store_true")
+    args = parser.parse_args()
+    subsample_bedmap(args.data_directory, args.index_directory, args.force)
