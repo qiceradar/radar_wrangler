@@ -18,10 +18,9 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
     radargrams that are found.
     """
     for region in ["ARCTIC", "ANTARCTIC"]:
-    #for region in ["ANTARCTIC"]:
         print("Handling {} data".format(region))
         region_dir = os.path.join(data_directory, region)
-        for provider in ["BAS", "CRESIS", "LDEO", "UTIG"]:
+        for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
             provider_dir = os.path.join(region_dir, provider)
             if not os.path.isdir(provider_dir):
                 print("..No {} data from {}".format(region, provider))
@@ -99,6 +98,9 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         result = extract_bas_coords(input_filepath)
     elif "CRESIS" == provider:
         result = extract_cresis_coords(input_filepath)
+    elif "KOPRI" == provider:
+        # KOPRI uses the same file format as UTIG's ICECAP/EAGLE/OIA.
+        result = extract_utig_coords(input_filepath)
     elif "LDEO" == provider:
         result = extract_ldeo_coords(input_filepath)
     elif "UTIG" == provider:
