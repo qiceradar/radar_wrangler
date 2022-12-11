@@ -12,6 +12,30 @@ import scipy
 import scipy.io
 
 
+corrupt_files = [
+    # These 3 have bad positioning data thanks to interpolating longitude (Issue #2)
+    "IR2HI1B_2011031_ICP3_JKB2d_F56T01e_002",
+    "IR2HI1B_2013015_ICP5_JKB2h_RIGGS1a_003",
+    "IR2HI1B_2013025_ICP5_JKB2h_RIGGS1b_006",
+
+    # And these CRESIS files have similarly corrupt data
+    # (This seems to be in *every* flight from the 2002 season)
+    "Data_20021128_01_002",
+    "Data_20021128_01_004",
+    "Data_20021204_01_002",
+    "Data_20021204_01_003",
+    "Data_20021204_01_007",
+    "Data_20021206_01_001", # Single bad longitude point (-7 amid -92's)
+    "Data_20021210_01_010",  # 18 among -68's
+    "Data_20021210_01_012",  # Single bad longitude (15 amid -68's)
+    "Data_20021212_01_005",
+    "Data_20021212_01_007",
+    "Data_20021126_01_004",  # -22 among -64's
+    "Data_20021128_01_008",
+]
+
+
+
 def extract_flightlines(data_directory, index_directory, epsilon, force):
     """
     Traverse the RadarData directories and extract flight paths for any
@@ -65,7 +89,11 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
                         if force or not os.path.exists(output_segment_filepath):
                             extract_file(region, provider, segment_path, output_segment_filepath, epsilon)
 
+
 def extract_file(region, provider, input_filepath, output_filepath, epsilon):
+    if pathlib.Path(input_filepath).stem in corrupt_files:
+        return
+
     output_dir = pathlib.Path(output_filepath).parent
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
