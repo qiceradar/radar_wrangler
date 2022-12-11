@@ -289,16 +289,16 @@ def add_bedmap_layers(root_group, data_dir):
             institution_group.addLayer(layer)
 
 
-def add_kml_layers(provider: str, root_group, data_dir: str):
+def add_kml_campaigns(provider: str, root_group, index_dir: str):
     """
     For now, all providers have the same structure:
     Campaign, then flight/line.
     This may change if/when we need to propery match granules to LDEO/CRESIS/etc.
     Data
     """
+    provider_dir = os.path.join(index_dir, "ANTARCTIC", provider)
     # Use '.' to eliminate the annoying .DS_Store directory
-    campaigns = [ff for ff in os.listdir(data_dir)
-                 if os.path.isdir(os.path.join(data_dir, ff)) and not ff.startswith('.')]
+    campaigns = [ff for ff in os.listdir(provider_dir) if ff.endswith("kml")]
     campaigns.sort()
     # Want them in reverse-alpabetical order so when inserted at pos 0
     # they will be above any bedmap layers.
@@ -320,78 +320,17 @@ def add_kml_layers(provider: str, root_group, data_dir: str):
                 "Child named {} exists, but is not a group".format(provider))
 
     for campaign in campaigns:
-        print("Processing campaign: {}".format(campaign))
-        campaign_group = provider_group.insertGroup(0, campaign)
-        campaign_group.setExpanded(False)
-        campaign_dir = os.path.join(data_dir, campaign)
-        filenames = [ff for ff in os.listdir(campaign_dir)
-                     if ff.endswith("kml")]
-        filenames.sort()
-        for filename in filenames:
-            if filename.startswith('.'):
-                print("skipping: {}".format(filename))
-                continue
-            segment = filename.strip(".kml")
-            filepath = os.path.join(campaign_dir, filename)
-            flight_layer = layer_from_kml(segment, filepath, '31,120,180,255')
-            # flight_layer.setItemVisibilityChecked(False)
-            QgsProject.instance().addMapLayer(flight_layer, False)
-            campaign_group.addLayer(flight_layer)
-            renderer = flight_layer.renderer()
-            print("After adding to the map, renderer: {}".format(renderer))
+        campaign_name = campaign.strip(".kml")
+        filepath = os.path.join(provider_dir, campaign)
+        campaign_layer = layer_from_kml(campaign_name, filepath, '31,120,180,255')
+        QgsProject.instance().addMapLayer(campaign_layer, False)
+        provider_group.insertGroup(0, campaign_layer)
+        #provider_group.addLayer(campaign_layer)
+        renderer = campaign_layer.renderer()
 
 
-def add_provider_layers(provider: str, root_group, data_dir: str):
-    """
-    For now, all providers have the same structure:
-    Campaign, then flight/line.
-    This may change if/when we need to propery match granules to LDEO/CRESIS/etc.
-    Data
-    """
-    # Use '.' to eliminate the annoying .DS_Store directory
-    campaigns = [ff for ff in os.listdir(data_dir)
-                 if os.path.isdir(os.path.join(data_dir, ff)) and not ff.startswith('.')]
-    campaigns.sort()
-    # Want them in reverse-alpabetical order so when inserted at pos 0
-    # they will be above any bedmap layers.
-    campaigns.reverse()
-
-    # TODO: This needs to find the BAS group first, and only add it if necessary
-    provider_index = [idx for idx, child in enumerate(root_group.children())
-                      if child.name() == provider]
-    if len(provider_index) == 0:
-        print("Could not find {} group in root's children: {}".format(
-            provider, root_group.children()))
-        provider_group = root_group.addGroup(provider)
-        provider_group.setExpanded(False)
-    else:
-        print("Reusing BEDMAP's {} group!".format(provider))
-        provider_group = root_group.children()[provider_index[0]]
-        if type(provider_group) != QgsLayerTreeGroup:
-            raise Exception(
-                "Child named {} exists, but is not a group".format(provider))
-
-    for campaign in campaigns:
-        print("Processing campaign: {}".format(campaign))
-        campaign_group = provider_group.insertGroup(0, campaign)
-        campaign_group.setExpanded(False)
-        campaign_dir = os.path.join(data_dir, campaign)
-        filenames = [ff for ff in os.listdir(campaign_dir)
-                     if ff.endswith("csv")]
-        filenames.sort()
-        for filename in filenames:
-            if filename.startswith('.'):
-                print("skipping: {}".format(filename))
-                continue
-            segment = filename.strip(".csv")
-            filepath = os.path.join(campaign_dir, filename)
-            flight_layer = layer_from_csv(segment, filepath, '31,120,180,255')
-            # flight_layer.setItemVisibilityChecked(False)
-            QgsProject.instance().addMapLayer(flight_layer, False)
-            campaign_group.addLayer(flight_layer)
-
-
-# Tryign to run this within the Python Console.
+# Trying to run this within the Python Console to see if the
+# KML layer's renderer will be instantiated there.
 # Unfortunately, it really didn't like that any better.
 """
 print("Creating root")
@@ -421,13 +360,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Create Antarctic map!
-    # add_bedmap_layers(qiceradar_group, args.index_directory)
-    # add_provider_layers("BAS", qiceradar_group,
-    #                   os.path.join(args.index_directory, "ANTARCTIC", "BAS"))
-    # add_provider_layers("LDEO", qiceradar_group,
-    #                    os.path.join(args.index_directory, "ANTARCTIC", "LDEO"))
-    add_kml_layers("UTIG", qiceradar_group,
-                   os.path.join(args.index_directory, "ANTARCTIC", "UTIG"))
+    add_bedmap_layers(qiceradar_group, args.index_directory)
+    for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
+        add_kml_campaigns(provider, qiceradar_group, args.index_directory)
 
     layer_file = os.path.join(args.index_directory, "testing.qlr")
 
