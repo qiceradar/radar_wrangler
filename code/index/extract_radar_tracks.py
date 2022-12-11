@@ -61,7 +61,7 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
                                 extract_file(region, provider, granule_filepath, output_granule_filepath, epsilon)
                     else:
                         filename = pathlib.Path(segment_path).stem
-                        output_segment_filepath = os.path.join(index_directory, region, provider, campaign, filename)
+                        output_segment_filepath = os.path.join(index_directory, region, provider, campaign, filename) + ".csv"
                         if force or not os.path.exists(output_segment_filepath):
                             extract_file(region, provider, segment_path, output_segment_filepath, epsilon)
 
