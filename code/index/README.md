@@ -3,6 +3,7 @@ This directory contains scripts involved in creating the index layer.
 All scripts should take 2 arguments:
 * data_directory: root RadarDat folder, containing ARCTIC/ANTARCTIC directories
 * index_directory: root of filesystem where subsampled files will be created
+* --epsilon: Maximum cross-track error in RDP subsampling algorithm.
 * --force: Recreate output files even if they already exist.
   (The more computationally intensive scripts will usually skip these.)
 
