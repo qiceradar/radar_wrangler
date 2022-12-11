@@ -24,6 +24,9 @@ This is a single zip file from Zenodo. Same filename convention as ICECAP.
 
 5) OIA
 Single files downloaded from AAD. Same naming convention as ICECAP.
+
+6) KOPRI's KRT1
+Single zip from Zenodo. Same naming convention as ICECAP, but with instrument KHERA1B
 """
 
 import os
@@ -36,9 +39,16 @@ def rearrange_files(directory):
     Find all UTIG netCDF files within input directory and sort them
     into directories based on PSTs.
     """
+    print("Rearranging files in {}".format(directory))
     regex = "(?P<instrument>[0-9a-zA-Z]+)_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[0-9a-zA-Z]+)_(?P<set>[0-9a-zA-Z]+)_(?P<transect>[0-9a-zA-Z]*)_(?P<granule>[0-9]*).nc"
     for path in pathlib.Path(directory).rglob("*.nc"):
+        if path.name.startswith('.'):
+            # Ignore the MAC extended attribute files
+            continue
         mm = re.match(regex, path.name)
+        if mm is None:
+            print("netCDF file that doesn't match name regex: {}".format(path.name))
+            continue
         _, _, _, project, ss, transect, _ = mm.groups()
         pst = "_".join((project, ss, transect))
         pst_dir = os.path.join(directory, pst)
@@ -50,6 +60,9 @@ def rearrange_files(directory):
                 print("Could not create {}".format(pst_dir))
                 raise (ex)
         dest_filepath = os.path.join(pst_dir, path.name)
+        # Don't move files that are already in the right spot
+        if dest_filepath == path.absolute().as_posix():
+            continue
         print("{} -> {}".format(path.name, dest_filepath))
         os.rename(path.absolute(), dest_filepath)
 
@@ -58,6 +71,11 @@ def main(data_directory):
     antarctic_dir = os.path.join(data_directory, "ANTARCTIC", "UTIG")
     for campaign in ["EAGLE", "OIA"]:
         campaign_dir = os.path.join(antarctic_dir, campaign)
+        rearrange_files(campaign_dir)
+
+    kopri_dir = os.path.join(data_directory, "ANTARCTIC", "KOPRI")
+    for campaign in ["KRT1"]:
+        campaign_dir = os.path.join(kopri_dir, campaign)
         rearrange_files(campaign_dir)
 
     dic_dir = os.path.join(data_directory, "ARCTIC", "UTIG", "2018_DIC")
