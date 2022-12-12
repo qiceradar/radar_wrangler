@@ -95,6 +95,7 @@ Eventually, they should all:
     * To check they all downloaded: ```for ff in `ls vostok_radar_nav_lines`; do gg=`sed s/nav/segy.gz/ < ${ff}`; ls $gg > /dev/null; done```(`ls` will print an error for missing files)
     * To unzip all in terminal: ```for ff in `ls *.gz`; do gg=`echo $ff | sed s/.gz//`; if [ ! -f $gg ]; then echo "need to unzip $ff -> $gg"; dtrx $ff; fi; done``` (may need `pip install dtrx`)
   * AGASEA
+    * https://www.usap-dc.org/view/dataset/601436
     * Available via Google Drive download from USAP-DC. This link seems to have them all, bundled in 5-10 GB chunks: https://drive.google.com/drive/folders/1BH36_FVb2fFyZl_aZlUgYwgL8QFYZml5
     * netCDF, with fields: latitude, longitude, elevation, fast-time, data_hi_gain, data_low_gain
   * EAGLE

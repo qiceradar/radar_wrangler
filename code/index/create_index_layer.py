@@ -324,7 +324,7 @@ def add_kml_campaigns(provider: str, root_group, index_dir: str):
         filepath = os.path.join(provider_dir, campaign)
         campaign_layer = layer_from_kml(campaign_name, filepath, '31,120,180,255')
         QgsProject.instance().addMapLayer(campaign_layer, False)
-        provider_group.insertGroup(0, campaign_layer)
+        provider_group.insertLayer(0, campaign_layer)
         #provider_group.addLayer(campaign_layer)
         renderer = campaign_layer.renderer()
 
@@ -364,6 +364,6 @@ if __name__ == "__main__":
     for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
         add_kml_campaigns(provider, qiceradar_group, args.index_directory)
 
-    layer_file = os.path.join(args.index_directory, "testing.qlr")
+    layer_file = os.path.join(args.index_directory, "qiceradar_index.qlr")
 
     QgsLayerDefinition.exportLayerDefinition(layer_file, [qiceradar_group])
