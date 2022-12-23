@@ -17,6 +17,7 @@ def subsample_tracks(lats, lons, min_spacing):
     # UTIG has some NaNs in their positioning data
     good_idxs = [idx for idx, lat, lon in zip(
         np.arange(len(lats)), lats, lons) if not (np.isnan(lat) or np.isnan(lon))]
+    print("{} out of {} points are good".format(len(good_idxs), len(lats)))
     lats = lats[good_idxs]
     lons = lons[good_idxs]
 
