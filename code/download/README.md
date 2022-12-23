@@ -71,6 +71,7 @@ Eventually, they should all:
       * source citation (not in the files themselves): `@misc{Paden, J., J. Li, C. Leuschen, F. Rodriguez-Morales, and R. Hale._2014, title={IceBridge MCoRDS L1B Geolocated Radar Echo Strength Profiles, Version 2}, url={https://nsidc.org/data/IRMCR1B/versions/2}, DOI={10.5067/90S1XZRBAX5N}, publisher={NASA National Snow and Ice Data Center Distributed Active Archive Center}, author={Paden, J., J. Li, C. Leuschen, F. Rodriguez-Morales, and R. Hale.}, year={2014} }`
   * From their README: "The standard L1B files are, in order of increasing quality, CSARP_qlook, CSARP_csarpcombined, CSARP_standard, and CSARP_mvdr directories. Each directory will contain a complete set of echograms so downloading a single directory (usually the highest quality available) is what we recommend." => However, there are caveats for mvdr (and music) about radiometric fidelity + possibility of filtering out signal.
   * Each day's data is divided into "segments", where settings are the same. Segments are divided into ~50km long "frames". Frames may overlap slightly, so I shouldn't do any concatenation for easier viewing. File naming is YYYYMMDD_SS_FFF.
+  * netCDF fields:
 
 * INGV:
   * Data portal is under construction: https://ires.ingv.it/index.php/en/
@@ -78,6 +79,7 @@ Eventually, they should all:
 
 * KOPRI:
   * Only their first season has been released: https://zenodo.org/record/3874655
+    * Unfortunately, Zenodo does not support HTTP range requesets, so I can't use unzip-http to grab individual files.
   * For now, manually downloaded into KOPRI/KRT1
   * netCDF files split transects into ~100 MB "granules"
 
@@ -95,6 +97,7 @@ Eventually, they should all:
     * To check they all downloaded: ```for ff in `ls vostok_radar_nav_lines`; do gg=`sed s/nav/segy.gz/ < ${ff}`; ls $gg > /dev/null; done```(`ls` will print an error for missing files)
     * To unzip all in terminal: ```for ff in `ls *.gz`; do gg=`echo $ff | sed s/.gz//`; if [ ! -f $gg ]; then echo "need to unzip $ff -> $gg"; dtrx $ff; fi; done``` (may need `pip install dtrx`)
   * AGASEA
+    * https://www.usap-dc.org/view/dataset/601436
     * Available via Google Drive download from USAP-DC. This link seems to have them all, bundled in 5-10 GB chunks: https://drive.google.com/drive/folders/1BH36_FVb2fFyZl_aZlUgYwgL8QFYZml5
     * netCDF, with fields: latitude, longitude, elevation, fast-time, data_hi_gain, data_low_gain
   * EAGLE
