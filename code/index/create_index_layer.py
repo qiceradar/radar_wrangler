@@ -260,6 +260,23 @@ def layer_from_csv(layer_name, csv_filepath, color):
     layer.updateExtents()
     return layer
 
+def layer_from_spri_csv(layer_name, csv_filepath, color):
+    # URI does require THREE slashes; there will be one already in filepath
+    skip_lines = count_skip_lines(csv_filepath)
+    # TODO: Look into pathlib.Path.as_uri()
+    uri = "file://{}?type=csv&detectTypes=yes&skipLines={}&xField=LON&yField=LAT&crs=EPSG:4326".format(
+        csv_filepath, skip_lines)
+    layer = QgsVectorLayer(uri, layer_name, "delimitedtext")
+    symbol = QgsMarkerSymbol.createSimple({'name': 'circle',
+                                           'color': color,
+                                          'outline_style': 'no',
+                                           'size': '1',
+                                           'size_unit': 'Point',
+                                           })
+
+    layer.renderer().setSymbol(symbol)
+    layer.updateExtents()
+    return layer
 
 def add_bedmap_layers(root_group, data_dir):
     bedmap_dir = os.path.join(data_dir, "ANTARCTIC", "BEDMAP")
@@ -304,6 +321,41 @@ def add_bedmap_layers(root_group, data_dir):
             # layer.setItemVisibilityChecked(False)
             QgsProject.instance().addMapLayer(layer, False)
             institution_group.addLayer(layer)
+
+def add_spri_layers(root_group, spri_dir):
+    stanford_index = [idx for idx, child in enumerate(root_group.children())
+                      if child.name() == "STANFORD"]
+    if len(stanford_index) == 0:
+        print("Could not find STANFORD group in root's children: {}".format(
+            root_group.children()))
+        stanford_group = root_group.addGroup(provider)
+        stanford_group.setExpanded(False)
+    else:
+        print("Reusing BEDMAP's {} group!".format(provider))
+        stanford_group = root_group.children()[stanford_index[0]]
+        if type(stanford_group) != QgsLayerTreeGroup:
+            raise Exception(
+                "Child named {} exists, but is not a group".format(provider))
+
+    flights = [ff for ff in os.listdir(spri_dir)
+               if ff.endswith("csv") and not ff.startswith('.')]
+    flights.sort()
+
+    for flight in flights:
+        filepath = os.path.join(spri_dir, flight)
+        print("trying to add layer from {}".format(filepath))
+
+        # TODO: per-campaign symbol colors!?
+        # * unavailable - salmon: 251, 154, 153
+        salmon = "251,154,153,255"
+        # * unknown - grey 136,136,136
+        grey = "136,136,136,255"
+        # * unsupported - NYI
+        # * available - not displayed (will be blue: 31,120,180, but that's for the individual institution plotting code to handle.
+        blue = "31,120,188,255"
+        layer = layer_from_spri_csv(flight.split()[0], filepath, grey)
+        QgsProject.instance().addMapLayer(layer, False)
+        stanford_group.addLayer(layer)
 
 
 def add_kml_campaigns(provider: str, root_group, index_dir: str):
@@ -363,6 +415,15 @@ QgsLayerDefinition.exportLayerDefinition(layer_file, [qiceradar_group])
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("index_directory",
+                        help="Root directory for generated subsampled files")
+    # TODO: These need to be properly handled eventually, but I'm not subsampling them yet.
+    parser.add_argument("spri_directory",
+                        help="directory where the SPRI csv files live. ")
+    args = parser.parse_args()
+
     # Initialize QGIS. Needs to be in main to stay in scope
     # qgs = QgsApplication([], False)
     qgs = QgsApplication([], True)
@@ -370,16 +431,11 @@ if __name__ == "__main__":
     root = QgsProject.instance().layerTreeRoot()
     qiceradar_group = root.insertGroup(0, "QIceRadar Index")
 
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("index_directory",
-                        help="Root directory for generated subsampled files")
-    args = parser.parse_args()
-
     # Create Antarctic map!
     add_bedmap_layers(qiceradar_group, args.index_directory)
     for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
         add_kml_campaigns(provider, qiceradar_group, args.index_directory)
+    add_spri_layers(qiceradar_group, args.spri_directory)
 
     layer_file = os.path.join(args.index_directory, "qiceradar_index.qlr")
 
