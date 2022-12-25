@@ -99,6 +99,8 @@ available_campaigns = {
     ##            CRESIS              ##
     ####################################
     'CRESIS_2009_AntarcticaTO_AIR_BM3.csv': 'CRESIS/2009_Antarctica_TO',
+    # This one has swath data in Bedmap -- one of the surveys was tight enough
+    # to get almost full coverage.
     'CRESIS_2009_Thwaites_AIR_BM3.csv': 'CRESIS/2009_Antarctica_TO',
     'CRESIS_2013_Siple-Coast_AIR_BM3.csv': 'CRESIS/2013_Antarctica_Basler',
 
@@ -147,6 +149,21 @@ available_campaigns = {
     'NASA_2017_ICEBRIDGE_AIR_BM3.csv': ('CRESIS/2017_Antarctica_P3', 'CRESIS/2017_Antarctica_Basler'),
     'NASA_2018_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2018_Antarctica_DC8',
     'NASA_2019_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2019_Antarctica_GV',
+
+    ####################################
+    ##              NIPR              ##
+    ####################################
+    # 'NIPR_1992_JARE33_GRN_BM3.csv': '',
+    # 'NIPR_1996_JARE37_GRN_BM3.csv': '',
+    'NIPR_1999_JARE40_GRN_BM2.csv': 'NIPR_1999_JARE40_GRN_BM3',	# Exact same points appear in both BM2 and BM3
+	# 'NIPR_1999_JARE40_GRN_BM3.csv': '',
+    'NIPR_2007_JARE49_GRN_BM2.csv': 'NIPR_2007_JARE49_GRN_BM3', # BM3 has denser bed picks for same lines
+    # 'NIPR_2007_JARE49_GRN_BM3.csv': '',
+    'NIPR_2007_JASE_GRN_BM2.csv': 'NIPR_2007_JASE_GRN_BM3',  # BM3 has denser bed picks for same lines
+    # 'NIPR_2007_JASE_GRN_BM3.csv': '',
+    # 'NIPR_2012_JARE54_GRN_BM3.csv': '',
+    # 'NIPR_2018_JARE60_GRN_BM3.csv': '',
+    # 'NIPR_2017_JARE59_GRN_BM3.csv': '',
 
 
     ####################################
