@@ -85,10 +85,10 @@ def find_closest_bedmap(survey_xx, survey_yy, bm1_xx, bm1_yy, decimation=None, s
         dists = np.sqrt(dx*dx + dy*dy)
         min_bm1_idxs[idx] = np.argmin(dists)
     # Need array of ints to use as indices
-    min_bm1_idxs = [int(el) for el in min_bm1_idxs]
+    min_bm1_idxs = list(set([int(el) for el in min_bm1_idxs]))
     return np.array(min_bm1_idxs)
 
-def expand_range(group_idxs, survey_xx, survey_yy, bm1_xx, bm1_yy, tolerance=10000):
+def expand_range(group_idxs, survey_xx, survey_yy, bm1_xx, bm1_yy, tolerance=10000, max_gap=np.inf):
     """
     Our calculated range may miss a few points from the BEDMAP1 dataset, so see if we
     can extend along those indexes while being close to the input survey.
@@ -98,10 +98,16 @@ def expand_range(group_idxs, survey_xx, survey_yy, bm1_xx, bm1_yy, tolerance=100
          (This doesn't seem to need to be very precise since the BEDMAP1 points
          are generally contiguous within a survey, so the next survey is likely
          to be a large jump.)
+    * max_gap: distance between successive points in BM1 that we'll expand between
     """
+    # Distance from point in segment to closest point in the survey
     min_dist = 0
     group_start = min(group_idxs)
-    while min_dist < tolerance:
+    # jump between successive points
+    delta = 0
+    prev_x = bm1_xx[group_start]
+    prev_y = bm1_yy[group_start]
+    while min_dist < tolerance and delta < max_gap:
         group_start -= 1
         if group_start < 0:
             break
@@ -110,12 +116,20 @@ def expand_range(group_idxs, survey_xx, survey_yy, bm1_xx, bm1_yy, tolerance=100
         dists = np.sqrt(dx*dx + dy*dy)
         min_dist = np.min(dists)
 
+        curr_x = bm1_xx[group_start]
+        curr_y = bm1_yy[group_start]
+        delta = np.sqrt((curr_x - prev_x)**2 + (curr_y - prev_y)**2)
+        prev_x, prev_y = curr_x, curr_y
+
     print("For BM1 idx {}, min_dist = {:0.2f} km".format(group_start, min_dist/1000))
     group_start += 1  # This is ugly, but the while loop terminated with group1_start just outside of range.
 
     group_end = max(group_idxs)
     min_dist = 0
-    while min_dist < tolerance:
+    delta = 0
+    prev_x = bm1_xx[group_end]
+    prev_y = bm1_yy[group_end]
+    while min_dist < tolerance and delta < max_gap:
         group_end += 1
         if group_end >= len(bm1_xx):
             break
@@ -123,7 +137,80 @@ def expand_range(group_idxs, survey_xx, survey_yy, bm1_xx, bm1_yy, tolerance=100
         dy = np.abs(bm1_yy[group_end] - survey_yy)
         dists = np.sqrt(dx*dx + dy*dy)
         min_dist = np.min(dists)
+        curr_x = bm1_xx[group_end]
+        curr_y = bm1_yy[group_end]
+        delta = np.sqrt((curr_x - prev_x)**2 + (curr_y - prev_y)**2)
+        prev_x, prev_y = curr_x, curr_y
     print("For BM1 idx {}, min_dist = {:0.2f} km".format(group_end, min_dist/1000))
     group_end -= 1
 
     return group_start, group_end
+
+
+def segment_indices(idxs, max_skips, min_length):
+    """
+    Split a list of indices into sequential chunks.
+    * max_skips: maximum gap between indices within the same chunk
+    * min_length: minimum points to create a chunk (smaller will be discarded)
+    """
+    segments = []
+    idxs.sort()
+    start_idx = idxs[0]
+    curr_idx = start_idx
+    length = 1
+    # Assumes they are sorted!
+    for ii, bm1_idx in enumerate(idxs):
+        if bm1_idx - curr_idx > max_skips:
+            if length > min_length:
+                segments.append((start_idx, curr_idx))
+            start_idx = bm1_idx
+            length = 1
+        else:
+            length += 1
+
+        curr_idx = bm1_idx
+    segments.append((start_idx, curr_idx))
+
+    return segments
+
+
+
+def segment_indices_gap(idxs, max_skips, min_length, bm_xx, bm_yy, max_gap):
+    """
+    Split a list of indices into sequential chunks, with an added constraint
+    that there won't be a jump of more than max_gap between sequential points.
+
+    * max_skips: maximum gap between indices within the same chunk
+    * min_length: minimum points to create a chunk (smaller will be discarded)
+    * max_gap: max distance (m) allowed between successive points in a segment
+    """
+    segments = []
+    idxs.sort()
+    start_idx = idxs[0]
+    curr_idx = start_idx
+    length = 1
+    # Assumes they are sorted!
+    prev_x = bm_xx[start_idx]
+    prev_y = bm_yy[start_idx]
+    for ii, bm1_idx in enumerate(idxs):
+        curr_x = bm_xx[bm1_idx]
+        curr_y = bm_yy[bm1_idx]
+        gap = np.sqrt((curr_x - prev_x)**2 + (curr_y - prev_y)**2)
+        prev_x, prev_y = curr_x, curr_y
+        if bm1_idx - curr_idx > max_skips:
+            if length >= min_length:
+                segments.append((start_idx, curr_idx))
+            start_idx = bm1_idx
+            length = 1
+        elif gap >= max_gap:
+            if length >= min_length:
+                segments.append((start_idx, curr_idx))
+            start_idx = bm1_idx
+            length = 1
+        else:
+            length += 1
+
+        curr_idx = bm1_idx
+    segments.append((start_idx, curr_idx))
+
+    return segments
