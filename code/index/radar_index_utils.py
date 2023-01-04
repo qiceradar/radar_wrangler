@@ -8,6 +8,24 @@ import rdp
 import time
 
 
+
+def count_skip_lines(filepath):
+    """
+    Count how many comment lines are at the start of a CSV file.
+
+    QGS's vector layer API doesn't appear to have a setting that says
+    "ignore all lines starting with a '#'", even though the GUI seems
+    to auto-detect that and fill in the number.
+    """
+    skip_lines = 0
+    for line in open(filepath, 'r'):
+        if line.startswith("#"):
+            skip_lines += 1
+        else:
+            break
+    return skip_lines
+
+
 def subsample_tracks(lats, lons, min_spacing):
     '''
     Subsample the input coordinates so sequential points are separated by at least min_spacing.
@@ -17,7 +35,6 @@ def subsample_tracks(lats, lons, min_spacing):
     # UTIG has some NaNs in their positioning data
     good_idxs = [idx for idx, lat, lon in zip(
         np.arange(len(lats)), lats, lons) if not (np.isnan(lat) or np.isnan(lon))]
-    print("{} out of {} points are good".format(len(good_idxs), len(lats)))
     lats = lats[good_idxs]
     lons = lons[good_idxs]
 

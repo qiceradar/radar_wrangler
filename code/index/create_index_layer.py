@@ -25,6 +25,8 @@ import qgis
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem, QgsLayerDefinition,
                        QgsLayerTreeGroup, QgsMarkerSymbol, QgsProject, QgsVectorLayer)
 
+from radar_index_utils import count_skip_lines
+
 ###########
 # Create root of the QIceRadar layer + hierarchy of data providers
 # For now, starting with just BAS, since I have their radar data downloaded
@@ -206,23 +208,6 @@ available_campaigns = {
     #   a turn -- F13T07a and F13T08a are both towards northing.
     "UTIG_2016_OLDICE_AIR_BM3": "UTIG/OIA",
 }
-
-
-def count_skip_lines(filepath):
-    """
-    Count how many comment lines are at the start of a CSV file.
-
-    QGS's vector layer API doesn't appear to have a setting that says
-    "ignore all lines starting with a '#'", even though the GUI seems
-    to auto-detect that and fill in the number.
-    """
-    skip_lines = 0
-    for line in open(filepath, 'r'):
-        if line.startswith("#"):
-            skip_lines += 1
-        else:
-            break
-    return skip_lines
 
 
 def layer_from_kml(layer_name, kml_filepath, color):

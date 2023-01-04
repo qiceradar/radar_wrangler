@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from radar_index_utils import subsample_tracks
+from radar_index_utils import count_skip_lines, subsample_tracks
 
 import numpy as np
 import os
@@ -14,7 +14,8 @@ from duplicate_bedmap1_indices import duplicate_segments
 
 def load_lat_lon(filepath):
     '''Open file in the BEDMAP CVS format and extract just lat long from it'''
-    data = pd.read_csv(filepath, skiprows=18)
+    skip_rows = count_skip_lines(filepath)
+    data = pd.read_csv(filepath, skiprows=skip_rows)
 
     lon_index = [col for col in data.columns if 'longitude' in col][0]
     lat_index = [col for col in data.columns if 'latitude' in col][0]
@@ -27,6 +28,8 @@ def subsample_bedmap(data_directory, index_directory, force):
     bedmap_dir = os.path.join(data_directory, "ANTARCTIC", "BEDMAP")
     output_dir = os.path.join(index_directory, "ANTARCTIC", "BEDMAP")
 
+    # Individual indices of points in BEDMAP1 that are associated with
+    # another known campaign.
     duplicate_idxs = set()
     for s0, s1 in duplicate_segments:
         duplicate_idxs.update(np.arange(s0, s1+1))
@@ -63,8 +66,6 @@ def subsample_bedmap(data_directory, index_directory, force):
         print("Subsampling {}".format(institution))
         for campaign in campaigns:
             _, cc, _, datafilepath = campaign
-            if cc != "BEDMAP1":
-                continue
             institution_dir = os.path.join(output_dir, institution)
             try:
                 pp = pathlib.Path(institution_dir)
@@ -85,11 +86,12 @@ def subsample_bedmap(data_directory, index_directory, force):
 
                 lat, lon = subsample_tracks(lat, lon, min_spacing)
                 xx, yy = ps71.transform(lon, lat)
+                skip_rows = count_skip_lines(datafilepath)
                 with open(datafilepath, 'r') as in_fp, open(out_filepath, 'w') as out_fp:
-                    for _ in range(18):
+                    for _ in range(skip_rows):
                         line = in_fp.readline()
                         out_fp.write(line)
-                    out_fp.write("ps71_easting, ps71_northing\n")
+                    out_fp.write("ps71_easting,ps71_northing\n")
                     out_fp.writelines(["{},{}\n".format(pt[0], pt[1])
                                       for pt in zip(xx, yy)])
 
