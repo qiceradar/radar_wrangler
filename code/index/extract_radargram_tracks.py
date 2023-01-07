@@ -14,12 +14,14 @@ import scipy.io
 
 corrupt_files = [
     # These 3 have bad positioning data thanks to interpolating longitude (Issue #2)
+    # https://github.com/qiceradar/radar_wrangler/issues/2
     "IR2HI1B_2011031_ICP3_JKB2d_F56T01e_002",
     "IR2HI1B_2013015_ICP5_JKB2h_RIGGS1a_003",
     "IR2HI1B_2013025_ICP5_JKB2h_RIGGS1b_006",
 
     # And these CRESIS files have similarly corrupt data
     # (This seems to be in *every* flight from the 2002 season)
+    # https://github.com/qiceradar/radar_wrangler/issues/4
     "Data_20021128_01_002",
     "Data_20021128_01_004",
     "Data_20021204_01_002",
@@ -35,7 +37,6 @@ corrupt_files = [
 ]
 
 
-
 def extract_flightlines(data_directory, index_directory, epsilon, force):
     """
     Traverse the RadarData directories and extract flight paths for any
@@ -47,14 +48,14 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
         for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
             provider_dir = os.path.join(region_dir, provider)
             if not os.path.isdir(provider_dir):
-                print("..No {} data from {}".format(region, provider))
+                print(".. No {} data from {}".format(region, provider))
                 continue
-            print("..{}".format(provider))
+            print(".. {}".format(provider))
             campaigns = [dd for dd in os.listdir(provider_dir)
                         if os.path.isdir(os.path.join(provider_dir, dd))]
             campaigns.sort()
             for campaign in campaigns:
-                print("....Extracting campaign: {}".format(campaign))
+                print(".... Extracting campaign: {}".format(campaign))
                 campaign_dir = os.path.join(provider_dir, campaign)
                 # CRESIS is a bit annoying because they put a "product" folder in between campaign + segment
                 # TODO: Fix this hack!
@@ -68,7 +69,7 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
                 # Each campaign has segments. For some providers,
                 # those will be further split into granules
                 segments = [dd for dd in os.listdir(campaign_dir)
-                            if os.path.isdir(os.path.join(campaign_dir, dd))]
+                            if not dd.startswith('.')]
                 segments.sort()
                 for segment in segments:
                     # Check if segment is a dir, if so, go to granules.
@@ -94,15 +95,16 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     if pathlib.Path(input_filepath).stem in corrupt_files:
         return
 
-    output_dir = pathlib.Path(output_filepath).parent
-    try:
-        output_dir.mkdir(parents=True, exist_ok=True)
-    except FileExistsError as ex:
-        print("Could not create {}".format(output_dir))
-        raise(ex)
+    # TODO: Can't assume perfectly clean input data directories, so this
+    #       needs to handle detecting that it's been asked to process
+    #       an invalid file.
+    # I'm not sure why my filesystem adds "._" files...
+    if pathlib.Path(input_filepath).stem.startswith("."):
+        return
 
     # TODO: Figure out how to get the RDP algorithm to use lat/lon
     #   for cross-track error calculations.
+    #   https://github.com/qiceradar/radar_wrangler/issues/1
     # Output data is in lat/lon, but for subsampling the flight paths we
     # need to project them into a cartesian coordinate system.
     if region == "ANTARCTIC":
@@ -141,6 +143,16 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         print("Unable to extract data from: {}".format(input_filepath))
         return
 
+    # Only create output directory if we have something to put there.
+    # Otherwise, will create directories for non-radargram directories
+    # in RadarData.
+    output_dir = pathlib.Path(output_filepath).parent
+    try:
+        output_dir.mkdir(parents=True, exist_ok=True)
+    except FileExistsError as ex:
+        print("Could not create {}".format(output_dir))
+        raise(ex)
+
     lon, lat = result
     lat = np.array(lat)
     lon = np.array(lon)
@@ -149,6 +161,9 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     # I haven't yet figured out how to run RDP on geographic coordinates.
     xx, yy = proj.transform(lon, lat)
     sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
+    # TODO: This is massively hacky, and fails e.g. on sparsely sampled flights.
+    #    Would probably be better to fall back to the along-track-distance
+    #    subsampling method.
     sampling_factor = 5
     if len(sx) > 50 and sampling_factor*len(sx) > len(xx):
         msg = "RDP yielded {} / {} points for {}. Decimating.".format(len(sx), len(xx), input_filepath)
@@ -163,8 +178,9 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         # TODO: Add some sort of metadata here? At one point, I tried
         #       automatically extracting it from the BAS netCDF files,
         #       but other institutions weren't consistent.
-        fp.write("Longitude,Latitude\n")
-        data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sub_lon, sub_lat)]
+        # TODO: Should probably rename fields to easting/northing
+        fp.write("ps71_easting,ps71_northing\n")
+        data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sx, sy)]
         fp.writelines(data)
 
 
