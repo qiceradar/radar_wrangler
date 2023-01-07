@@ -55,7 +55,6 @@ def add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, layer_name,
     segments = []
     t0 = time.time()
     for csv_filepath in pathlib.Path(campaign_dir).rglob("*.csv"):
-        print("processing {}".format(csv_filepath))
         rel_path = pathlib.Path(csv_filepath).relative_to(campaign_dir)
         if len(rel_path.parts) == 2:
             segment, _ = rel_path.parts
@@ -74,7 +73,6 @@ def add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, layer_name,
         xx, yy = load_xy(csv_filepath)
         coords = np.array([[x1, y1] for x1, y1 in zip(xx, yy)])
         points = LineString(coords)
-        #points = MultiPoint(coords)
         geometries.append(points)
     t1 = time.time()
 
@@ -211,17 +209,6 @@ def add_spri_layers(index_dir, gpkg_filepath):
     availability = 'a'  # Available
     add_campaign_directory_gpkg(gpkg_filepath, spri_dir, layer_name,
                                 campaign, institution, availability)
-    return
-    for flight_filepath in flights:
-        layer_name = flight_filepath.stem
-        print("trying to add layer from {}".format(flight_filepath.as_posix()))
-        # TODO: This won't quite work because the SPRI data is in lat/lon,
-        #   rather than having northing/easting fields.
-        granule = None
-        segment = None
-        uri = None
-        add_csv_gpkg(gpkg_filepath, flight_filepath, layer_name,
-                     granule, segment, campaign, institution, uri, availability)
 
 
 if __name__ == "__main__":
@@ -236,7 +223,7 @@ if __name__ == "__main__":
     gpkg_file = os.path.join(args.radargram_index_directory, "qiceradar_index.gpkg")
 
     # Create Antarctic map!
-    #add_bedmap_layers(args.index_directory, gpkg_file)
-    #for provider in ["BAS", "CRESIS", "KOPRI" , "LDEO", "UTIG"]:
-    #    add_radargram_layers(provider, args.index_directory, gpkg_file)
-    add_spri_layers(args.icethk_index_directory, gpkg_file)
+    #add_bedmap_layers(args.radargram_index_directory, gpkg_file)
+    for provider in ["BAS", "CRESIS", "KOPRI" , "LDEO", "UTIG"]:
+        add_radargram_layers(provider, args.radargram_index_directory, gpkg_file)
+    #add_spri_layers(args.icethk_index_directory, gpkg_file)

@@ -122,7 +122,7 @@ def add_campaign(gpkg_filepath, group, campaign, availability):
         # symbol.setWidth(1)
         # symbol.setColor(QColor(colors[availability]))
         # symbol.setWidthUnit(QgsUnitTypes.RenderPoints)
-        symbol = QgsLineSymbol.creaeSimple({
+        symbol = QgsLineSymbol.createSimple({
             'line_color': colors[availability],
             'line_style': "solid",
             'line_width': "1",

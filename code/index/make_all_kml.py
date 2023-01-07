@@ -10,23 +10,7 @@ import os
 import pathlib
 import simplekml
 
-
-def count_skip_lines(filepath):
-    """
-    Count how many comment lines are at the start of a CSV file.
-
-    QGS's vector layer API doesn't appear to have a setting that says
-    "ignore all lines starting with a '#'", even though the GUI seems
-    to auto-detect that and fill in the number.
-    """
-    skip_lines = 0
-    with open(filepath, 'r') as fp:
-        for line in fp:
-            if line.startswith("#"):
-                skip_lines += 1
-            else:
-                break
-    return skip_lines
+from radar_index_utils import count_skip_lines
 
 def create_kmls(index_directory):
     blue = (31, 120, 138, 255)
