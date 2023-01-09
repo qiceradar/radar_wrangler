@@ -24,14 +24,13 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
         # These were cloned from a repo, so for now we're preserving their
         # directory structure, giving the path to a directory containing CSVs.
         ("ANTARCTIC", "STANFORD", "radarfilmstudio/antarctica_original_positioning", "SPRI_NSF_TUD"),
-        # TODO: Download the dataset with old BAS tracks
-        # ("ANTARCTIC", "BAS", ""),
         ]
 
     for region, provider, data_dir, campaign in icethicknesses:
         input_dir = os.path.join(data_directory, region, provider, data_dir)
         print(input_dir)
 
+        # Downloaded data format was a bunch of CSVs
         if provider == "STANFORD":
             flight_filepaths = pathlib.Path(input_dir).glob("*.csv")
             for flight_filepath in flight_filepaths:

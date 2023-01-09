@@ -2,15 +2,12 @@
 
 from radar_index_utils import count_skip_lines, subsample_tracks
 
+import json
 import numpy as np
 import os
 import pandas as pd
 import pathlib
 import pyproj
-
-# See attribute_bedmap1.ipynb for how these ranges were determined.
-from duplicate_bedmap1_indices import duplicate_segments
-
 
 def load_lat_lon(filepath):
     '''Open file in the BEDMAP CVS format and extract just lat long from it'''
@@ -30,6 +27,9 @@ def subsample_bedmap(data_directory, index_directory, force):
 
     # Individual indices of points in BEDMAP1 that are associated with
     # another known campaign.
+    segment_filepath = os.path.join(data_directory, "targ", "ANTARCTIC",
+                                    "bm1_matched_segments.json")
+    duplicate_segments = json.load(open(segment_filepath, 'r'))
     duplicate_idxs = set()
     for s0, s1 in duplicate_segments:
         duplicate_idxs.update(np.arange(s0, s1+1))

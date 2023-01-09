@@ -1,12 +1,21 @@
 This directory contains scripts involved in creating the index layer.
 
-## Manual Processing
+## Attribute Bedmap points
 
-We have made an effort to detangle points that are in the BEDMAP1 layer and also in other BEDMAP2/3 files, or are available elsewhere. The goal is to properly attribute these transects to the extent possible, as well as to clearly show which points are still unknown. This is a manual process, where the outputs of the notebooks in data_exploration/detangle_bedmap_{inst}.ipynb are copied into duplicate_bedmap1_indices.py
+We have made an effort to detangle points that are in the BEDMAP1 layer and also in other BEDMAP2/3 files, or are available elsewhere. The goal is to properly attribute these transects to the extent possible, as well as to clearly show which points are still unknown.
+
+Some of the parameters in this script were chosen based on exploration using detangle_bedmap_general.ipynb.
+
+1) ./detangle_bedmap.py ~/RadarData
+
+This script attempts to find the indices of points in BEDMAP1 that corespond to:
+* AWI, BAS, NIPR, UTIG ice thicknesses that also appear in BM2/BM3's per-campaign CSVs.
+* BAS RESPAC data: https://data.bas.ac.uk/full-record.php?id=GB/NERC/BAS/PDC/01357
+* SPRI (using Stanford's published points): https://github.com/radioglaciology/radarfilmstudio/tree/master/antarctica_original_positioning
 
 There are a number of known-outstanding surveys to be detangled:
-* SPRI -- I have not yet found complete flight lines; the Stanford ones are patchy + missing large parts.
-* BAS -- ('66-'87): https://data.bas.ac.uk/metadata.php?id=GB/NERC/BAS/PDC/01357
+* SPRI -- I have not yet found complete flight lines; the Stanford ones are patchy + missing entire flights.
+* Russian -- emailed Popov, waiting for data
 
 ## Extract flight paths
 
