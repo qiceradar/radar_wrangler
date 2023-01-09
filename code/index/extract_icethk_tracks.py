@@ -42,6 +42,7 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
 
 
 
+
 def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     # TODO: Can't assume perfectly clean input data directories, so this
     #       needs to handle detecting that it's been asked to process
@@ -115,6 +116,76 @@ def extract_stanford_coords(filepath):
     lon = data[lon_index]
     return np.array(lon), np.array(lat)
 
+def extract_bas_respac(data_directory, index_directory, epsilon):
+    # Import data, grouping it into seasons.
+    bas_filepath = os.path.join(data_directory, "ANTARCTIC", "BAS", "BAS_RESPAC_Radar.xyz")
+    seasons = {}
+    season = None
+    curr_line = None
+    with open(bas_filepath, "r") as fp:
+        for line in fp:
+            if line.startswith('/'):
+                continue
+            if "Line" in line:
+                season = line.split()[1]
+                if curr_line is not None:
+                    seasons[season] = np.array(curr_line)
+                curr_line = []
+            else:
+                tokens = line.split()
+
+                current_record, season, lon, lat, xx, yy, wgs84_height, tice, srfelev, bedelev = tokens
+                try:
+                    curr_line.append((float(lon), float(lat)))
+                except Exception as ex:
+                    # Some records don't have position data; just skip them.
+                    continue
+
+    # Split each season into segments that can be plotted as line segments.
+    ps71 = pyproj.Proj('epsg:3031')
+    for season, points in seasons.items():
+        season_name = "BAS_19{}_19{}".format(season[0:2], season[2:4])
+        print(season_name)
+        season_dir = os.path.join(index_directory, "ANTARCTIC", "BAS", season_name)
+
+        try:
+            pathlib.Path(season_dir).mkdir(parents=True, exist_ok=True)
+        except FileExistsError as ex:
+            print("Could not create {}".format(season_dir))
+            raise(ex)
+
+        ## break each season into segments that can be plotted with line segments
+        # Find distance between consecutive points
+        lon = points[:,0]
+        lat = points[:,1]
+        xx, yy = ps71.transform(lon, lat)
+        dx = xx[1:] - xx[0:-1]
+        dy = yy[1:] - yy[0:-1]
+        dists = np.sqrt(dx*dx + dy*dy)
+        dists = np.insert(dists, 0, 0)
+        # Find indices of larger jumps and split points into segments
+        skips, = np.where(dists > 1000)
+        skips = np.insert(skips, 0, 0)
+        skips = np.append(skips, len(points))
+        segments = [points[skips[idx]:skips[idx+1],:] for idx in range(len(skips)-1)]
+
+        segment_count = 0
+        for segment in segments:
+            if len(segment) <= 1:
+                continue
+            segment_filepath = os.path.join(season_dir, "segment{:03d}.csv".format(segment_count))
+            segment_count += 1
+            lon = segment[:,0]
+            lat = segment[:,1]
+            xx, yy = ps71.transform(lon, lat)
+            sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
+            with open(segment_filepath, 'w') as fp:
+                fp.write("ps71_easting,ps71_northing\n")
+                data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sx, sy)]
+                fp.writelines(data)
+
+
+
 
 def main():
     import argparse
@@ -126,7 +197,11 @@ def main():
     parser.add_argument("--epsilon", default=5.0, help="Maximum cross-track error for RDP subsampling.")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
+    # This is in the hopes that we'll have more data showing up as CSVs
     extract_flightlines(args.data_directory, args.index_directory, args.epsilon, args.force)
+
+    # BAS is special and won't generalize.
+    extract_bas_respac(args.data_directory, args.index_directory, args.epsilon)
 
 
 if __name__ == "__main__":

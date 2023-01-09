@@ -196,6 +196,21 @@ def add_radargram_layers(institution, data_dir, gpkg_filepath):
         add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, campaign,
                                     campaign, institution, availability)
 
+def add_icethk_layers(institution, data_dir, gpkg_filepath):
+    region = "ANTARCTIC"
+    data_dir = os.path.join(data_dir, region, institution)
+    if not os.path.isdir(data_dir):
+        print("No {} data from {}".format(region, institution))
+        return
+    campaigns = [dd for dd in os.listdir(data_dir)
+                if os.path.isdir(os.path.join(data_dir, dd))]
+    campaigns.sort()
+    for campaign in campaigns:
+        print("Processing {}".format(campaign))
+        availability = 'u'  # Unavailable
+        campaign_dir = os.path.join(data_dir, campaign)
+        add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, campaign,
+                                    campaign, institution, availability)
 
 def add_spri_layers(index_dir, gpkg_filepath):
     institution = "STANFORD"
@@ -223,7 +238,9 @@ if __name__ == "__main__":
     gpkg_file = os.path.join(args.radargram_index_directory, "qiceradar_index.gpkg")
 
     # Create Antarctic map!
-    #add_bedmap_layers(args.radargram_index_directory, gpkg_file)
+    add_bedmap_layers(args.radargram_index_directory, gpkg_file)
     for provider in ["BAS", "CRESIS", "KOPRI" , "LDEO", "UTIG"]:
         add_radargram_layers(provider, args.radargram_index_directory, gpkg_file)
-    #add_spri_layers(args.icethk_index_directory, gpkg_file)
+    for provider in ["BAS"]:
+        add_icethk_layers(provider, args.icethk_index_directory, gpkg_file)
+    add_spri_layers(args.icethk_index_directory, gpkg_file)
