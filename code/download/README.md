@@ -1,3 +1,5 @@
+The code in this directory does the initial download for creating an index to the data.
+
 Each institution has its own script for now because they make their data available in different ways.
 
 As I work my way through them, I'm getting a better sense of what
@@ -90,6 +92,16 @@ Eventually, they should all:
   * ROSETTA -- haven't found radargrams yet. Kirsti provided a single sample line.
   * Recovery Lakes -- Haven't found yet.
 
+* STANFORD/SPRI:
+  * Dusty says the data is probably a few years from being cleaned up enough to be compatible with this project.
+  * They have published a shapefile with links to some of the film images: https://purl.stanford.edu/xy581jd9710
+  * I downloaded the original positioning data for the flights from: https://purl.stanford.edu/sq529nv6867 (Scroll down to the bottom of the list for a zip file)
+    * They do not all have same format: (CBD,LAT,LON,THK,SRF) vs. (LAT,LON,CBD,THK)
+    * They aren't necessarily in sequential order (CBD values are not monotonic)
+    * A more complete dataset is here: https://github.com/radioglaciology/radarfilmstudio in the antarctica_original_positioning directory.
+      * As of 24 Dec 2022 (5bb1da7), it includes 7 additional flights and more points for many other flights
+      * Spot-checking indicates that this does NOT correspond one-to-one with the points in the previous dataset (The coordinates for CBD values don't match.)
+
 * UTIG
   * Lake Vostok
     * Available at USAP-DC: https://www.usap-dc.org/view/dataset/601300
@@ -115,4 +127,7 @@ Eventually, they should all:
     * OIA: https://data.aad.gov.au/s3/bucket/datasets/science/AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/ (unlike EAGLE, it's possible to download individual lines.)
       * I tried to scrape the page for links, but it renders in javascript. Was faster to just click the links and download. Now that I have them all, will be easy to construct URL, since it matched filenames.
   * Devon Ice Cap: https://zenodo.org/record/5795105
+  * SOAR -- only some of the surveys have tracks available; others are only grids.
+
+
 

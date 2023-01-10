@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+import argparse
 from bs4 import BeautifulSoup
 import csv
 import os
@@ -85,7 +86,9 @@ def download_all_bedmap(bedmap_data_dir):
 
 
 if __name__ == "__main__":
-    # These directories should be set by the top-level configuration
-    data_dir = "/Volumes/RadarData"
-    bedmap_data_dir = os.path.join(data_dir, "BEDMAP_new")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("data_directory",
+                        help="Root directory for all QIceRadar-managed radargrams.")
+    args = parser.parse_args()
+    bedmap_data_dir = os.path.join(args.data_directory, "ANTARCTIC", "BEDMAP")
     download_all_bedmap(bedmap_data_dir)
