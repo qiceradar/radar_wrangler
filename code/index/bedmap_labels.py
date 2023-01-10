@@ -58,11 +58,11 @@ available_campaigns = {
     ####################################
     ##            CRESIS              ##
     ####################################
-    'CRESIS_2009_AntarcticaTO_AIR_BM3.csv': 'CRESIS/2009_Antarctica_TO',
+    'CRESIS_2009_AntarcticaTO_AIR_BM3': 'CRESIS/2009_Antarctica_TO',
     # This one has swath data in Bedmap -- one of the surveys was tight enough
     # to get almost full coverage.
-    'CRESIS_2009_Thwaites_AIR_BM3.csv': 'CRESIS/2009_Antarctica_TO',
-    'CRESIS_2013_Siple-Coast_AIR_BM3.csv': 'CRESIS/2013_Antarctica_Basler',
+    'CRESIS_2009_Thwaites_AIR_BM3': 'CRESIS/2009_Antarctica_TO',
+    'CRESIS_2013_Siple-Coast_AIR_BM3': 'CRESIS/2013_Antarctica_Basler',
 
 
     ####################################
@@ -70,8 +70,8 @@ available_campaigns = {
     ####################################
     # Unfortunately, the KOPRI/KRT1 survey release didn't include Campbell glacier (which is in the bedmap release)
     # It's also missing all of the Nansen lines.
-    # 'KOPRI_2017_KRT1_AIR_BM3.csv': '',
-	# 'KOPRI_2018_KRT2_AIR_BM3.csv': '',
+    # 'KOPRI_2017_KRT1_AIR_BM3': '',
+	# 'KOPRI_2018_KRT2_AIR_BM3': '',
 
     ####################################
     ##              LDEO              ##
@@ -81,8 +81,8 @@ available_campaigns = {
 
     # According to Studinger, the Recovery Lakes survey was part of the
     # AGAP-GAMBIT one, but the lines weren't released in the same dataset.
-    # 'LDEO_2007_Recovery-Lakes_AIR_BM2.csv': '',
-    # 'LDEO_2015_ROSETTA_AIR_BM3.csv': '',
+    # 'LDEO_2007_Recovery-Lakes_AIR_BM2': '',
+    # 'LDEO_2015_ROSETTA_AIR_BM3': '',
 
 
     ####################################
@@ -94,41 +94,41 @@ available_campaigns = {
 
     # Some of the lines are missing in the CRESIS data, but I think those
     # are all due to my throwing out granules with single bad Longitude coords.
-    #'NASA_2002_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2002_Antarctica_P3Chile',
-    'NASA_2004_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2004_Antarctica_P3Chile',
+    #'NASA_2002_ICEBRIDGE_AIR_BM2': 'CRESIS/2002_Antarctica_P3Chile',
+    'NASA_2004_ICEBRIDGE_AIR_BM2': 'CRESIS/2004_Antarctica_P3Chile',
     # There's one line that doesn't appear in the CRESIS data,
     # and a polar orbit flight that's not in the NASA layer
-    'NASA_2009_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2009_Antarctica_DC8',
+    'NASA_2009_ICEBRIDGE_AIR_BM2': 'CRESIS/2009_Antarctica_DC8',
     # Exactly the same as 2009 -- a few lines missing in each direction
-    'NASA_2010_ICEBRIDGE_AIR_BM2.csv': 'CRESIS/2010_Antarctica_DC8',
-    # It looks like this was accidentally a copy of the 2002_ICEBRIDGE??
-    #'NASA_2011_ICEBRIDGE_AIR_BM2.csv': '',
-    'NASA_2013_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2013_Antarctica_P3',
-    'NASA_2014_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2014_Antarctica_DC8',
-    'NASA_2016_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2016_Antarctica_DC8',
-    'NASA_2017_ICEBRIDGE_AIR_BM3.csv': ('CRESIS/2017_Antarctica_P3', 'CRESIS/2017_Antarctica_Basler'),
-    'NASA_2018_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2018_Antarctica_DC8',
-    'NASA_2019_ICEBRIDGE_AIR_BM3.csv': 'CRESIS/2019_Antarctica_GV',
+    'NASA_2010_ICEBRIDGE_AIR_BM2': 'CRESIS/2010_Antarctica_DC8',
+    'NASA_2011_ICEBRIDGE_AIR_BM2': ('CRESIS/2011_Antarctica_DC8', 'CRESIS/2011_Antarctica_TO'),
+    'NASA_2012_ICEBRIDGE_AIR_BM2': 'CRESIS/2012_Antarctica_DC8',
+    'NASA_2013_ICEBRIDGE_AIR_BM3': 'CRESIS/2013_Antarctica_P3',
+    'NASA_2014_ICEBRIDGE_AIR_BM3': 'CRESIS/2014_Antarctica_DC8',
+    'NASA_2016_ICEBRIDGE_AIR_BM3': 'CRESIS/2016_Antarctica_DC8',
+    'NASA_2017_ICEBRIDGE_AIR_BM3': ('CRESIS/2017_Antarctica_P3', 'CRESIS/2017_Antarctica_Basler'),
+    'NASA_2018_ICEBRIDGE_AIR_BM3': 'CRESIS/2018_Antarctica_DC8',
+    'NASA_2019_ICEBRIDGE_AIR_BM3': 'CRESIS/2019_Antarctica_GV',
 
     ####################################
     ##              NIPR              ##
     ####################################
-    # 'NIPR_1992_JARE33_GRN_BM3.csv': '',
-    # 'NIPR_1996_JARE37_GRN_BM3.csv': '',
-    'NIPR_1999_JARE40_GRN_BM2.csv': 'NIPR_1999_JARE40_GRN_BM3',	# Exact same points appear in both BM2 and BM3
-	# 'NIPR_1999_JARE40_GRN_BM3.csv': '',
-    'NIPR_2007_JARE49_GRN_BM2.csv': 'NIPR_2007_JARE49_GRN_BM3', # BM3 has denser bed picks for same lines
-    # 'NIPR_2007_JARE49_GRN_BM3.csv': '',
-    'NIPR_2007_JASE_GRN_BM2.csv': 'NIPR_2007_JASE_GRN_BM3',  # BM3 has denser bed picks for same lines
-    # 'NIPR_2007_JASE_GRN_BM3.csv': '',
-    # 'NIPR_2012_JARE54_GRN_BM3.csv': '',
-    # 'NIPR_2018_JARE60_GRN_BM3.csv': '',
-    # 'NIPR_2017_JARE59_GRN_BM3.csv': '',
+    # 'NIPR_1992_JARE33_GRN_BM3': '',
+    # 'NIPR_1996_JARE37_GRN_BM3': '',
+    'NIPR_1999_JARE40_GRN_BM2': 'NIPR_1999_JARE40_GRN_BM3',	# Exact same points appear in both BM2 and BM3
+	# 'NIPR_1999_JARE40_GRN_BM3': '',
+    'NIPR_2007_JARE49_GRN_BM2': 'NIPR_2007_JARE49_GRN_BM3', # BM3 has denser bed picks for same lines
+    # 'NIPR_2007_JARE49_GRN_BM3': '',
+    'NIPR_2007_JASE_GRN_BM2': 'NIPR_2007_JASE_GRN_BM3',  # BM3 has denser bed picks for same lines
+    # 'NIPR_2007_JASE_GRN_BM3': '',
+    # 'NIPR_2012_JARE54_GRN_BM3': '',
+    # 'NIPR_2018_JARE60_GRN_BM3': '',
+    # 'NIPR_2017_JARE59_GRN_BM3': '',
 
     ####################################
     ##            STANFORD            ##
     ####################################
-    'STANFORD_1971_SPRI-NSF-TUD_AIR_BM3.csv': "AVAILABLE",  # this is a subset of the SPRI tracks posted by Stanford.
+    'STANFORD_1971_SPRI-NSF-TUD_AIR_BM3': "AVAILABLE",  # this is a subset of the SPRI tracks posted by Stanford.
 
 
     ####################################
@@ -141,26 +141,26 @@ available_campaigns = {
 
     # The AGASEA data release is missing a bunch of transit/turn lines
     # that DO appear in BEDMAP.
-    "UTIG_2004_AGASEA_AIR_BM2.csv": "UTIG/AGASEA",
+    "UTIG_2004_AGASEA_AIR_BM2": "UTIG/AGASEA",
 
     # Looks partially, but not completely, in ICECAP release
-    # "UTIG_2009_Darwin-Hatherton_AIR_BM3.csv":
+    # "UTIG_2009_Darwin-Hatherton_AIR_BM3":
 
     # This is ALMOST a subset of 2010 ICECAP, but there are 3 ASE
     # radials that only appear in the BM2 data.
     # The data released at NSIDC is missing a few transects, so we want to keep plotting this.
-    # "UTIG_2008_ICECAP_AIR_BM2.csv": "UTIG/ICECAP",
-    # "UTIG_2010_ICECAP_AIR_BM3.csv": "UTIG/ICECAP",
+    # "UTIG_2008_ICECAP_AIR_BM2": "UTIG/ICECAP",
+    # "UTIG_2010_ICECAP_AIR_BM3": "UTIG/ICECAP",
 
     # 4 Gimble lines made it into the ICECAP release, but I haven't
     # found anything else.
-    # "UTIG_2013_GIMBLE_AIR_BM3.csv":
+    # "UTIG_2013_GIMBLE_AIR_BM3":
 
     # EAGLE mostly matches BEDMAP. netCDF files are there, but the
     # extracted lines seem to be missing:
     # * most of PEL/JKB2n/Y18a
     # * all of PEL/JKB2n/Y20a
-    "UTIG_2015_EAGLE_AIR_BM3.csv": "UTIG/EAGLE",
+    "UTIG_2015_EAGLE_AIR_BM3": "UTIG/EAGLE",
 
     # Additionally, some of the files have issues:
     # * OIA/JKB2n/X60a has good data when plotted in jupyter, but the
@@ -169,5 +169,5 @@ available_campaigns = {
     # * OIA/JKB2n/X51a seems half missing, even though I've downloaded
     #   both granules. The turn on the southing end of the survey wasn't
     #   a turn -- F13T07a and F13T08a are both towards northing.
-    "UTIG_2016_OLDICE_AIR_BM3.csv": "UTIG/OIA",
+    "UTIG_2016_OLDICE_AIR_BM3": "UTIG/OIA",
 }

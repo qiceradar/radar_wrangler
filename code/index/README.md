@@ -49,9 +49,9 @@ Arguments:
 I am currently experimenting with using a single GeoPackage as the database that holds all tracks for the index. However, since importing the GeoPackage directly in to QGIS only seems to allow one level of nesting, there needs to be a separate qlr file that styles the layers and organizes them.
 
 
-1) create_geopackage_index.py
-  * Generates qiceradar_index.gpkg
+1) ./create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk
 
+  * Generates qiceradar_index.gpkg
   * Uses (manually updated) `available_campaigns` variable from bedmap_labels.py to not create layers for BEDMAP2/3 campaigns that are directly downloaded as radargrams to avoid duplication.
 
 2) style_geopackage_index.py
