@@ -15,6 +15,20 @@ def load_bedmap_ll(filepath):
 
     return lon, lat
 
+def load_bedmap_xy_new(filepath) -> np.ndarray:
+    data = pd.read_csv(filepath, skiprows=18)
+
+    lon_index = [col for col in data.columns if 'longitude' in col][0]
+    lat_index = [col for col in data.columns if 'latitude' in col][0]
+    lon = data[lon_index]
+    lat = data[lat_index]
+    ps71=pyproj.Proj('epsg:3031')
+    xx, yy = ps71.transform(lon, lat)
+
+    coords = np.array([xx, yy]).transpose()
+
+    return coords
+
 def load_bedmap_xy(filepath):
     data = pd.read_csv(filepath, skiprows=18)
 
@@ -25,7 +39,8 @@ def load_bedmap_xy(filepath):
     ps71=pyproj.Proj('epsg:3031')
     xx, yy = ps71.transform(lon, lat)
 
-    return xx, yy
+    return np.array(xx), np.array(yy)
+
 
 def subsample_tracks_uniform(xx, yy, min_spacing):
     '''
@@ -162,14 +177,14 @@ def segment_indices(idxs, max_skips, min_length):
     for ii, bm1_idx in enumerate(idxs):
         if bm1_idx - curr_idx > max_skips:
             if length > min_length:
-                segments.append((start_idx, curr_idx))
+                segments.append((int(start_idx), int(curr_idx)))
             start_idx = bm1_idx
             length = 1
         else:
             length += 1
 
         curr_idx = bm1_idx
-    segments.append((start_idx, curr_idx))
+    segments.append((int(start_idx), int(curr_idx)))
 
     return segments
 
