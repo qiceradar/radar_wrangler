@@ -3,7 +3,7 @@
 from radar_index_utils import subsample_tracks_rdp
 
 import h5py
-import netCDF4 as nc
+import netCDF4
 import numpy as np
 import os
 import pathlib
@@ -18,7 +18,6 @@ corrupt_files = [
     "IR2HI1B_2011031_ICP3_JKB2d_F56T01e_002",
     "IR2HI1B_2013015_ICP5_JKB2h_RIGGS1a_003",
     "IR2HI1B_2013025_ICP5_JKB2h_RIGGS1b_006",
-
     # And these CRESIS files have similarly corrupt data
     # (This seems to be in *every* flight from the 2002 season)
     # https://github.com/qiceradar/radar_wrangler/issues/4
@@ -27,7 +26,7 @@ corrupt_files = [
     "Data_20021204_01_002",
     "Data_20021204_01_003",
     "Data_20021204_01_007",
-    "Data_20021206_01_001", # Single bad longitude point (-7 amid -92's)
+    "Data_20021206_01_001",  # Single bad longitude point (-7 amid -92's)
     "Data_20021210_01_010",  # 18 among -68's
     "Data_20021210_01_012",  # Single bad longitude (15 amid -68's)
     "Data_20021212_01_005",
@@ -51,8 +50,11 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
                 print(".. No {} data from {}".format(region, provider))
                 continue
             print(".. {}".format(provider))
-            campaigns = [dd for dd in os.listdir(provider_dir)
-                        if os.path.isdir(os.path.join(provider_dir, dd))]
+            campaigns = [
+                dd
+                for dd in os.listdir(provider_dir)
+                if os.path.isdir(os.path.join(provider_dir, dd))
+            ]
             campaigns.sort()
             for campaign in campaigns:
                 print(".... Extracting campaign: {}".format(campaign))
@@ -61,34 +63,68 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
                 # TODO: Fix this hack!
                 # TODO: This should just crawl the whole directory structure, rather than having me hard-code it.
                 if "CRESIS" == provider:
-                    products = [dd for dd in os.listdir(campaign_dir)
-                                if os.path.isdir(os.path.join(campaign_dir, dd))]
+                    products = [
+                        dd
+                        for dd in os.listdir(campaign_dir)
+                        if os.path.isdir(os.path.join(campaign_dir, dd))
+                    ]
                     # We only need one for the index of flight lines.
                     campaign_dir = os.path.join(campaign_dir, products[0])
 
                 # Each campaign has segments. For some providers,
                 # those will be further split into granules
-                segments = [dd for dd in os.listdir(campaign_dir)
-                            if not dd.startswith('.')]
+                segments = [
+                    dd for dd in os.listdir(campaign_dir) if not dd.startswith(".")
+                ]
                 segments.sort()
                 for segment in segments:
                     # Check if segment is a dir, if so, go to granules.
                     segment_path = os.path.join(campaign_dir, segment)
                     if os.path.isdir(segment_path):
-                        granules = [ss for ss in os.listdir(segment_path)
-                                    if ss.endswith('nc') or ss.endswith('mat')]
+                        granules = [
+                            ss
+                            for ss in os.listdir(segment_path)
+                            if ss.endswith("nc") or ss.endswith("mat")
+                        ]
                         granules.sort()
                         for granule in granules:
                             granule_filepath = os.path.join(segment_path, granule)
                             filename = pathlib.Path(granule_filepath).stem
-                            output_granule_filepath = os.path.join(index_directory, region, provider, campaign, segment, filename) + ".csv"
+                            output_granule_filepath = (
+                                os.path.join(
+                                    index_directory,
+                                    region,
+                                    provider,
+                                    campaign,
+                                    segment,
+                                    filename,
+                                )
+                                + ".csv"
+                            )
                             if force or not os.path.exists(output_granule_filepath):
-                                extract_file(region, provider, granule_filepath, output_granule_filepath, epsilon)
+                                extract_file(
+                                    region,
+                                    provider,
+                                    granule_filepath,
+                                    output_granule_filepath,
+                                    epsilon,
+                                )
                     else:
                         filename = pathlib.Path(segment_path).stem
-                        output_segment_filepath = os.path.join(index_directory, region, provider, campaign, filename) + ".csv"
+                        output_segment_filepath = (
+                            os.path.join(
+                                index_directory, region, provider, campaign, filename
+                            )
+                            + ".csv"
+                        )
                         if force or not os.path.exists(output_segment_filepath):
-                            extract_file(region, provider, segment_path, output_segment_filepath, epsilon)
+                            extract_file(
+                                region,
+                                provider,
+                                segment_path,
+                                output_segment_filepath,
+                                epsilon,
+                            )
 
 
 def extract_file(region, provider, input_filepath, output_filepath, epsilon):
@@ -109,11 +145,11 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     # need to project them into a cartesian coordinate system.
     if region == "ANTARCTIC":
         # Polar stereographic about 71S
-        proj = pyproj.Proj('epsg:3031')
+        proj = pyproj.Proj("epsg:3031")
     elif region == "ARCTIC":
         # Projection used by QGreenland, as documented in section 4.3.1 of:
         # https://www.qgreenland.org/files/inline-files/UserGuide_3.pdf
-        proj = pyproj.Proj('epsg:3413')
+        proj = pyproj.Proj("epsg:3413")
     else:
         print("Unrecognized region {} -- cannot downsample.".format(region))
         return
@@ -136,7 +172,11 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     elif "UTIG" == provider:
         result = extract_utig_coords(input_filepath)
     else:
-        print("Unsupported data provider: {}. Skipping {}".format(provider, input_filepath))
+        print(
+            "Unsupported data provider: {}. Skipping {}".format(
+                provider, input_filepath
+            )
+        )
         return
 
     if result is None:
@@ -151,7 +191,7 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         output_dir.mkdir(parents=True, exist_ok=True)
     except FileExistsError as ex:
         print("Could not create {}".format(output_dir))
-        raise(ex)
+        raise (ex)
 
     lon, lat = result
     lat = np.array(lat)
@@ -165,16 +205,19 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     #    Would probably be better to fall back to the along-track-distance
     #    subsampling method.
     sampling_factor = 5
-    if len(sx) > 50 and sampling_factor*len(sx) > len(xx):
-        msg = "RDP yielded {} / {} points for {}. Decimating.".format(len(sx), len(xx), input_filepath)
+    if len(sx) > 50 and sampling_factor * len(sx) > len(xx):
+        msg = "RDP yielded {} / {} points for {}. Decimating.".format(
+            len(sx), len(xx), input_filepath
+        )
         print(msg)
         sx = xx[::50]
         sy = yy[::50]
-    sub_lon, sub_lat = proj.transform(np.array(sx), np.array(sy),
-                                      direction=pyproj.enums.TransformDirection.INVERSE)
+    sub_lon, sub_lat = proj.transform(
+        np.array(sx), np.array(sy), direction=pyproj.enums.TransformDirection.INVERSE
+    )
 
     print("Saving subsampled data to {}".format(output_filepath))
-    with open(output_filepath, 'w') as fp:
+    with open(output_filepath, "w") as fp:
         # TODO: Add some sort of metadata here? At one point, I tried
         #       automatically extracting it from the BAS netCDF files,
         #       but other institutions weren't consistent.
@@ -186,13 +229,14 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
 
 def extract_bas_coords(input_filepath):
     try:
-        dd = nc.Dataset(input_filepath, 'r')
-    except Exception as ex:
+        dd = netCDF4.Dataset(input_filepath, "r")
+    except Exception:
         print("Could not parse {}".format(input_filepath))
         return
-    lat = dd.variables['latitude_layerData'][:].data
-    lon = dd.variables['longitude_layerData'][:].data
+    lat = dd.variables["latitude_layerData"][:].data
+    lon = dd.variables["longitude_layerData"][:].data
     return lon, lat
+
 
 def extract_cresis_coords(input_filepath):
     """
@@ -201,14 +245,14 @@ def extract_cresis_coords(input_filepath):
     """
     try:
         dd = scipy.io.loadmat(input_filepath)
-        lat = dd['Latitude'].flatten()  # At least with scipy.io, data is nested.
-        lon = dd['Longitude'].flatten()
-    except:
+        lat = dd["Latitude"].flatten()  # At least with scipy.io, data is nested.
+        lon = dd["Longitude"].flatten()
+    except Exception:
         try:
-            dd = h5py.File(input_filepath, 'r')
-            lat = dd['Latitude'][:].flatten()
-            lon = dd['Longitude'][:].flatten()
-        except Exception as ex:
+            dd = h5py.File(input_filepath, "r")
+            lat = dd["Latitude"][:].flatten()
+            lon = dd["Longitude"][:].flatten()
+        except Exception:
             print("Could not parse {}".format(input_filepath))
             return
     return lon, lat
@@ -219,53 +263,58 @@ def extract_ldeo_coords(input_filepath):
     Only tested on AGAP-GAMBIT data; no guarantee it'll work on others.
     """
     try:
-        dd = nc.Dataset(input_filepath, 'r')
-    except Exception as ex:
+        dd = netCDF4.Dataset(input_filepath, "r")
+    except Exception:
         print("Could not parse {}".format(input_filepath))
         return
-    lat = dd['Lat'][:].data
-    lon = dd['Lon'][:].data
+    lat = dd["Lat"][:].data
+    lon = dd["Lon"][:].data
     return lon, lat
 
 
 def extract_utig_coords(input_filepath):
     try:
-        data = nc.Dataset(input_filepath, 'r')
+        data = netCDF4.Dataset(input_filepath, "r")
     except Exception as ex:
         print("Couldn't open {} as netCDF".format(input_filepath))
         print(ex)
         return
 
-    if 'latitude' in data.variables.keys():
+    if "latitude" in data.variables.keys():
         # The AGASEA data was released using latitude/longitude
-        lat = data['latitude'][:].data
-        lon = data['longitude'][:].data
-    elif 'lat' in data.variables.keys():
+        lat = data["latitude"][:].data
+        lon = data["longitude"][:].data
+    elif "lat" in data.variables.keys():
         # The ICECAP, EAGLE, OIA, and 2018_DIC data was
         # released using lat/lon
-        lat = data['lat'][:].data
-        lon = data['lon'][:].data
+        lat = data["lat"][:].data
+        lon = data["lon"][:].data
     else:
-        errmsg = "{} doesn't have recognized position data".format(
-            input_filepath)
+        errmsg = "{} doesn't have recognized position data".format(input_filepath)
         print(errmsg)
         return
 
     return lon, lat
 
 
-
 def main():
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_directory",
-                        help="Root directory for all QIceRadar-managed radargrams.")
-    parser.add_argument("index_directory",
-                        help="Root directory for generated subsampled files")
-    parser.add_argument("--epsilon", default=5.0, help="Maximum cross-track error for RDP subsampling.")
+    parser.add_argument(
+        "data_directory", help="Root directory for all QIceRadar-managed radargrams."
+    )
+    parser.add_argument(
+        "index_directory", help="Root directory for generated subsampled files"
+    )
+    parser.add_argument(
+        "--epsilon", default=5.0, help="Maximum cross-track error for RDP subsampling."
+    )
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
-    extract_flightlines(args.data_directory, args.index_directory, args.epsilon, args.force)
+    extract_flightlines(
+        args.data_directory, args.index_directory, args.epsilon, args.force
+    )
 
 
 if __name__ == "__main__":

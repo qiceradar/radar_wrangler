@@ -14,13 +14,15 @@ index_dir = "{}/radar_wrangler/data".format(code_dir)
 radargram_dir = "/Volumes/RadarData/ANTARCTIC"
 
 
-def download_all_BAS():
+def download_all_bas():
     institution = "BAS"
     institution_index_dir = "{}/{}".format(index_dir, institution)
 
-    survey_indices = {ff.split('.')[0]: "{}/{}".format(institution_index_dir, ff)
-                      for ff in os.listdir(institution_index_dir)
-                      if ff.endswith(".csv")}
+    survey_indices = {
+        ff.split(".")[0]: "{}/{}".format(institution_index_dir, ff)
+        for ff in os.listdir(institution_index_dir)
+        if ff.endswith(".csv")
+    }
 
     for survey, filepath in survey_indices.items():
         dest_dir = "{}/{}/{}".format(radargram_dir, institution, survey)
@@ -29,8 +31,11 @@ def download_all_BAS():
             pp = pathlib.Path(dest_dir)
             pp.mkdir(parents=True, exist_ok=True)
         except FileExistsError as ex:
-            raise Exception("Could not create {} for {}'s survey {}: {}."
-                            .format(dest_dir, institution, survey, ex))
+            raise Exception(
+                "Could not create {} for {}'s survey {}: {}.".format(
+                    dest_dir, institution, survey, ex
+                )
+            )
 
         with open(filepath) as csvfile:
             csv_reader = csv.DictReader(csvfile)
@@ -41,10 +46,13 @@ def download_all_BAS():
                 #    However, that would require somehow having the metadata for expected file size, and IIRC, that may differ slightly
                 #    on different filesystems.
                 #    => `wget -c` may be the answer to this! Let wget check sizes.
-                dest_filepath = "{}/{}".format(dest_dir, flight['name'])
+                dest_filepath = "{}/{}".format(dest_dir, flight["name"])
                 if os.path.exists(dest_filepath):
-                    print("Skipping {}: file already exists with size {}"
-                          .format(flight['name'], os.path.getsize(dest_filepath)))
+                    print(
+                        "Skipping {}: file already exists with size {}".format(
+                            flight["name"], os.path.getsize(dest_filepath)
+                        )
+                    )
                     continue
                 try:
 
@@ -54,18 +62,22 @@ def download_all_BAS():
                     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                         # wget_cmd = ["wget", "--no-clobber", "--quiet", "--output-document", dest_filepath, flight['url']]
                         # If saving to a temp file, get rid of --no-clobber, since the file will already have been created.
-                        wget_cmd = ["wget", "--quiet", "--output-document",
-                                    temp_file.name, "{}".format(flight['url'])]
+                        wget_cmd = [
+                            "wget",
+                            "--quiet",
+                            "--output-document",
+                            temp_file.name,
+                            "{}".format(flight["url"]),
+                        ]
 
                         subprocess.check_call(wget_cmd)
                         move_cmd = ["mv", temp_file.name, dest_filepath]
                         subprocess.check_call(move_cmd)
-                        print("Got {}!".format(flight['name']))
+                        print("Got {}!".format(flight["name"]))
 
                 except subprocess.CalledProcessError as ex:
-                    print("Failed to download {}: {}".format(
-                        flight['name'], ex))
+                    print("Failed to download {}: {}".format(flight["name"], ex))
 
 
 if __name__ == "__main__":
-    download_all_BAS()
+    download_all_bas()

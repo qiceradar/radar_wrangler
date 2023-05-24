@@ -42,7 +42,7 @@ def rearrange_files(directory):
     print("Rearranging files in {}".format(directory))
     regex = "(?P<instrument>[0-9a-zA-Z]+)_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[0-9a-zA-Z]+)_(?P<set>[0-9a-zA-Z]+)_(?P<transect>[0-9a-zA-Z]*)_(?P<granule>[0-9]*).nc"
     for path in pathlib.Path(directory).rglob("*.nc"):
-        if path.name.startswith('.'):
+        if path.name.startswith("."):
             # Ignore the MAC extended attribute files
             continue
         mm = re.match(regex, path.name)
@@ -84,8 +84,10 @@ def main(data_directory):
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_directory",
-                        help="Root directory for all QIceRadar-managed radargrams.")
+    parser.add_argument(
+        "data_directory", help="Root directory for all QIceRadar-managed radargrams."
+    )
     args = parser.parse_args()
     main(args.data_directory)

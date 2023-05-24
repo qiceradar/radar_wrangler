@@ -12,7 +12,7 @@ If I drag into Google Earth, I actually see the nested folders.
 """
 
 
-import os
+import numpy as np
 import simplekml
 
 
@@ -23,13 +23,15 @@ def main():
     feature_folder = sub_folder.newfolder(name="Feature")
     lats1 = -90 + np.random.random(5)
     lons1 = 360 * np.random.random(5)
-    ls1 = feature_folder.newlinestring(name="LineString1", coords=[
-                                       coord for coord in zip(lons1, lats1)])
+    ls1 = feature_folder.newlinestring(
+        name="LineString1", coords=list(zip(lons1, lats1))
+    )
     ls1.style.linestyle.color = simplekml.Color.rgb(255, 0, 0, 255)
     lats2 = -90 + np.random.random(5)
     lons2 = 360 * np.random.random(5)
-    ls2 = feature_folder.newlinestring(name="LineString2", coords=[
-        coord for coord in zip(lons2, lats2)])
+    ls2 = feature_folder.newlinestring(
+        name="LineString2", coords=list(zip(lons2, lats2))
+    )
     ls2.style.linestyle.color = simplekml.Color.rgb(0, 255, 0, 255)
     kml.save("test_nesting.kml")
 

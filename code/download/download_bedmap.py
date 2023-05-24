@@ -2,7 +2,6 @@
 
 import argparse
 from bs4 import BeautifulSoup
-import csv
 import os
 import os.path
 import pathlib
@@ -21,8 +20,11 @@ def download_file(filename, url, dest_dir):
     dest_filepath = os.path.join(dest_dir, filename)
 
     if os.path.exists(dest_filepath):
-        print("Skipping {}: file already exists with size {}"
-              .format(filename, os.path.getsize(dest_filepath)))
+        print(
+            "Skipping {}: file already exists with size {}".format(
+                filename, os.path.getsize(dest_filepath)
+            )
+        )
     else:
         try:
             # Create a temporary file to avoid having to clean up partial downloads.
@@ -31,8 +33,13 @@ def download_file(filename, url, dest_dir):
             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                 # wget_cmd = ["wget", "--no-clobber", "--quiet", "--output-document", dest_filepath, flight['url']]
                 # If saving to a temp file, get rid of --no-clobber, since the file will already have been created.
-                wget_cmd = ["wget", "--quiet", "--output-document",
-                            temp_file.name, "{}".format(url)]
+                wget_cmd = [
+                    "wget",
+                    "--quiet",
+                    "--output-document",
+                    temp_file.name,
+                    "{}".format(url),
+                ]
                 subprocess.check_call(wget_cmd)
                 move_cmd = ["mv", temp_file.name, dest_filepath]
                 subprocess.check_call(move_cmd)
@@ -42,29 +49,28 @@ def download_file(filename, url, dest_dir):
 
 
 def download_rammada(doi, dest_dir):
-    '''
+    """
     Find and download all links formatted like data entries on a given rammada page.
-    '''
+    """
     try:
         pp = pathlib.Path(dest_dir)
         pp.mkdir(parents=True, exist_ok=True)
     except FileExistsError as ex:
-        raise Exception(
-            "Could not create {}. Error: {}".format(dest_dir, ex))
+        raise Exception("Could not create {}. Error: {}".format(dest_dir, ex))
 
-    data_link = 'https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=' + \
-        doi.split('/')[-1]
+    data_link = (
+        "https://ramadda.data.bas.ac.uk/repository/entry/show?entryid="
+        + doi.split("/")[-1]
+    )
     reqs = requests.get(data_link)
-    soup = BeautifulSoup(reqs.text, 'html.parser')
+    soup = BeautifulSoup(reqs.text, "html.parser")
 
-    base_url = 'https://ramadda.data.bas.ac.uk'
-    prefix = '/repository/entry/get/'
+    base_url = "https://ramadda.data.bas.ac.uk"
+    prefix = "/repository/entry/get/"
 
-    all_urls = [link.get('href') for link in soup.find_all('a')]
-    download_urls = [base_url +
-                     url for url in all_urls if url.startswith(prefix)]
-    filenames = [url.strip(base_url+prefix).split('?')[0]
-                 for url in download_urls]
+    all_urls = [link.get("href") for link in soup.find_all("a")]
+    download_urls = [base_url + url for url in all_urls if url.startswith(prefix)]
+    filenames = [url.strip(base_url + prefix).split("?")[0] for url in download_urls]
 
     for ff, uu in zip(filenames, download_urls):
         download_file(ff, uu, dest_dir)
@@ -87,8 +93,9 @@ def download_all_bedmap(bedmap_data_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_directory",
-                        help="Root directory for all QIceRadar-managed radargrams.")
+    parser.add_argument(
+        "data_directory", help="Root directory for all QIceRadar-managed radargrams."
+    )
     args = parser.parse_args()
     bedmap_data_dir = os.path.join(args.data_directory, "ANTARCTIC", "BEDMAP")
     download_all_bedmap(bedmap_data_dir)

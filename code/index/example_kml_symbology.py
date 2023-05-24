@@ -14,9 +14,14 @@ import numpy as np
 import os
 import simplekml
 
-import qgis
-from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem, QgsLayerDefinition,
-                       QgsMarkerSymbol, QgsProject, QgsVectorLayer)
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsLayerDefinition,
+    QgsMarkerSymbol,
+    QgsProject,
+    QgsVectorLayer,
+)
 
 
 if __name__ == "__main__":
@@ -41,15 +46,21 @@ if __name__ == "__main__":
     kml.save(kml_filepath)
 
     # Create CSV layer
-    csv_uri = "file://{}?type=csv&detectTypes=yes&xField=X&yField=y&crs=EPSG:3031".format(
-        csv_filepath)
+    csv_uri = (
+        "file://{}?type=csv&detectTypes=yes&xField=X&yField=y&crs=EPSG:3031".format(
+            csv_filepath
+        )
+    )
     csv_layer = QgsVectorLayer(csv_uri, "CSV test layer", "delimitedtext")
-    csv_symbol = QgsMarkerSymbol.createSimple({'name': 'circle',
-                                               'color': '255,0,0,255',
-                                               'outline_style': 'no',
-                                               'size': '10',
-                                               'size_unit': 'Point',
-                                               })
+    csv_symbol = QgsMarkerSymbol.createSimple(
+        {
+            "name": "circle",
+            "color": "255,0,0,255",
+            "outline_style": "no",
+            "size": "10",
+            "size_unit": "Point",
+        }
+    )
     csv_renderer = csv_layer.renderer()
     print("CSV renderer: {}".format(csv_renderer))
     csv_renderer.setSymbol(csv_symbol)
@@ -59,7 +70,8 @@ if __name__ == "__main__":
 
     # Create KML layer
     kml_uri = "file://{}|layername=test_coords|geometrytype=LineString25D".format(
-        kml_filepath)
+        kml_filepath
+    )
     kml_layer = QgsVectorLayer(kml_uri, "KML test layer", "ogr")
     kml_layer.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3031))
 

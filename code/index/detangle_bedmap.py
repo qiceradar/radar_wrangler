@@ -56,27 +56,37 @@ import pandas as pd
 import pickle
 import pyproj
 import scipy.spatial  # Used for KDTree
-from shapely.geometry import LineString, Point  # Used for projecting BM1 points onto survey segments
+from shapely.geometry import (
+    LineString,
+    Point,
+)  # Used for projecting BM1 points onto survey segments
 import time
 
 duplicate_bm2_campaigns = [
-    "AWI_1994_DML1_AIR_BM2", "AWI_1995_DML2_AIR_BM2", "AWI_1996_DML3_AIR_BM2",
-    "AWI_1997_DML4_AIR_BM2", "AWI_1998_DML5_AIR_BM2",
-    "BAS_1994_Evans_AIR_BM2", "BAS_1998_Dufek_AIR_BM2",
-    "NIPR_1992_JARE33_GRN_BM3", "NIPR_1996_JARE37_GRN_BM3",
+    "AWI_1994_DML1_AIR_BM2",
+    "AWI_1995_DML2_AIR_BM2",
+    "AWI_1996_DML3_AIR_BM2",
+    "AWI_1997_DML4_AIR_BM2",
+    "AWI_1998_DML5_AIR_BM2",
+    "BAS_1994_Evans_AIR_BM2",
+    "BAS_1998_Dufek_AIR_BM2",
+    "NIPR_1992_JARE33_GRN_BM3",
+    "NIPR_1996_JARE37_GRN_BM3",
     "UTIG_1991_CASERTZ_AIR_BM2",
 ]
 
+
 def load_bedmap_xy(filepath) -> np.ndarray:
     data = pd.read_csv(filepath, skiprows=18)
-    lon_index = [col for col in data.columns if 'longitude' in col][0]
-    lat_index = [col for col in data.columns if 'latitude' in col][0]
+    lon_index = [col for col in data.columns if "longitude" in col][0]
+    lat_index = [col for col in data.columns if "latitude" in col][0]
     lon = data[lon_index]
     lat = data[lat_index]
-    ps71=pyproj.Proj('epsg:3031')
+    ps71 = pyproj.Proj("epsg:3031")
     xx, yy = ps71.transform(lon, lat)
     coords = np.array([xx, yy]).transpose()
     return coords
+
 
 def load_respac_surveys(filepath):
     """
@@ -86,10 +96,10 @@ def load_respac_surveys(filepath):
     seasons = {}
     season = None
     curr_line = None
-    ps71 = pyproj.Proj('epsg:3031')
+    ps71 = pyproj.Proj("epsg:3031")
     with open(filepath, "r") as fp:
         for line in fp:
-            if line.startswith('/'):
+            if line.startswith("/"):
                 continue
             if "Line" in line:
                 season = line.split()[1]
@@ -104,17 +114,21 @@ def load_respac_surveys(filepath):
                 _, _, lon, lat, _, _, _, _, _, _ = tokens
                 try:
                     curr_line.append((float(lon), float(lat)))
-                except Exception as ex:
+                except Exception:
                     # Some records don't have position data; just skip them.
                     continue
     return seasons
 
+
 def load_spri_xy(filepath):
     # Without specifying the encoding, most of the files have \ufeff in the first fieldname.
-    with open(filepath, encoding='utf-8-sig') as csvfile:
+    with open(filepath, encoding="utf-8-sig") as csvfile:
         csv_reader = csv.DictReader(csvfile)
-        coords = [map(float, (elem['LAT'], elem['LON'])) for elem in csv_reader
-                  if len(elem['LAT']) > 0]  # Some of the files end with lines of the form ",,,,"
+        coords = [
+            map(float, (elem["LAT"], elem["LON"]))
+            for elem in csv_reader
+            if len(elem["LAT"]) > 0
+        ]  # Some of the files end with lines of the form ",,,,"
 
     lat, lon = zip(*coords)
     ps71 = pyproj.Proj("epsg:3031")
@@ -123,16 +137,21 @@ def load_spri_xy(filepath):
 
 
 def load_data(data_dir):
-    bm1_path = os.path.join(data_dir,
-                            "ANTARCTIC/BEDMAP/BEDMAP1/BEDMAP1_1966-2000_AIR_BM1.csv")
+    bm1_path = os.path.join(
+        data_dir, "ANTARCTIC/BEDMAP/BEDMAP1/BEDMAP1_1966-2000_AIR_BM1.csv"
+    )
     bm1 = load_bedmap_xy(bm1_path)
 
     campaign_points = {}
     # Start with campaigns from Bedmap2/3
     for campaign in duplicate_bm2_campaigns:
-        campaign_path = os.path.join(data_dir, "ANTARCTIC/BEDMAP/BEDMAP2/{}.csv".format(campaign))
+        campaign_path = os.path.join(
+            data_dir, "ANTARCTIC/BEDMAP/BEDMAP2/{}.csv".format(campaign)
+        )
         if not pathlib.Path(campaign_path).exists():
-            campaign_path = os.path.join(data_dir, "ANTARCTIC/BEDMAP/BEDMAP3/{}.csv".format(campaign))
+            campaign_path = os.path.join(
+                data_dir, "ANTARCTIC/BEDMAP/BEDMAP3/{}.csv".format(campaign)
+            )
         campaign_points[campaign] = load_bedmap_xy(campaign_path)
 
     # BAS released their data from 69-88 in one big file
@@ -141,15 +160,20 @@ def load_data(data_dir):
     campaign_points.update(respac_campaigns)
 
     # Stanford has released some of the SPRI paths as individual CSVs
-    spri_path = os.path.join(data_dir, "ANTARCTIC/STANFORD/radarfilmstudio/antarctica_original_positioning")
-    spri_filepaths = [os.path.join(spri_path, ff) for ff in os.listdir(spri_path)
-                      if ff.endswith("csv") and not ff.startswith('.')]
+    spri_path = os.path.join(
+        data_dir, "ANTARCTIC/STANFORD/radarfilmstudio/antarctica_original_positioning"
+    )
+    spri_filepaths = [
+        os.path.join(spri_path, ff)
+        for ff in os.listdir(spri_path)
+        if ff.endswith("csv") and not ff.startswith(".")
+    ]
     all_spri = []
     for filepath in spri_filepaths:
-        flight = pathlib.Path(filepath).stem
+        # flight = pathlib.Path(filepath).stem
         spri_flight = load_spri_xy(filepath)
-        xx = spri_flight[:,0]
-        yy = spri_flight[:,1]
+        xx = spri_flight[:, 0]
+        yy = spri_flight[:, 1]
         all_spri.extend(zip(xx, yy))
     all_spri = np.array(all_spri)
     campaign_points["SPRI"] = all_spri
@@ -166,13 +190,21 @@ def find_campaign_matches(bm1_points, campaign_points, max_dists):
         t0 = time.time()
         campaign_tree = scipy.spatial.KDTree(points)
         t1 = time.time()
-        campaign_from_bedmap_dists, campaign_from_bedmap_idxs = campaign_tree.query(bm1_points, k=1)
+        campaign_from_bedmap_dists, campaign_from_bedmap_idxs = campaign_tree.query(
+            bm1_points, k=1
+        )
         t2 = time.time()
-        print("Found closest indices. construction dt = {}, query dt = {}".format(t1-t0, t2-t1))
+        print(
+            "Found closest indices. construction dt = {}, query dt = {}".format(
+                t1 - t0, t2 - t1
+            )
+        )
 
-        candidate_bedmap_idxs, = np.where(campaign_from_bedmap_dists < max_dists[campaign])
+        (candidate_bedmap_idxs,) = np.where(
+            campaign_from_bedmap_dists < max_dists[campaign]
+        )
         selected_idxs[campaign] = candidate_bedmap_idxs
-        campaign_from_bedmap[campaign] = {idx: val for idx, val in enumerate(campaign_from_bedmap_idxs)}
+        campaign_from_bedmap[campaign] = dict(enumerate(campaign_from_bedmap_idxs))
 
         dt = time.time() - t0
         print("... {:0.2f} seconds".format(dt))
@@ -181,14 +213,14 @@ def find_campaign_matches(bm1_points, campaign_points, max_dists):
 
 def find_gaps(segments, max_skip):
     gaps = np.array([])
-    for idx in np.arange(len(segments)-1):
-        s0,s1 = segments[idx]
-        s2,s3 = segments[idx+1]
+    for idx in np.arange(len(segments) - 1):
+        s0, s1 = segments[idx]
+        s2, s3 = segments[idx + 1]
         assert s1 >= s0  # There are single-length "segments"
         assert s2 > s1
         assert s3 >= s2
-        if s2-s1 < max_skip:
-            gaps = np.append(gaps, np.arange(s1+1, s2))
+        if s2 - s1 < max_skip:
+            gaps = np.append(gaps, np.arange(s1 + 1, s2))
     return gaps.astype(int)
 
 
@@ -216,31 +248,40 @@ def segment_indices(idxs, max_skips, min_length):
     return segments
 
 
-def select_bedmap_indices(bm1_points, campaign_points, matched_idxs,
-                          campaign_from_bedmap, max_gap_lengths,
-                          max_crosstrack_dists):
+def select_bedmap_indices(
+    bm1_points,
+    campaign_points,
+    matched_idxs,
+    campaign_from_bedmap,
+    max_gap_lengths,
+    max_crosstrack_dists,
+):
     selected_idxs = {}
     for campaign, idxs in matched_idxs.items():
         segments = segment_indices(idxs.astype(int), 1, 1)
         gap_idxs = find_gaps(segments, max_gap_lengths[campaign])
 
-        sx = campaign_points[campaign][:,0]
-        sy = campaign_points[campaign][:,1]
+        sx = campaign_points[campaign][:, 0]
+        sy = campaign_points[campaign][:, 1]
 
         good_gap_idxs = []
         good_gap_dists = []
         for gap_idx in gap_idxs:
             c_idx = campaign_from_bedmap[campaign][gap_idx]
 
-            if c_idx+1 < len(sx):
-                seg1 = LineString([Point(sx[c_idx], sy[c_idx]), Point(sx[c_idx+1], sy[c_idx+1])])
+            if c_idx + 1 < len(sx):
+                seg1 = LineString(
+                    [Point(sx[c_idx], sy[c_idx]), Point(sx[c_idx + 1], sy[c_idx + 1])]
+                )
             else:
                 seg1 = None
             if c_idx > 0:
-                seg2 = LineString([Point(sx[c_idx], sy[c_idx]), Point(sx[c_idx-1], sy[c_idx-1])])
+                seg2 = LineString(
+                    [Point(sx[c_idx], sy[c_idx]), Point(sx[c_idx - 1], sy[c_idx - 1])]
+                )
             else:
                 seg2 = None
-            bm1_pt = Point(bm1_points[gap_idx,0], bm1_points[gap_idx,1])
+            bm1_pt = Point(bm1_points[gap_idx, 0], bm1_points[gap_idx, 1])
             in_bounds = False
             min_dist = np.inf
             for seg in [seg1, seg2]:
@@ -259,7 +300,11 @@ def select_bedmap_indices(bm1_points, campaign_points, matched_idxs,
                 good_gap_dists.append(min_dist)
 
         selected_idxs[campaign] = np.append(idxs, good_gap_idxs)
-        print("{}: {} / {} gap indices are good.".format(campaign, len(good_gap_idxs), len(gap_idxs)))
+        print(
+            "{}: {} / {} gap indices are good.".format(
+                campaign, len(good_gap_idxs), len(gap_idxs)
+            )
+        )
     return selected_idxs
 
 
@@ -275,30 +320,35 @@ def plot_selected_indices(bm1_points, campaign_points, selected_idxs):
         print("Plotting {}".format(campaign))
         idxs = idxs.astype(int)
 
-        fig = plt.figure(figsize=(12,5))
-        ax1, ax2, ax3 = fig.subplots(1,3)
+        fig = plt.figure(figsize=(12, 5))
+        ax1, ax2, ax3 = fig.subplots(1, 3)
         for ax in [ax1, ax2, ax3]:
-            ax.axis('off')
-            ax.axis('equal')
+            ax.axis("off")
+            ax.axis("equal")
 
-        sx = campaign_points[campaign][:,0]
-        sy = campaign_points[campaign][:,1]
+        sx = campaign_points[campaign][:, 0]
+        sy = campaign_points[campaign][:, 1]
 
         # Plot just the survey
-        ax1.plot(sx, sy, '.', color='lightgrey', markersize=0.5)
+        ax1.plot(sx, sy, ".", color="lightgrey", markersize=0.5)
         ax1.set_title(campaign)
 
         if len(idxs) == 0:
             continue
 
         # Plot the selected/rejected bedmap points
-        ax2.plot(sx, sy, '.', color='lightgrey', markersize=0.5)
-        ax2.plot(bm1_points[idxs,0], bm1_points[idxs,1], 'k.', markersize=0.5)
+        ax2.plot(sx, sy, ".", color="lightgrey", markersize=0.5)
+        ax2.plot(bm1_points[idxs, 0], bm1_points[idxs, 1], "k.", markersize=0.5)
         ax2.set_title("selected Bedmap1 points")
 
         # Plot the unmatched bedmap points
-        ax3.plot(sx, sy, '.', color='lightgrey', markersize=0.5)
-        ax3.plot(bm1_points[bm1_rejected_idxs,0], bm1_points[bm1_rejected_idxs,1], 'r.', markersize=0.5)
+        ax3.plot(sx, sy, ".", color="lightgrey", markersize=0.5)
+        ax3.plot(
+            bm1_points[bm1_rejected_idxs, 0],
+            bm1_points[bm1_rejected_idxs, 1],
+            "r.",
+            markersize=0.5,
+        )
         ax3.set_title("Nearby unmatched Bedmap1")
 
         for ax in [ax2, ax3]:
@@ -307,12 +357,14 @@ def plot_selected_indices(bm1_points, campaign_points, selected_idxs):
 
         fig.savefig("../../figures/detangling_bedmap_{}.png".format(campaign))
 
+
 def export_segments(selected_idxs, filepath):
     all_idxs = []
     for idxs in selected_idxs.values():
         all_idxs.extend(idxs)
     segments = segment_indices(all_idxs, 1, 1)
-    json.dump(segments, open(filepath, 'w'))
+    json.dump(segments, open(filepath, "w"))
+
 
 def main(data_directory, force):
     bm1_points, campaign_points = load_data(data_directory)
@@ -327,7 +379,6 @@ def main(data_directory, force):
         if "SPRI" in campaign:
             max_dists[campaign] = 100
 
-
     # 2) How long of a gap in bedmap1 indices should we look at?
     max_gap_lengths = {campaign: 100 for campaign in campaign_points.keys()}
     for campaign in campaign_points.keys():
@@ -337,7 +388,9 @@ def main(data_directory, force):
             # RESPAC doesn't seem to have gaps
             max_gap_lengths[campaign] = 0
     # 3)
-    max_crosstrack_dists = {campaign: 100 for campaign in campaign_points.keys()}  # meters
+    max_crosstrack_dists = {
+        campaign: 100 for campaign in campaign_points.keys()
+    }  # meters
     for campaign in campaign_points.keys():
         if "AWI" in campaign:
             # AWI is pretty continuous, so grab everythign in the gaps.
@@ -351,36 +404,43 @@ def main(data_directory, force):
     try:
         if force:
             raise Exception("Recreating match.")
-        selected_idxs = pickle.load(open("selected_idxs.pkl", 'rb'))
+        selected_idxs = pickle.load(open("selected_idxs.pkl", "rb"))
     except Exception as ex:
         print(ex)
         print("Could not load selected_idxs; generating")
         # Do both steps here because campaign_from_bedmap is large enough
         # that pickling takes longer than recreating it.
-        matched_idxs, campaign_from_bedmap = find_campaign_matches(bm1_points, campaign_points, max_dists)
+        matched_idxs, campaign_from_bedmap = find_campaign_matches(
+            bm1_points, campaign_points, max_dists
+        )
         selected_idxs = select_bedmap_indices(
-            bm1_points, campaign_points, matched_idxs,
-            campaign_from_bedmap, max_gap_lengths, max_crosstrack_dists)
-        pickle.dump(selected_idxs, open("selected_idxs.pkl", 'wb'))
+            bm1_points,
+            campaign_points,
+            matched_idxs,
+            campaign_from_bedmap,
+            max_gap_lengths,
+            max_crosstrack_dists,
+        )
+        pickle.dump(selected_idxs, open("selected_idxs.pkl", "wb"))
     t1 = time.time()
-    print("{:02f} secs to load/create index matches".format(t1-t0))
+    print("{:02f} secs to load/create index matches".format(t1 - t0))
 
-    segment_filepath = os.path.join(data_directory, "targ", "ANTARCTIC",
-                                    "bm1_matched_segments.json")
+    segment_filepath = os.path.join(
+        data_directory, "targ", "ANTARCTIC", "bm1_matched_segments.json"
+    )
     export_segments(selected_idxs, segment_filepath)
     t3 = time.time()
 
     plot_selected_indices(bm1_points, campaign_points, selected_idxs)
     t4 = time.time()
-    print("{:02f} secs to plot results".format(t4-t3))
-
+    print("{:02f} secs to plot results".format(t4 - t3))
 
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_directory",
-                        help="Root directory for all data")
+    parser.add_argument("data_directory", help="Root directory for all data")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
     main(args.data_directory, args.force)

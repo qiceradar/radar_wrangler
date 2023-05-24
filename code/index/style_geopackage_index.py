@@ -20,11 +20,17 @@ HOWEVER, doing this makes other python stuff break.
 
 import sqlite3
 
-from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
-                       QgsLayerDefinition, QgsLineSymbol,
-                       QgsMarkerSymbol, QgsProject, QgsSingleSymbolRenderer,
-                       QgsUnitTypes, QgsVectorLayer)
-from PyQt5.QtGui import QColor
+from qgis.core import (
+    QgsApplication,
+    QgsCoordinateReferenceSystem,
+    QgsLayerDefinition,
+    QgsLineSymbol,
+    QgsMarkerSymbol,
+    QgsProject,
+    QgsSingleSymbolRenderer,
+    QgsVectorLayer,
+)
+
 
 def style_gpkg_geometries(region: str, root_group, gpkg_filepath):
 
@@ -33,16 +39,19 @@ def style_gpkg_geometries(region: str, root_group, gpkg_filepath):
     campaign_availability = {}
     with sqlite3.connect(gpkg_filepath) as conn:
         conn.row_factory = sqlite3.Row
-        cursor = conn.execute("SELECT * FROM {}".format('gpkg_geometry_columns'))
+        cursor = conn.execute("SELECT * FROM {}".format("gpkg_geometry_columns"))
         for row in cursor:
-            campaigns.add(row['table_name'])  # I think this is also the primary key
+            campaigns.add(row["table_name"])  # I think this is also the primary key
 
         for campaign in campaigns:
             cursor = conn.execute("SELECT * FROM '{}'".format(campaign))
             # NOTE: With the current database design, these tables only have one row.
             for row in cursor:
-                institutions.add(row['institution'])
-                campaign_availability[campaign] = (row['institution'], row['availability'])
+                institutions.add(row["institution"])
+                campaign_availability[campaign] = (
+                    row["institution"],
+                    row["availability"],
+                )
 
     print("{} granules from {} institutions".format(len(campaigns), len(institutions)))
 
@@ -54,31 +63,37 @@ def style_gpkg_geometries(region: str, root_group, gpkg_filepath):
         institution_groups[institution] = root_group.addGroup(institution)
         institution_groups[institution].setExpanded(False)
 
-
     # Consider namedtuple for this list of lists?
     # Dict mapping institution to list of [supported, available, unavailable] campaign names
     institution_campaigns = {inst: [[], [], []] for inst in institutions}
     for campaign, (institution, availability) in campaign_availability.items():
-        if availability == 's':
+        if availability == "s":
             institution_campaigns[institution][0].append(campaign)
-        elif availability == 'a':
+        elif availability == "a":
             institution_campaigns[institution][1].append(campaign)
-        elif availability == 'u':
+        elif availability == "u":
             institution_campaigns[institution][2].append(campaign)
 
-    for institution, (supported, available, unavailable) in institution_campaigns.items():
+    for institution, (
+        supported,
+        available,
+        unavailable,
+    ) in institution_campaigns.items():
         supported.sort()
         for campaign in supported:
-            add_campaign(region, gpkg_filepath, institution_groups[institution],
-                         campaign, 's')
+            add_campaign(
+                region, gpkg_filepath, institution_groups[institution], campaign, "s"
+            )
         available.sort()
         for campaign in available:
-            add_campaign(region, gpkg_filepath, institution_groups[institution],
-                         campaign, 'a')
+            add_campaign(
+                region, gpkg_filepath, institution_groups[institution], campaign, "a"
+            )
         unavailable.sort()
         for campaign in unavailable:
-            add_campaign(region, gpkg_filepath, institution_groups[institution],
-                         campaign, 'u')
+            add_campaign(
+                region, gpkg_filepath, institution_groups[institution], campaign, "u"
+            )
 
 
 def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
@@ -86,32 +101,39 @@ def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
     geometry = None
     with sqlite3.connect(gpkg_filepath) as conn:
         conn.row_factory = sqlite3.Row
-        cursor = conn.execute("SELECT * FROM {}".format('gpkg_geometry_columns'))
+        cursor = conn.execute("SELECT * FROM {}".format("gpkg_geometry_columns"))
         for row in cursor:
-            if row['table_name'] == campaign:
-                geometry = row['geometry_type_name']
+            if row["table_name"] == campaign:
+                geometry = row["geometry_type_name"]
                 break
-    if geometry not in ['LINESTRING', 'MULTIPOINT']:
-        print("Unrecognized geometry {} for campaign {}; cannot style"
-              .format(geometry, campaign))
+    if geometry not in ["LINESTRING", "MULTIPOINT"]:
+        print(
+            "Unrecognized geometry {} for campaign {}; cannot style".format(
+                geometry, campaign
+            )
+        )
         return
 
     # TODO: Look into pathlib.Path.as_uri()
     uri = "file://{}|layername={}".format(gpkg_filepath, campaign)
     layer = QgsVectorLayer(uri, campaign, "ogr")
     # Add campaigns to the institution
-    colors = {'s': "31,120,188,255",  # blue for available and supported
-            'a': "136,136,136,255",  # grey for unsupported
-            'u': "251,154,153,255", # Salmon for unavailable data
-            }
+    colors = {
+        "s": "31,120,188,255",  # blue for available and supported
+        "a": "136,136,136,255",  # grey for unsupported
+        "u": "251,154,153,255",  # Salmon for unavailable data
+    }
     if geometry == "MULTIPOINT":
         # BEDMAP1 points are NOT in order, so we can't connect them with lines
-        symbol = QgsMarkerSymbol.createSimple({'name': 'circle',
-                                            'color': colors[availability],
-                                            'outline_style': 'no',
-                                            'size': '1',
-                                            'size_unit': 'Point',
-                                            })
+        symbol = QgsMarkerSymbol.createSimple(
+            {
+                "name": "circle",
+                "color": colors[availability],
+                "outline_style": "no",
+                "size": "1",
+                "size_unit": "Point",
+            }
+        )
     elif geometry == "LINESTRING":
         # All other datasets have been subsampled and will display better
         # as lines.
@@ -122,12 +144,14 @@ def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
         # symbol.setWidth(1)
         # symbol.setColor(QColor(colors[availability]))
         # symbol.setWidthUnit(QgsUnitTypes.RenderPoints)
-        symbol = QgsLineSymbol.createSimple({
-            'line_color': colors[availability],
-            'line_style': "solid",
-            'line_width': "1",
-            'line_width_unit': "Point",
-        })
+        symbol = QgsLineSymbol.createSimple(
+            {
+                "line_color": colors[availability],
+                "line_style": "solid",
+                "line_width": "1",
+                "line_width_unit": "Point",
+            }
+        )
     else:
         print("ERROR -- unrecognized geometry, should have returned earlier")
         return
@@ -149,13 +173,11 @@ def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("region",
-                        help="ARCTIC or ANTARCTIC")
-    parser.add_argument("gpkg_filepath",
-                        help="Full path to input GeoPackage file")
-    parser.add_argument("qlr_filepath",
-                        help="Full path to output qlr file")
+    parser.add_argument("region", help="ARCTIC or ANTARCTIC")
+    parser.add_argument("gpkg_filepath", help="Full path to input GeoPackage file")
+    parser.add_argument("qlr_filepath", help="Full path to output qlr file")
     args = parser.parse_args()
 
     # Initialize QGIS. Needs to be in main to stay in scope
@@ -165,7 +187,7 @@ if __name__ == "__main__":
     qgs.initQgis()
     root = QgsProject.instance().layerTreeRoot()
     qiceradar_group = root.insertGroup(0, "{} QIceRadar Index".format(args.region))
-    print('...initialized.')
+    print("...initialized.")
 
     # Create Antarctic map!
     style_gpkg_geometries(args.region, qiceradar_group, args.gpkg_filepath)

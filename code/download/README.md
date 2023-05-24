@@ -29,7 +29,7 @@ Eventually, they should all:
   * There may be multiple granules for a single segment; all of those files wind up in the same directory.
   * QUESTION: Where does "product" wind up in this hierarchy? CReSIS puts it just below campaign. In some ways, I'd prefer it to be the lowest-level directory, but I'm not sure if everybody's products align across granule lines.
 
---------------------
+## Antarctic
 
 * BEDMAP:
   * These files are used as a starting point for the index layer.
@@ -126,8 +126,18 @@ Eventually, they should all:
       * NB: tokens expire after 1 year; will need to prompt users to re-generate if necessary.
     * OIA: https://data.aad.gov.au/s3/bucket/datasets/science/AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/ (unlike EAGLE, it's possible to download individual lines.)
       * I tried to scrape the page for links, but it renders in javascript. Was faster to just click the links and download. Now that I have them all, will be easy to construct URL, since it matched filenames.
-  * Devon Ice Cap: https://zenodo.org/record/5795105
   * SOAR -- only some of the surveys have tracks available; others are only grids.
 
 
 
+## Arctic
+
+* CReSIS
+  * https://data.cresis.ku.edu/ seems to only have the matlab file formats
+
+* UTIG
+  * Devon Ice Cap: https://zenodo.org/record/5795105
+    * includes full radargrams
+  * GOG3: https://data.bas.ac.uk/full-record.php?id=GB/NERC/BAS/PDC/00919
+    * ice thickness only
+  * GOG1 & GOG2 are as-yet unreleased, though made it into a Bamber DEM and into BedMachine.

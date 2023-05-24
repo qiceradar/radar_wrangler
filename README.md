@@ -25,4 +25,3 @@ RadarWrangler's output is the QGIS layer that serves as the data index for both 
 Each institution collecting data uses a different file format and hosting scheme.
 
 ### BAS
-

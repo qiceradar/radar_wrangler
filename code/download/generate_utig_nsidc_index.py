@@ -29,7 +29,7 @@ import requests
 
 
 def credentials_from_netrc():
-    hostname = 'urs.earthdata.nasa.gov'
+    hostname = "urs.earthdata.nasa.gov"
     try:
         nn = netrc.netrc()
         username, _, token = nn.authenticators(hostname)
@@ -58,13 +58,16 @@ def main(index_filepath):
             csv_reader = csv.DictReader(fp)
             previous_csv = []
             for dd in csv_reader:
-                institution = dd['institution']
-                flight = dd['flight']
-                url = dd['url']
-                date_url = '/'.join(url.split('/')[:-1])
+                institution = dd["institution"]
+                flight = dd["flight"]
+                url = dd["url"]
+                date_url = "/".join(url.split("/")[:-1])
                 previous_urls.add(date_url)
-                previous_csv.append("{},{},{},{},{}\n".format(
-                    institution, flight, dd['segment'], dd['granule'], url))
+                previous_csv.append(
+                    "{},{},{},{},{}\n".format(
+                        institution, flight, dd["segment"], dd["granule"], url
+                    )
+                )
         previous_urls = list(previous_urls)
         previous_urls.sort()
         print(previous_urls)
@@ -74,22 +77,24 @@ def main(index_filepath):
     # Extract information from the filename
     regex = "(?P<instrument>[0-9a-zA-Z]+)_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[0-9a-zA-Z]+)_(?P<set>[0-9a-zA-Z]+)_(?P<transect>[0-9a-zA-Z]*)_(?P<granule>[0-9]*).nc"
     token = credentials_from_netrc()
-    with requests.sessions.Session() as session, open(index_filepath, 'w') as fp:
+    with requests.sessions.Session() as session, open(index_filepath, "w") as fp:
         fp.write("institution,flight,segment,granule,url\n")
         if previous_csv is not None:
             fp.writelines(previous_csv)
 
-        session.headers.update({'Authorization': 'Bearer {0}'.format(token)})
+        session.headers.update({"Authorization": "Bearer {0}".format(token)})
         for instrument_url in [hicars1_url, hicars2_url]:
             print("*************")
             print("Checking {}".format(instrument_url))
             instrument_resp = session.get(instrument_url)
-            instrument_soup = BeautifulSoup(
-                instrument_resp.text, 'html.parser')
+            instrument_soup = BeautifulSoup(instrument_resp.text, "html.parser")
 
             # Each link shows up a few times
-            flight_days = set([link.get('href').strip('/') for link in instrument_soup.find_all('a')
-                               if re.match("[0-9]{4}.[0-9]{2}.[0-9]{2}", link.get('href')) is not None])
+            flight_days = {
+                link.get("href").strip("/")
+                for link in instrument_soup.find_all("a")
+                if re.match("[0-9]{4}.[0-9]{2}.[0-9]{2}", link.get("href")) is not None
+            }
             flight_days = list(flight_days)
             flight_days.sort()
             print(flight_days)
@@ -107,16 +112,20 @@ def main(index_filepath):
                     print("...trying again")
                     try:
                         flight_resp = session.get(flight_url)
-                    except Exception as ex:
+                    except Exception:
                         err_msg = "WARNING: failed to index {}; re-run script".format(
-                            flight_url)
+                            flight_url
+                        )
                         print(err_msg)
                         # Go ahead and continue because I won't be constantly monitoring the script.
                         continue
 
-                flight_soup = BeautifulSoup(flight_resp.text, 'html.parser')
-                segment_files = set([link.get('href') for link in flight_soup.find_all('a')
-                                     if link.get('href').endswith('nc')])
+                flight_soup = BeautifulSoup(flight_resp.text, "html.parser")
+                segment_files = {
+                    link.get("href")
+                    for link in flight_soup.find_all("a")
+                    if link.get("href").endswith("nc")
+                }
                 segment_files = list(segment_files)
                 segment_files.sort()
                 print(segment_files)
@@ -126,8 +135,11 @@ def main(index_filepath):
                     pst = "_".join((project, ss, transect))
 
                     segment_url = "{}/{}".format(flight_url, segment_file)
-                    fp.write("{},{},{},{},{}\n".format(
-                        "UTIG", flight_day, pst, granule, segment_url))
+                    fp.write(
+                        "{},{},{},{},{}\n".format(
+                            "UTIG", flight_day, pst, granule, segment_url
+                        )
+                    )
 
 
 if __name__ == "__main__":
