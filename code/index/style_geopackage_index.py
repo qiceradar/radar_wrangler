@@ -26,7 +26,7 @@ from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsUnitTypes, QgsVectorLayer)
 from PyQt5.QtGui import QColor
 
-def style_gpkg_geometries(root_group, gpkg_filepath):
+def style_gpkg_geometries(region: str, root_group, gpkg_filepath):
 
     institutions = set()
     campaigns = set()
@@ -69,19 +69,19 @@ def style_gpkg_geometries(root_group, gpkg_filepath):
     for institution, (supported, available, unavailable) in institution_campaigns.items():
         supported.sort()
         for campaign in supported:
-            add_campaign(gpkg_filepath, institution_groups[institution],
+            add_campaign(region, gpkg_filepath, institution_groups[institution],
                          campaign, 's')
         available.sort()
         for campaign in available:
-            add_campaign(gpkg_filepath, institution_groups[institution],
+            add_campaign(region, gpkg_filepath, institution_groups[institution],
                          campaign, 'a')
         unavailable.sort()
         for campaign in unavailable:
-            add_campaign(gpkg_filepath, institution_groups[institution],
+            add_campaign(region, gpkg_filepath, institution_groups[institution],
                          campaign, 'u')
 
 
-def add_campaign(gpkg_filepath, group, campaign, availability):
+def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
     # Figure out whether it's points or lines
     geometry = None
     with sqlite3.connect(gpkg_filepath) as conn:
@@ -134,7 +134,12 @@ def add_campaign(gpkg_filepath, group, campaign, availability):
 
     renderer = QgsSingleSymbolRenderer(symbol)
     layer.setRenderer(renderer)
-    crs = QgsCoordinateReferenceSystem("EPSG:3031")
+    if region.lower() == "arctic":
+        crs = QgsCoordinateReferenceSystem("EPSG:3413")
+    elif region.lower() == "antarctic":
+        crs = QgsCoordinateReferenceSystem("EPSG:3031")
+    else:
+        raise Exception("Unrecognized region: {}".format(region))
     layer.setCrs(crs)
 
     layer.updateExtents()
@@ -145,6 +150,8 @@ def add_campaign(gpkg_filepath, group, campaign, availability):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument("region",
+                        help="ARCTIC or ANTARCTIC")
     parser.add_argument("gpkg_filepath",
                         help="Full path to input GeoPackage file")
     parser.add_argument("qlr_filepath",
@@ -157,10 +164,10 @@ if __name__ == "__main__":
     qgs = QgsApplication([], True)
     qgs.initQgis()
     root = QgsProject.instance().layerTreeRoot()
-    qiceradar_group = root.insertGroup(0, "QIceRadar Index")
+    qiceradar_group = root.insertGroup(0, "{} QIceRadar Index".format(args.region))
     print('...initialized.')
 
     # Create Antarctic map!
-    style_gpkg_geometries(qiceradar_group, args.gpkg_filepath)
+    style_gpkg_geometries(args.region, qiceradar_group, args.gpkg_filepath)
 
     QgsLayerDefinition.exportLayerDefinition(args.qlr_filepath, [qiceradar_group])

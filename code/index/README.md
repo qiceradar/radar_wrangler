@@ -1,5 +1,11 @@
 This directory contains scripts involved in creating the index layer.
 
+## Dependencies
+
+pip install pyproj
+pip install rdp
+pip install geopandas
+
 ## Attribute Bedmap points
 
 We have made an effort to detangle points that are in the BEDMAP1 layer and also in other BEDMAP2/3 files, or are available elsewhere. The goal is to properly attribute these transects to the extent possible, as well as to clearly show which points are still unknown.
@@ -54,7 +60,8 @@ I am currently experimenting with using a single GeoPackage as the database that
   * Generates qiceradar_index.gpkg
   * Uses (manually updated) `available_campaigns` variable from bedmap_labels.py to not create layers for BEDMAP2/3 campaigns that are directly downloaded as radargrams to avoid duplication.
 
-2) style_geopackage_index.py
+2) ./style_geopackage_index.py ARCTIC ~/RadarData/targ/qiceradar_arctic_index.gpkg ~/RadarData/targ/qiceradar_arctic_index.qlr
+
   * Generates qice_radar_index.qlr
   * Uses the 'available' attribute attached to each geometry to determine which color the points should be.
 

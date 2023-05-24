@@ -343,14 +343,14 @@ def add_spri_layers(root_group, spri_dir):
         stanford_group.addLayer(layer)
 
 
-def add_kml_campaigns(provider: str, root_group, index_dir: str):
+def add_kml_campaigns(region: str, provider: str, root_group, index_dir: str):
     """
     For now, all providers have the same structure:
     Campaign, then flight/line.
     This may change if/when we need to propery match granules to LDEO/CRESIS/etc.
     Data
     """
-    provider_dir = os.path.join(index_dir, "ANTARCTIC", provider)
+    provider_dir = os.path.join(index_dir, region, provider)
     # Use '.' to eliminate the annoying .DS_Store directory
     campaigns = [ff for ff in os.listdir(provider_dir) if ff.endswith("kml")]
     campaigns.sort()
@@ -402,6 +402,7 @@ QgsLayerDefinition.exportLayerDefinition(layer_file, [qiceradar_group])
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument("region", help="ARCTIC or ANTARCTIC")
     parser.add_argument("index_directory",
                         help="Root directory for generated subsampled files")
     # TODO: These need to be properly handled eventually, but I'm not subsampling them yet.
@@ -417,10 +418,17 @@ if __name__ == "__main__":
     qiceradar_group = root.insertGroup(0, "QIceRadar Index")
 
     # Create Antarctic map!
-    add_bedmap_layers(qiceradar_group, args.index_directory)
+    if args.region == "ANTARCTIC":
+        add_bedmap_layers(qiceradar_group, args.index_directory)
+    elif args.region == "ARCTIC":
+        # TODO: is there an equivalent for Bedmachine?
+        pass
+
     for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
-        add_kml_campaigns(provider, qiceradar_group, args.index_directory)
-    add_spri_layers(qiceradar_group, args.spri_directory)
+        add_kml_campaigns(args.region, provider, qiceradar_group, args.index_directory)
+
+    if args.region == "ANTARCTIC":
+        add_spri_layers(qiceradar_group, args.spri_directory)
 
     layer_file = os.path.join(args.index_directory, "qiceradar_index.qlr")
 

@@ -30,7 +30,7 @@ def load_xy(filepath):
     return xx, yy
 
 def add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, layer_name,
-                                campaign, institution, availability):
+                                region, campaign, institution, availability):
     """
     QGIS can't handle having a separate layer for each flight or segment,
     so collect all granules for each season into a single layer/GeoDataFrame,
@@ -78,6 +78,7 @@ def add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, layer_name,
 
     gdf = gpd.GeoDataFrame(geometries, columns=['geometry'])
     gdf['institution'] = [institution for _ in names]
+    gdf['region'] = [region.lower() for _ in names]
     gdf['campaign'] = [campaign for _ in names]
     gdf['segment'] = segments
     gdf['granule'] = granules
@@ -87,9 +88,12 @@ def add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, layer_name,
     # embedded in the comments in the CSV
     gdf['uri'] = [None for _ in names]
     gdf['name'] = names
-    # QUESTION: Setting the CRS here doesn't seem to propagate to QGIS; instead,
-    #    I have to set it explicitly when creting the QGIS layer from this table.
-    gdf.crs = 'EPSG:3031'
+    if region == "ARCTIC":
+        gdf.crs = 'EPSG:3413'
+    elif region == "ANTARCTIC":
+        gdf.crs = 'EPSG:3031'
+    else:
+        raise(Exception("Unrecognized region: {}".format(region)))
 
     # TODO: Create campaign table and add metadata
     t2 = time.time()
@@ -102,7 +106,8 @@ def add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, layer_name,
 # QUESTION: Should I be passing around pathlib.Path objects, rather than strings?
 def add_csv_gpkg(gpkg_filepath: str,
                  csv_filepath: str,
-                 layer_name: str, granule: str, segment: str, campaign: str,
+                 layer_name: str, granule: str, segment: str,
+                 region: str, campaign: str,
                  institution: str, uri: str, availability: str):
     """"
     Add data in the CSV to the Geopackage, and create a QGIS layer with
@@ -131,12 +136,18 @@ def add_csv_gpkg(gpkg_filepath: str,
     gdf['name'] = layer_name
     gdf['uri'] = uri
     gdf['institution'] = institution
+    gdf['region'] = region.lower()
     gdf['granule'] = granule
     gdf['segment'] = segment
     gdf['campaign'] = campaign
     # TODO: Way to make this an enum?
     gdf['availability'] = availability
-    gdf.crs = 'EPSG:3031'
+    if region.lower() == "arctic":
+        gdf.crs = 'EPSG:3413'
+    elif region.lower() == "antarctic":
+        gdf.crs = 'EPSG:3031'
+    else:
+        raise(Exception("Unrecognized region: {}".format(region)))
 
     # TODO: Create campaign table and add metadata
 
@@ -177,11 +188,10 @@ def add_bedmap_layers(data_dir, gpkg_filepath):
             uri = None
             availability = 'u'  # Unavailable
             add_csv_gpkg(gpkg_filepath, csv_filepath, layer_name,
-                            granule, segment, campaign, institution,
+                            granule, segment, region, campaign, institution,
                             uri, availability)
 
-def add_radargram_layers(institution, data_dir, gpkg_filepath):
-    region = "ANTARCTIC"
+def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
     data_dir = os.path.join(data_dir, region, institution)
     if not os.path.isdir(data_dir):
         print("No {} data from {}".format(region, institution))
@@ -194,10 +204,9 @@ def add_radargram_layers(institution, data_dir, gpkg_filepath):
         availability = 's'  # Supported
         campaign_dir = os.path.join(data_dir, campaign)
         add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, campaign,
-                                    campaign, institution, availability)
+                                    region, campaign, institution, availability)
 
-def add_icethk_layers(institution, data_dir, gpkg_filepath):
-    region = "ANTARCTIC"
+def add_icethk_layers(region, institution, data_dir, gpkg_filepath):
     data_dir = os.path.join(data_dir, region, institution)
     if not os.path.isdir(data_dir):
         print("No {} data from {}".format(region, institution))
@@ -210,7 +219,7 @@ def add_icethk_layers(institution, data_dir, gpkg_filepath):
         availability = 'u'  # Unavailable
         campaign_dir = os.path.join(data_dir, campaign)
         add_campaign_directory_gpkg(gpkg_filepath, campaign_dir, campaign,
-                                    campaign, institution, availability)
+                                    region, campaign, institution, availability)
 
 def add_spri_layers(index_dir, gpkg_filepath):
     institution = "STANFORD"
@@ -223,7 +232,7 @@ def add_spri_layers(index_dir, gpkg_filepath):
     #   not yet in a format that I can support.
     availability = 'a'  # Available
     add_campaign_directory_gpkg(gpkg_filepath, spri_dir, layer_name,
-                                campaign, institution, availability)
+                                region, campaign, institution, availability)
 
 
 if __name__ == "__main__":
@@ -235,12 +244,22 @@ if __name__ == "__main__":
                         help="Root directory for generated subsampled files derived from icethk-only")
     args = parser.parse_args()
 
-    gpkg_file = os.path.join(args.radargram_index_directory, "qiceradar_index.gpkg")
+    for region in ["ANTARCTIC", "ARCTIC"]:
+        gpkg_filename = "qiceradar_{}_index.gpkg".format(region.lower())
+        gpkg_file = os.path.join(args.radargram_index_directory, gpkg_filename)
 
-    # Create Antarctic map!
-    add_bedmap_layers(args.radargram_index_directory, gpkg_file)
-    for provider in ["BAS", "CRESIS", "KOPRI" , "LDEO", "UTIG"]:
-        add_radargram_layers(provider, args.radargram_index_directory, gpkg_file)
-    for provider in ["BAS"]:
-        add_icethk_layers(provider, args.icethk_index_directory, gpkg_file)
-    add_spri_layers(args.icethk_index_directory, gpkg_file)
+        if region == "ARCTIC":
+            # TODO: Add Bedmachine coverage data?
+            pass
+        else:
+            add_bedmap_layers(args.radargram_index_directory, gpkg_file)
+
+        for provider in ["BAS", "CRESIS", "KOPRI" , "LDEO", "UTIG"]:
+            add_radargram_layers(region, provider, args.radargram_index_directory, gpkg_file)
+
+        # TODO: For arctic, this may need to include UTIG
+        for provider in ["BAS"]:
+            add_icethk_layers(region, provider, args.icethk_index_directory, gpkg_file)
+
+        if region == "ANTARCTIC":
+            add_spri_layers(args.icethk_index_directory, gpkg_file)
