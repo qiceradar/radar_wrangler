@@ -1,4 +1,93 @@
-The code in this directory does the initial download for creating an index to the data.
+The code in this directory does the initial download for creating an index to the data. This is only for generating the data product that we provide; users should not need to run these scripts. Unfortunately, the process is still very manual.
+
+The download step will populate our geopackage index with:
+* granules
+  * granule name
+  * download_url
+  * download_method
+  * destination_filepath
+* campaigns
+  * institution
+  * science_citation
+  * data_citation
+
+A later index step will add information:
+* granules
+  * data_format
+  * filesize
+* [campaign]
+  * geometry
+
+
+
+
+# Requirements:
+
+(This is not a complete list; I haven't yet tried re-running all of this on a freshly installed OS.)
+
+pip3 install --user requests
+pip3 install --user bs4
+
+# Initial Index Setup
+
+We use a geopackage database to track geometry and metadata about each radargram.
+
+Start with the empty template package downloaded from:
+http://www.geopackage.org/data/empty.gpkg
+
+Then run:
+
+`initialize_gpkg.py /path/to/empty.gpkg /path/to/qiceradar_antarctic_index/gpkg`
+
+This will set up the "campaigns" and "granules" tables that will be incremntally filled in with relevant info by the download scripts.
+
+# Download
+
+Each institution is different, but I've tried to standardize the scripts to take command-line arguments specifying:
+* base directory for all downloaded data
+* antarctic geopackage index
+* arctic geopackage index
+
+
+
+
+
+## BAS
+
+BAS has a data portal: https://www.bas.ac.uk/project/nagdp/
+I used that to find all openly-available Antarctic surveys. Click on a line, then click "Metadata" to be taken to the rammada page.
+
+Individual surveys are hosted at rammada; I have not figured out how to automate scraping the download links, so manually download the indices:
+
+* Go to the landing page
+* click the "Folder" dropdown next to "netcdf"
+* Select "All Actions"
+* Select "CSV"; download into data/BAS/netcdf_indices; renaming file to [survey].csv
+* Relevant columns are "name" and "url"
+
+Landing pages for different Antarctic surveys with full radargrams available:
+* AGAP: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=a1abf071-85fc-4118-ad37-7f186b72c847
+* BBAS: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=db8bdbad-6893-4a77-9d12-a9bcb7325b70
+* FISS2015: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=3507901f-d03e-45a6-8d9b-59cf98a03e1d
+* FISS2016: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=0cb61583-3985-4875-b141-5743e68abe35
+* GRADES_IMAGE: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=c7ea5697-87e3-4529-a0dd-089a2ed638fb
+* ICEGRAV: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=c6324118-94a2-4e03-8715-b24b82322a57
+* IMAFI: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=f32b298b-7906-4360-9e34-16739af73bb7
+* ITGC_2019: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=e7aba676-1fdc-4c9a-b125-1ebe6124e5dc
+* POLARGAP: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=e8a29fa7-a245-4a04-8b56-098defa134b9
+* WISE_ISODYN: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=70adab3d-3632-400d-9aa1-ddf2d62a11b3
+
+For Arctic surveys:
+* GOG3 (ice thickness only): https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=d31550de-13c2-4779-aa10-9e0a43bbeb1a
+
+Download:
+
+`python3 download_bas.py ~/RadarData antarctic_index.gpkg arctic_index.gpkg`
+
+
+
+-------------------------------
+
 
 Each institution has its own script for now because they make their data available in different ways.
 
@@ -126,6 +215,11 @@ Eventually, they should all:
       * NB: tokens expire after 1 year; will need to prompt users to re-generate if necessary.
     * OIA: https://data.aad.gov.au/s3/bucket/datasets/science/AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/ (unlike EAGLE, it's possible to download individual lines.)
       * I tried to scrape the page for links, but it renders in javascript. Was faster to just click the links and download. Now that I have them all, will be easy to construct URL, since it matched filenames.
+      * They've changed their download procedure to require an email address:
+        - dataset landing page: https://data.aad.gov.au/metadata/AAS_4346_ICECAP_OIA_RADARGRAMS
+        - download page: https://data.aad.gov.au/dataset/5256/download (then there's the step of checking your email!) (Q: Why is this a different project number than the landing page?)
+        - I'll need to have my users manually enter their Access Key and Secret Key for S3 access. Hopefully these persist?
+        - They support loading raster images directly into QGIS ... interesting!
   * SOAR -- only some of the surveys have tracks available; others are only grids.
 
 
