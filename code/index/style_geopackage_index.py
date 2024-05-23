@@ -33,7 +33,6 @@ from qgis.core import (
 
 
 def style_gpkg_geometries(region: str, root_group, gpkg_filepath):
-
     institutions = set()
     campaigns = set()
     campaign_availability = {}
@@ -119,6 +118,10 @@ def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
     layer = QgsVectorLayer(uri, campaign, "ogr")
     # Add campaigns to the institution
     colors = {
+        # Sometimes, it's useful to just have all black
+        # "s": "0,0,0",
+        # "a": "0,0,0",
+        # "u": "0,0,0",
         "s": "31,120,188,255",  # blue for available and supported
         "a": "136,136,136,255",  # grey for unsupported
         "u": "251,154,153,255",  # Salmon for unavailable data
@@ -186,7 +189,7 @@ if __name__ == "__main__":
     qgs = QgsApplication([], True)
     qgs.initQgis()
     root = QgsProject.instance().layerTreeRoot()
-    qiceradar_group = root.insertGroup(0, "{} QIceRadar Index".format(args.region))
+    qiceradar_group = root.insertGroup(0, f"{args.region} QIceRadar Index")
     print("...initialized.")
 
     # Create Antarctic map!

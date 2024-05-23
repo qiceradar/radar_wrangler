@@ -1,15 +1,15 @@
 #! /usr/bin/env python3
 
-import geopandas as gpd
-import numpy as np
 import os
-import pandas as pd
 import pathlib
-from shapely.geometry import LineString, MultiPoint
 import time
 
-from radar_index_utils import count_skip_lines
+import geopandas as gpd
+import numpy as np
+import pandas as pd
 from bedmap_labels import available_campaigns
+from radar_index_utils import count_skip_lines
+from shapely.geometry import LineString, MultiPoint
 
 
 def load_xy(filepath):
@@ -292,11 +292,21 @@ if __name__ == "__main__":
         "icethk_index_directory",
         help="Root directory for generated subsampled files derived from icethk-only",
     )
+    parser.add_argument(
+        "antarctic_index",
+        help="Geopackage database to update with geometry for Antarctic radar lines",
+    )
+    parser.add_argument(
+        "arctic_index",
+        help="Geopackage database to update with geometry for Arctic radar lines",
+    )
     args = parser.parse_args()
 
     for region in ["ANTARCTIC", "ARCTIC"]:
-        gpkg_filename = "qiceradar_{}_index.gpkg".format(region.lower())
-        gpkg_file = os.path.join(args.radargram_index_directory, gpkg_filename)
+        if region == "ARCTIC":
+            gpkg_file = args.arctic_index
+        else:
+            gpkg_file = args.antarctic_index
 
         if region == "ARCTIC":
             # TODO: Add Bedmachine coverage data?
