@@ -2,9 +2,21 @@ This directory contains scripts involved in creating the index layer.
 
 ## Dependencies
 
+**For generating the layers and styling:**
+
 pip install pyproj
 pip install rdp
 pip install geopandas
+
+**For pre-commit checks:**
+
+pip install pylint
+pip install black
+pip install flake8
+pip install flake8-bugbear
+pip install flake8-comprehensions
+pip install pep8-naming
+pip install pre-commit
 
 ## Attribute Bedmap points
 
@@ -55,10 +67,11 @@ Arguments:
 I am currently experimenting with using a single GeoPackage as the database that holds all tracks for the index. However, since importing the GeoPackage directly in to QGIS only seems to allow one level of nesting, there needs to be a separate qlr file that styles the layers and organizes them.
 
 
-1) ./create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk
+1) ./create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk antarctic_index.gpkg arctic_index.gpkg
 
   * Generates qiceradar_index.gpkg
   * Uses (manually updated) `available_campaigns` variable from bedmap_labels.py to not create layers for BEDMAP2/3 campaigns that are directly downloaded as radargrams to avoid duplication.
+  * Adds geometry to already-existing geopackage files
 
 2) ./style_geopackage_index.py ARCTIC ~/RadarData/targ/qiceradar_arctic_index.gpkg ~/RadarData/targ/qiceradar_arctic_index.qlr
 
