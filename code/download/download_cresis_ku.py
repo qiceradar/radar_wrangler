@@ -8,6 +8,7 @@ have good metadata for who actually owns the data.
 
 
 from bs4 import BeautifulSoup
+import os
 import pathlib
 import pickle
 import re
@@ -17,6 +18,7 @@ from typing import Dict
 
 
 def reindex_cresis():
+    print("Reindexing Cresis ")
     cresis_url = "https://data.cresis.ku.edu/data/rds"
     reqs = requests.get(cresis_url)
     soup = BeautifulSoup(reqs.text, "html.parser")
@@ -37,6 +39,9 @@ def reindex_cresis():
 
     # TODO: Fix this terrible nested dictionary
     cresis_datafiles = {"ANTARCTIC": {}, "ARCTIC": {}}
+    # Hack to do a *partial* reindex
+    # index_filepath = "../../data/CRESIS/cresis_datafiles.pkl"
+    # cresis_datafiles = pickle.load(open(index_filepath, "rb"))
 
     for campaign in campaigns:
         print()
@@ -45,6 +50,9 @@ def reindex_cresis():
             region = "ANTARCTIC"
         else:
             region = "ARCTIC"
+        if campaign in cresis_datafiles[region]:
+            continue
+
         cresis_datafiles[region][campaign] = {}
 
         campaign_url = "{}/{}".format(cresis_url, campaign)
@@ -98,6 +106,7 @@ def reindex_cresis():
             cresis_datafiles[region][campaign][product][segment] = {
                 file: "{}/{}".format(segment_url, file) for file in files
             }
+    return cresis_datafiles
 
 
 def download_cresis(data_dir: str, datafiles: Dict):
@@ -110,10 +119,6 @@ def download_cresis(data_dir: str, datafiles: Dict):
             continue
         for campaign, products in campaigns.items():
             print(campaign)
-            yy = int(campaign[0:4])
-            if yy < 2016:
-                print("Already downloaded {}; skipping".format(campaign))
-                continue
             for product, segments in products.items():
                 print(".. {}".format(product))
                 for segment, frames in segments.items():
@@ -129,12 +134,20 @@ def download_cresis(data_dir: str, datafiles: Dict):
                         continue
 
                     for _frame, data_url in frames.items():
-                        wget_cmd = 'wget -c --directory-prefix="{}" "{}"'.format(
-                            dest_dir, data_url
-                        )
-                        print(wget_cmd)
-                        subprocess.getoutput(wget_cmd)
-                        # break  # we're just testing right now ... don't grab everything!
+                        filename = data_url.split("/")[-1]
+                        dest_filepath = os.path.join(dest_dir, filename)
+                        if os.path.exists(dest_filepath):
+                            filesize = os.path.getsize(dest_filepath)
+                            print(
+                                f"Skipping {filename}: file already exists with size {filesize}"
+                            )
+                        else:
+                            print(f"Downloading {dest_filepath}")
+                            wget_cmd = 'wget -c --directory-prefix="{}" "{}"'.format(
+                                dest_dir, data_url
+                            )
+                            print(wget_cmd)
+                            subprocess.getoutput(wget_cmd)
 
 
 def main(data_dir: str, reindex: bool):
@@ -144,7 +157,7 @@ def main(data_dir: str, reindex: bool):
 
     else:
         cresis_datafiles = reindex_cresis()
-        with open(index_filepath, "rb") as fp:
+        with open(index_filepath, "wb") as fp:
             pickle.dump(cresis_datafiles, fp)
 
     download_cresis(data_dir, cresis_datafiles)
