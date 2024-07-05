@@ -35,7 +35,7 @@ def create_gpkg(empty_file: str, output_file: str):
 
     # These tables serve as enums for other fields.
     cursor.execute("CREATE TABLE IF NOT EXISTS institutions (name TEXT PRIMARY KEY)")
-    institutions = ["AWI", "BAS", "CRESIS", "KOPRI", "UTIG"]
+    institutions = ["AWI", "BAS", "CRESIS", "KOPRI", "LDEO", "NASA", "NPI", "UTIG"]
     cursor.executemany(
         "INSERT OR REPLACE INTO institutions VALUES(?)", [[ii] for ii in institutions]
     )
@@ -43,10 +43,10 @@ def create_gpkg(empty_file: str, output_file: str):
     result = cursor.execute("SELECT * from institutions")
     print(f"Institutions: {result.fetchall()}")
 
-    # TODO: actually fill in valid file formats =)
     data_formats = [
         "ice_thickness",  # The index contains info about ice thickness lines, if that's all that is available.
-        "bas",  # TODO: I haven't yet figured out whether each different BAS season is going to get its own enum value here.
+        "bas_netcdf",
+        "utig_netcdf",
     ]
 
     cursor.execute("CREATE TABLE IF NOT EXISTS data_formats (name TEXT PRIMARY KEY)")
@@ -57,7 +57,7 @@ def create_gpkg(empty_file: str, output_file: str):
     result = cursor.execute("SELECT * from data_formats")
     print(f"Available data formats: {result.fetchall()}")
 
-    download_methods = ["wget"]
+    download_methods = ["wget", "nsidc", "usapdc_email", "usapdc_captcha", "aad_s3"]
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS download_methods (name TEXT PRIMARY KEY)"
     )
@@ -69,13 +69,15 @@ def create_gpkg(empty_file: str, output_file: str):
     result = cursor.execute("SELECT * from download_methods")
     print(f"Available download methods: {result.fetchall()}")
 
-    # Name of the campaign is expected to be {institution}_{campaign}
+    # Previously, we included institution name in name of campaign,
+    # but I found that confusing. I think that the campaign names
+    # are unique on their own.
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS campaigns (\n"
         "    name TEXT PRIMARY KEY,\n"
+        "    institution TEXT NOT NULL,\n"
         "    data_citation TEXT,\n"  # Should include DOI, if available
         "    science_citation TEXT,\n"
-        "    institution TEXT NOT NULL,\n"
         "    FOREIGN KEY (institution) REFERENCES institutions (name)\n"
         ")"
     )
@@ -85,12 +87,14 @@ def create_gpkg(empty_file: str, output_file: str):
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS granules(\n"
         "    name TEXT PRIMARY KEY,\n"
+        "    institution TEXT NOT NULL,\n"
         "    campaign TEXT NOT NULL,\n"
         "    data_format TEXT NOT NULL,\n"
         "    download_method TEXT NOT NULL,\n"
         "    url TEXT NOT NULL,\n"
         "    destination_path TEXT NOT NULL,\n"  # relative to RadarData
         "    filesize INTEGER,\n"  # in bytes
+        "    FOREIGN KEY (institution) REFERENCES institutions (name)\n"
         "    FOREIGN KEY (campaign) REFERENCES campaigns (name)\n"
         "    FOREIGN KEY (data_format) REFERENCES data_formats (name)\n"
         "    FOREIGN KEY (download_method) REFERENCES download_methods (name)\n"

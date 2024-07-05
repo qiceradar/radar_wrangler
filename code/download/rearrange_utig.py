@@ -13,7 +13,7 @@ These are released via NSIDC, where they're sorted into directories
 named "yyyy.mm.dd".
 Our download script puts them in directories:
 UTIG/ICECAP/{project}_{set}_{transect}/{instrument}_yyyydoy_PST_{granule}.nc
-This kind of matches the AGASEA ones, though AGASEA eliced project/set in the PST directory
+This kind of matches the AGASEA ones, though AGASEA elided project/set in the PST directory
 
 3) EAGLE
 These can be downloaded from AAD as a single per-season zip file.

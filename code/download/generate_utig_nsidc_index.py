@@ -19,13 +19,14 @@ TODO: See if the authentication used in download_utig_nsidc is faster
 in this script. As is, it is shockingly slow.
 """
 
-from bs4 import BeautifulSoup
 import csv
 import netrc  # Used to parse authentication token from ~/.netrc
 import os
 import pathlib
 import re
+
 import requests
+from bs4 import BeautifulSoup
 
 
 def credentials_from_netrc():
@@ -143,9 +144,7 @@ def main(index_filepath):
 
 
 if __name__ == "__main__":
-    # TODO: better way to figure this out =)
-    package_dir = "/Users/lindzey/Documents/QIceRadar/radar_wrangler"
-    index_dir = os.path.join(package_dir, "data", "UTIG")
+    index_dir = "../../data/UTIG"
     try:
         pp = pathlib.Path(index_dir)
         pp.mkdir(parents=True, exist_ok=True)

@@ -25,20 +25,47 @@ Modified from one of NSIDC's generated download scripts:
 # in all copies or substantial portions of the Software.
 """
 
-import pathlib
-import os
-import csv
 import base64
+import csv
 import math
 import netrc
+import os
 import os.path
+import pathlib
+import sqlite3
 import sys
 import time
 from getpass import getpass
-
-from urllib.parse import urlparse
-from urllib.request import Request, build_opener, HTTPCookieProcessor
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
+from urllib.request import HTTPCookieProcessor, Request, build_opener
+
+# This is trickier than I wanted, because the split is HiCARS1/2,
+# not per-season. Uggggh.
+# I think I'm going to create two "campaigns", that only appear in the
+# database. They'll be used for looking up citations, but not for where
+# the data is put.
+
+# HiCARS1:
+#
+# HiCARS2:
+#
+# TODO: how to handle the "date accessed" requirement?
+#   Save that in the index when the user downloads it?
+#   it's easy enough to add a collumn to the granules table that is
+#   left blank until the user downloads it? Or just ignore that bit?
+
+
+data_citations = {}
+data_citations[
+    "ICECAP_HiCARS1"
+] = "Blankenship, D. D., Kempf, S. D., Young, D. A., Richter, T. G., Schroeder, D. M., Greenbaum, J. S., van Ommen, T., Warner, R. C., Roberts, J. L., Young, N. W., Lemeur, E., Siegert, M. J. & Holt, J. W. (2017). IceBridge HiCARS 1 L1B Time-Tagged Echo Strength Profiles, Version 1 [Data Set]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/W2KXX0MYNJ9G."
+data_citations[
+    "ICECAP_HiCARS2"
+] = "Blankenship, D. D., Kempf, S. D., Young, D. A., Richter, T. G., Schroeder, D. M., Ng, G., Greenbaum, J. S., van Ommen, T., Warner, R. C., Roberts, J. L., Young, N. W., Lemeur, E. & Siegert, M. J. (2017). IceBridge HiCARS 2 L1B Time-Tagged Echo Strength Profiles, Version 1 [Data Set]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/0I7PFBVQOGO5."
+science_citations = {}
+science_citations["ICECAP_HiCARS1"] = ""
+science_citations["ICECAP_HiCARS2"] = ""
 
 
 def get_username():
@@ -165,11 +192,11 @@ def get_login_response(url, credentials, token):
     return response
 
 
-def nsidc_download(dest_dir, url):
+def nsidc_download(dest_filepath, url):
     """
     Download file at URL into dest_dir.
     """
-    print("Downloading {} to {}".format(url, dest_dir))
+    print("reqquested download of {} to {}".format(url, dest_filepath))
     force = False  # Force re-download
     quiet = False  # Suppress debug messages
     credentials = None
@@ -180,9 +207,6 @@ def nsidc_download(dest_dir, url):
         if p.scheme == "https":
             credentials, token = get_login_credentials()
 
-    filename = url.split("/")[-1]
-    dest_filepath = os.path.join(dest_dir, filename)
-
     try:
         response = get_login_response(url, credentials, token)
         length = int(response.headers["content-length"])
@@ -190,9 +214,10 @@ def nsidc_download(dest_dir, url):
             if not force and length == os.path.getsize(dest_filepath):
                 if not quiet:
                     print("  File exists, skipping")
-                    return
+                    return length
         except OSError:
             pass
+        print(f"  Downloading {length} bytes")
         count = 0
         chunk_size = min(max(length, 1), 1024 * 1024)
         max_chunks = int(math.ceil(length / chunk_size))
@@ -213,20 +238,44 @@ def nsidc_download(dest_dir, url):
         print("URL error: {0}".format(e.reason))
     except IOError:
         raise
+    return os.path.getsize(dest_filepath)
 
 
-def main(url_filepath, data_dir):
+def main(url_filepath: str, data_dir: str, antarctic_index: str):
     print("Loading metadata from {}".format(url_filepath))
+
+    region = "ANTARCTIC"
+    institution = "UTIG"
+
+    connection = sqlite3.connect(antarctic_index)
+    cursor = connection.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON")
+
+    # Add campaign to geopackage
+    for db_campaign in data_citations.keys():
+        cursor.execute(
+            "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
+            [
+                db_campaign,
+                institution,
+                data_citations[db_campaign],
+                science_citations[db_campaign],
+            ],
+        )
+    connection.commit()
+
+    data_format = "utig_netcdf"
+    download_method = "nsidc"
+    # While the geopackage distinguishes between hicars1/2, the filesystem does not
+    campaign = "ICECAP"
     with open(url_filepath) as fp:
         csv_reader = csv.DictReader(fp)
-        # TODO: These should wind up in the csv file as well.
-        region = "ANTARCTIC"
-        campaign = "ICECAP"
         for row in csv_reader:
             # fields are institution,flight,segment,granule,url
             print(row)
             institution = row["institution"]
             pst = row["segment"]
+            granule = row["granule"]
             pst_dir = os.path.join(data_dir, region, institution, campaign, pst)
             if not os.path.isdir(pst_dir):
                 try:
@@ -236,16 +285,48 @@ def main(url_filepath, data_dir):
                     print("Could not create {}".format(pst_dir))
                     raise (ex)
             url = row["url"]
-            nsidc_download(pst_dir, url)
+            filename = url.split("/")[-1]
+            relative_filepath = os.path.join(
+                region, institution, campaign, pst, filename
+            )
+            full_filepath = os.path.join(data_dir, relative_filepath)
+            if "IR1HI1B" in url:
+                db_campaign = "ICECAP_HiCARS1"
+            else:
+                db_campaign = "ICECAP_HiCARS2"
+            filesize = nsidc_download(full_filepath, url)
+            granule_name = f"{institution}_{campaign}_{pst}_{granule}"
+            cursor.execute(
+                "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                    str(granule_name),
+                    institution,
+                    db_campaign,
+                    data_format,
+                    download_method,
+                    url,
+                    str(relative_filepath),
+                    str(filesize),
+                ],
+            )
+            connection.commit()
+    connection.close()
 
 
 if __name__ == "__main__":
     import argparse
 
+    # CSV file specifying URLs for all radargrams
+    url_list = "../../data/UTIG/utig_nsidc_index.csv"
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("url_list", help="CSV file specifying URLs for all radargrams")
     parser.add_argument(
         "data_directory", help="Root directory for all QIceRadar-managed radargrams."
     )
+    parser.add_argument(
+        "antarctic_index",
+        help="Geopackage database to update with metadata about Antarctic campaigns and granules",
+    )
+
     args = parser.parse_args()
-    main(args.url_list, args.data_directory)
+    main(url_list, args.data_directory, args.antarctic_index)

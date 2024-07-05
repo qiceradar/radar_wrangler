@@ -2,24 +2,22 @@ The code in this directory does the initial download for creating an index to th
 
 The download step will populate our geopackage index with:
 * granules
-  * granule name
-  * download_url
-  * download_method
-  * destination_filepath
+  * granule name  # Name that will be displayed when using QGIS's "Identify Features" tool, so it should include institution + campaign
+  * download_url   # fully-specified url to access data
+  * download_method  # 'wget' for simple passwordless access;
+  * destination_filepath  # path relative to the QIceRadar data root directory, including filename
+  * data_format  # e.g. "bas", "utig_netcdf"
+  * filesize   # in bytes, used in download confirmation dialog
+  * campaign
+  * institution
 * campaigns
   * institution
   * science_citation
   * data_citation
 
-A later index step will add information:
-* granules
-  * data_format
-  * filesize
+A later index step will add the per-campaign tables containing geometry:
 * [campaign]
   * geometry
-
-
-
 
 # Requirements:
 
@@ -37,9 +35,10 @@ http://www.geopackage.org/data/empty.gpkg
 
 Then run:
 
-`initialize_gpkg.py /path/to/empty.gpkg /path/to/qiceradar_antarctic_index/gpkg`
+`python3 initialize_gpkg.py empty.gpkg qiceradar_antarctic_index.gpkg`
+`python3 initialize_gpkg.py empty.gpkg qiceradar_arctic_index.gpkg`
 
-This will set up the "campaigns" and "granules" tables that will be incremntally filled in with relevant info by the download scripts.
+This will set up the "campaigns" and "granules" tables that will be incrementally filled in with relevant info by the download scripts.
 
 # Download
 
@@ -47,10 +46,6 @@ Each institution is different, but I've tried to standardize the scripts to take
 * base directory for all downloaded data
 * antarctic geopackage index
 * arctic geopackage index
-
-
-
-
 
 ## BAS
 
@@ -82,9 +77,59 @@ For Arctic surveys:
 
 Download:
 
-`python3 download_bas.py ~/RadarData antarctic_index.gpkg arctic_index.gpkg`
+`python3 download_bas.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
 
 
+## UTIG
+
+UTIG's data is spread across multiple data centers, including:
+* Texas Data Repository -- more recent releases
+* NSIDC -- any of their NASA funded work
+* AAD - much of ICECAP; unfortunately, only available as single large zip file
+* USAP-DC; AGASEA + LVS; not automatable (access by email / captcha)
+
+### TDR
+
+TDR is the simplest:
+`python3 download_utig_tdr.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+
+### NSIDC
+
+NSIDC is a two-step process that requres authentication; generating the list of files (slow), then downloading them:
+
+**Autentication**
+
+NASA's Earthdata requires a login to download. I prefer bearer token to avoid saving passwords in plain text (in case users have re-used passwords).
+  * go to: https://urs.earthdata.nasa.gov/profile and log in
+  * click "Generate Token"
+  * Create ~/.netrc file containing a single line (replace [token] with your token)
+      machine urs.earthdata.nasa.gov user token password [token]
+  * make ~/.netrc only readable by the user: `chmod 600 ~/.netrc`  (on Linux or MacOS; TODO: how to do this on windows?)
+  * NB: tokens expire after 1 year; will need to prompt users to re-generate if necessary.
+
+**Generate index**:
+
+`python3 generate_utig_nsidc_index.py`
+
+**Download data**:
+
+TODO: Update this script to update the index.
+`python3 download_utig_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg`
+
+# Add Geometry
+
+See the README in ../index to finish adding transect geometry to the geopackage.
+
+The short version is:
+
+`python3 ../index/create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+
+Then set up environment variables to use the QGIS version of python,
+and style the geopackage.
+
+`python3 ../index/style_geopackage_index.py ANTARCTIC ~/Documents/QIceRadar/code/radar_wrangler/code/download/qiceradar_antarctic_index.gpkg ./qiceradar_antarctic_index.qlr`
+
+NB: the script requires the full path to the geopackage file, not the relative filepath.
 
 -------------------------------
 
@@ -203,15 +248,19 @@ Eventually, they should all:
     * netCDF, with fields: latitude, longitude, elevation, fast-time, data_hi_gain, data_low_gain
   * EAGLE
     * Some available from AAD: https://data.aad.gov.au/datasets/science/AAS_4346_EAGLE_ICECAP_LEVEL2_RADAR_DATA
+      - seem to have moved: https://data.aad.gov.au/metadata/AAS_4346_ICECAP_OIA_RADARGRAMS
+      -  doi:10.26179/5bcff4afc287d    (but I haven't had luck getting that to resolve to the data; instead, search AAD site for 4346)
     * These are large-file downloads (8G-11G), but the download speed was 10-200 kB/sec, which is a problem.
     * netCDF with fields: lat, lon, altitude, pitch, roll, heading, time, fasttime, amplitude_low_gain, amplitude_high_gain
   * ICECAP
     * hicars1: https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IR1HI1B.001/
     * hicars2: https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IR2HI1B.001/
       * NASA's Earthdata requires a login to download. I prefer bearer token to avoid saving passwords in plain text (in case users have re-used passwords)
-      * go to: https://urs.earthdata.nasa.gov/profile
-      * click "Generate Token"; copy-paste resulting token into ~/.netrc, replacing [token]. The file must ONLY be readable by the user.
-      * machine urs.earthdata.gov user token password [token]
+      * go to: https://urs.earthdata.nasa.gov/profile and log in
+      * click "Generate Token"
+      * Create ~/.netrc file containing a single line (replace [token] with your token)
+          machine urs.earthdata.nasa.gov user token password [token]
+      * make ~/.netrc only readable by the user: `chmod 600 ~/.netrc`
       * NB: tokens expire after 1 year; will need to prompt users to re-generate if necessary.
     * OIA: https://data.aad.gov.au/s3/bucket/datasets/science/AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/ (unlike EAGLE, it's possible to download individual lines.)
       * I tried to scrape the page for links, but it renders in javascript. Was faster to just click the links and download. Now that I have them all, will be easy to construct URL, since it matched filenames.

@@ -228,7 +228,11 @@ def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
     campaigns.sort()
     for campaign in campaigns:
         print("Processing {}".format(campaign))
-        availability = "s"  # Supported
+        # TODO: Update as I add support!
+        if institution in ["BAS"]:
+            availability = "s"  # Supported
+        else:
+            availability = "a"  # Available, not supported
         campaign_dir = os.path.join(data_dir, campaign)
         add_campaign_directory_gpkg(
             gpkg_filepath,

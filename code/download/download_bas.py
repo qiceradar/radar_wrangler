@@ -91,14 +91,14 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
     institution = "BAS"
     index_dir = "../../data/BAS"
 
-    survey_indices = {
+    campaign_indices = {
         ff.split(".")[0]: f"{index_dir}/{ff}"
         for ff in os.listdir(index_dir)
         if ff.endswith(".csv")
     }
 
-    for survey, filepath in survey_indices.items():
-        if survey in ["GOG3"]:
+    for campaign, filepath in campaign_indices.items():
+        if campaign in ["GOG3"]:
             region = "ARCTIC"
             connection = sqlite3.connect(arctic_index)
         else:
@@ -107,32 +107,33 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
         cursor = connection.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
 
-        campaign_dir = f"{region}/{institution}/{survey}"
+        campaign_dir = f"{region}/{institution}/{campaign}"
         dest_dir = f"{qiceradar_dir}/{campaign_dir}"
-        print(f"Saving survey {survey} to {dest_dir}")
+        print(
+            f"Saving campaign {campaign} from institution {institution} to {dest_dir}"
+        )
         try:
             pp = pathlib.Path(dest_dir)
             pp.mkdir(parents=True, exist_ok=True)
         except FileExistsError as ex:
             raise Exception(
-                "Could not create {} for {}'s survey {}: {}.".format(
-                    dest_dir, institution, survey, ex
+                "Could not create {} for {}'s campaign {}: {}.".format(
+                    dest_dir, institution, campaign, ex
                 )
             )
 
-        campaign_name = f"{institution}_{survey}"
         # Science citation is optional; data and doi required
         try:
-            science_citation = science_citations[survey]
+            science_citation = science_citations[campaign]
         except KeyError:
             science_citation = ""
         cursor.execute(
             "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
             [
-                campaign_name,
-                data_citations[survey],
-                science_citation,
+                campaign,
                 institution,
+                data_citations[campaign],
+                science_citation,
             ],
         )
         connection.commit()
@@ -141,7 +142,7 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
             csv_reader = csv.DictReader(csvfile)
             for flight in csv_reader:
                 # print("{} {}: {}".format(
-                #     survey, flight['name'], flight['url']))
+                #     campaign, flight['name'], flight['url']))
                 # TODO: Consider checking filesize for complete download, rather than checking file exists?
                 #    However, that would require somehow having the metadata for expected file size, and IIRC, that may differ slightly
                 #    on different filesystems.
@@ -154,14 +155,16 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                 # url (where we'll download it from)
                 # download_method: 'wget' in this case.
                 granule_name = pathlib.Path(
-                    f"{institution}_{survey}_{flight['name']}"
+                    f"{institution}_{campaign}_{flight['name']}"
                 ).with_suffix("")
                 # TODO: the BAS formats are COMPLICATED. each campaign is different.
-                #       I haven't decided yet whether I want to
-                if campaign_name in ["BAS_GOG3"]:
+                #       I haven't decided yet whether I want to name them differently,
+                #       or handle it in the BAS parser. I'm leaning towards the later.
+                # NB: GOG3 was released by BAS, but was UTIG's radar.
+                if campaign in ["GOG3"]:
                     data_format = "ice_thickness"
                 else:
-                    data_format = "bas"
+                    data_format = "bas_netcdf"
                 download_method = "wget"
                 filesize = -1
                 if os.path.exists(dest_filepath):
@@ -199,10 +202,11 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                     except subprocess.CalledProcessError as ex:
                         print("Failed to download {}: {}".format(flight["name"], ex))
                 cursor.execute(
-                    "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                     [
                         str(granule_name),
-                        campaign_name,
+                        institution,
+                        campaign,
                         data_format,
                         download_method,
                         flight["url"],
