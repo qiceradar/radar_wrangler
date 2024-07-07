@@ -192,15 +192,20 @@ def get_login_response(url, credentials, token):
     return response
 
 
-def nsidc_download(dest_filepath, url):
+def nsidc_download(dest_filepath, url) -> int:
     """
     Download file at URL into dest_dir.
     """
-    print("reqquested download of {} to {}".format(url, dest_filepath))
+    # print("requested download of {} to {}".format(url, dest_filepath))
     force = False  # Force re-download
     quiet = False  # Suppress debug messages
     credentials = None
     token = None
+
+    if os.path.exists(dest_filepath) and not force:
+        filesize = os.path.getsize(dest_filepath)
+        print(f"Skipping {dest_filepath}: file already exists with size {filesize}")
+        return filesize
 
     if not credentials and not token:
         p = urlparse(url)
@@ -208,6 +213,7 @@ def nsidc_download(dest_filepath, url):
             credentials, token = get_login_credentials()
 
     try:
+        # This check is really slow; consider simply
         response = get_login_response(url, credentials, token)
         length = int(response.headers["content-length"])
         try:
@@ -272,7 +278,7 @@ def main(url_filepath: str, data_dir: str, antarctic_index: str):
         csv_reader = csv.DictReader(fp)
         for row in csv_reader:
             # fields are institution,flight,segment,granule,url
-            print(row)
+            # print(row)
             institution = row["institution"]
             pst = row["segment"]
             granule = row["granule"]
