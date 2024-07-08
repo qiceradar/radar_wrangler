@@ -61,6 +61,8 @@ class Granule:
     region: str  # ANTARCTIC or ARCTIC
     campaign: str
     transect: str  # either flight or PST
+    granule: str  # represents a number, but the leading zeroes matter
+    product: str  # e.g. ER2HI1B, IR1HI1B, KHERA1B, etc.
     # path (including filename) relative to QIceRadar base data directory where data will be saved
     relpath: str
     url: str  # download link
@@ -93,6 +95,8 @@ def create_dataverse_index():
             # {product}_{yyyydoy}_{p}_{s}_{t}_{granule}.mc
             # Sort them in to PSTs in case we want to support additional products later.
             transect = "_".join(filename.split("_")[-4:-1])
+            granule_seq = filename.split("_")[-1].split(".")[0]
+            product = filename.split("_")[0]
             granule_relpath = f"{region}/{institution}/{campaign}/{transect}/{filename}"
             granule = Granule(
                 filename,
@@ -100,6 +104,8 @@ def create_dataverse_index():
                 region,
                 campaign,
                 transect,
+                granule_seq,
+                product,
                 granule_relpath,
                 granule_url,
             )
@@ -217,14 +223,17 @@ def download_utig_dataverse(
 
         # label displayed by Identify Features in QGIS
         granule_name = pathlib.Path(
-            f"{granule.institution}_{granule.campaign}_{granule.filename}"
+            f"{granule.institution}_{granule.campaign}_{granule.transect}_{granule.granule}"
         ).with_suffix("")
         cursor.execute(
-            "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 str(granule_name),
                 granule.institution,
                 granule.campaign,
+                granule.transect,
+                granule.granule,
+                granule.product,
                 data_format,
                 download_method,
                 granule.url,

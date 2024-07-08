@@ -2,22 +2,35 @@ The code in this directory does the initial download for creating an index to th
 
 The download step will populate our geopackage index with:
 * granules
-  * granule name  # Name that will be displayed when using QGIS's "Identify Features" tool, so it should include institution + campaign
+  * granule_name  # Name that will be displayed when using QGIS's "Identify Features" tool, so it should include institution + campaign.
+  * campaign  # This is used for looking up the citation, NOT necessarily the same as used for sorting data into folders. (e.g. UTIG's ICECAP_HiCARS1 and ICECAP_HiCARS2)
+  * institution
+  * segment  # E.g. BAS's flight, UTIG's PST
+  * granule  # "" if segment not broken into granules.
+  * product #
   * download_url   # fully-specified url to access data
   * download_method  # 'wget' for simple passwordless access;
   * destination_filepath  # path relative to the QIceRadar data root directory, including filename
   * data_format  # e.g. "bas", "utig_netcdf"
   * filesize   # in bytes, used in download confirmation dialog
-  * campaign
-  * institution
 * campaigns
   * institution
   * science_citation
   * data_citation
 
-A later index step will add the per-campaign tables containing geometry:
+A later index step will add the per-campaign tables containing geometry, along with other metadata:
 * [campaign]
   * geometry
+  * region
+  * institution
+  * campaign -- the colloquial name, used for foders
+  * segment
+  * granule
+  * relative_path -- used to loo up whether data has been downloaded, in a context where additional database lookups aren't possible.
+  * availability -- 'a'vailable, 's'upported by qiceradar, 'u'navailable
+  * uri -- not currently used; but I think gpkg encourages it?
+  * name -- must match value in granules table, as it's used to look up additional data
+
 
 # Requirements:
 
@@ -46,6 +59,10 @@ Each institution is different, but I've tried to standardize the scripts to take
 * base directory for all downloaded data
 * antarctic geopackage index
 * arctic geopackage index
+
+So long as the schema doesn't change (which would require starting
+again from `initialize_gpkg.py`), the download scripts may be run
+in any order and even re-run.
 
 ## BAS
 
@@ -113,7 +130,10 @@ NASA's Earthdata requires a login to download. I prefer bearer token to avoid sa
 
 **Download data**:
 
-TODO: Update this script to update the index.
+(This script is slow because we compare the local filesize to the size reported by the NSIDC server before deciding whether to download it. The other scripts simply check that the destination file exists, then skip the download if it does.)
+
+TODO: Consider refactoring; only copying the file to its final destination after download succeeds makes the file size check less important.
+
 `python3 download_utig_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg`
 
 # Add Geometry
@@ -216,8 +236,12 @@ Eventually, they should all:
 * KOPRI:
   * Only their first season has been released: https://zenodo.org/record/3874655
     * Unfortunately, Zenodo does not support HTTP range requesets, so I can't use unzip-http to grab individual files.
-  * For now, manually downloaded into KOPRI/KRT1
-  * netCDF files split transects into ~100 MB "granules"
+    * For now, manually downloaded into KOPRI/KRT1, unzip, and rearrange
+    * netCDF files split transects into ~100 MB "granules"
+    * LHB may be willing to release a V2
+  * They've released one radargram from the Thwaites survey: https://zenodo.org/records/8165343
+  * They've released
+
 
 * LDEO:
   * AGAP_GAMBIT: officially lives at USAP-DC https://www.usap-dc.org/view/dataset/601285, but they don't handle large files well

@@ -280,9 +280,9 @@ def main(url_filepath: str, data_dir: str, antarctic_index: str):
             # fields are institution,flight,segment,granule,url
             # print(row)
             institution = row["institution"]
-            pst = row["segment"]
+            segment = row["segment"]
             granule = row["granule"]
-            pst_dir = os.path.join(data_dir, region, institution, campaign, pst)
+            pst_dir = os.path.join(data_dir, region, institution, campaign, segment)
             if not os.path.isdir(pst_dir):
                 try:
                     pp = pathlib.Path(pst_dir)
@@ -292,8 +292,9 @@ def main(url_filepath: str, data_dir: str, antarctic_index: str):
                     raise (ex)
             url = row["url"]
             filename = url.split("/")[-1]
+            product = filename.split("_")[0]
             relative_filepath = os.path.join(
-                region, institution, campaign, pst, filename
+                region, institution, campaign, segment, filename
             )
             full_filepath = os.path.join(data_dir, relative_filepath)
             if "IR1HI1B" in url:
@@ -301,13 +302,16 @@ def main(url_filepath: str, data_dir: str, antarctic_index: str):
             else:
                 db_campaign = "ICECAP_HiCARS2"
             filesize = nsidc_download(full_filepath, url)
-            granule_name = f"{institution}_{campaign}_{pst}_{granule}"
+            granule_name = f"{institution}_{campaign}_{segment}_{granule}"
             cursor.execute(
-                "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     str(granule_name),
                     institution,
                     db_campaign,
+                    segment,
+                    granule,
+                    product,
                     data_format,
                     download_method,
                     url,

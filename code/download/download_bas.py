@@ -154,8 +154,11 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                 # filepath (wheere it should be saved within the QIceRadar directory structure)
                 # url (where we'll download it from)
                 # download_method: 'wget' in this case.
+
+                # format is {campaign}_{segment}.nc
+                segment = flight["name"].split("_")[-1].split(".")[0]
                 granule_name = pathlib.Path(
-                    f"{institution}_{campaign}_{flight['name']}"
+                    f"{institution}_{campaign}_{segment}"
                 ).with_suffix("")
                 # TODO: the BAS formats are COMPLICATED. each campaign is different.
                 #       I haven't decided yet whether I want to name them differently,
@@ -202,11 +205,14 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                     except subprocess.CalledProcessError as ex:
                         print("Failed to download {}: {}".format(flight["name"], ex))
                 cursor.execute(
-                    "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     [
                         str(granule_name),
                         institution,
                         campaign,
+                        segment,
+                        "",  # granule
+                        "",  # product (multiple products included in single file)
                         data_format,
                         download_method,
                         flight["url"],

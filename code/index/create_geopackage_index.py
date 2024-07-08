@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
-
 import os
 import pathlib
+import sqlite3
 import time
 
 import geopandas as gpd
@@ -54,23 +54,62 @@ def add_campaign_directory_gpkg(
             about different instruments. (Maybe leave this attached per-radargram?)
 
     """
-    names = []
+    geometry_names = []
     geometries = []
     granules = []
     segments = []
     t0 = time.time()
     for csv_filepath in pathlib.Path(campaign_dir).rglob("*.csv"):
-        rel_path = pathlib.Path(csv_filepath).relative_to(campaign_dir)
-        if len(rel_path.parts) == 2:
-            segment, _ = rel_path.parts
-            granule = rel_path.stem
-        elif len(rel_path.parts) == 1:
-            segment = rel_path.stem
-            granule = segment
+        relative_path = pathlib.Path(csv_filepath).relative_to(campaign_dir)
+        granule = None
+        if institution == "BAS":
+            # BAS CSVs are in BAS/{campaign}/{campaign}_{segment}.csv
+            # Unfortunately, several of them have trailing underscores.
+            # try:
+            #     # For the radar lines
+            #     segment = relative_path.stem.split('_')[-1]
+            # except IndexError:
+            #     # For the depths-only lines
+            #     segment = relative_path.stem
+            segment = relative_path.stem
+            if segment.startswith("BAS_"):
+                segment = segment[4:]
+            prefix = f"{campaign}_"
+            if segment.startswith(prefix):
+                segment = segment[len(prefix) :]
+        elif institution == "CRESIS":
+            # CRESIS CSVs are in CRESIS/{campaign}/{segment}/Data_{segment}_{granule}.csv
+            segment, _ = relative_path.parts
+            filename = relative_path.stem
+            granule = filename.split("_")[-1]
+        elif institution in ["KOPRI", "UTIG"]:
+            # UTIG CSVs are in UTIG/{campaign}/{segment}/{product}_{date}_{segment}_{granule}.csv
+            # The KOPRI KRT1 data follows the same pattern
+            # (This is the same as CRESIS, but keeping it separate in case we need product)
+            segment, _ = relative_path.parts
+            filename = relative_path.stem
+            granule = filename.split("_")[-1]
+        elif institution == "LDEO":
+            # The AGAP_BANDIT CSVs are in
+            # LDEO/AGAP_BANDIT/{segment}/{flight}_{segment}-{granule}_{product}.csv
+            # Unfortunately, {segment}-{granule} is not necessarily unique;
+            # they have overlaps for F39b and F51b on T10210, so we'll include
+            # the flight in the segment name.
+            filename = relative_path.stem
+            segment = filename.split("-")[0]
+            granule = filename.split("-")[1].split("_")[0]
+        elif institution == "STANFORD":
+            # Another ground-tracks-only dataset.abs
+            segment = relative_path.stem
+        else:
+            print(f"institution {institution} not supported!")
 
         # QUESTION: Does this need to be unique? (e.g. guarantee only one F01 in the whole dataset?)
-        geometry_name = "_".join([institution, campaign, granule])
-        names.append(geometry_name)
+        if granule is None:
+            geometry_name = "_".join([institution, campaign, segment])
+        else:
+            geometry_name = "_".join([institution, campaign, segment, granule])
+        geometry_names.append(geometry_name)
         granules.append(granule)
         segments.append(segment)
 
@@ -81,18 +120,48 @@ def add_campaign_directory_gpkg(
         geometries.append(points)
     t1 = time.time()
 
+    # Look up relative path to all granules.
+    # We want this info in the survey table to QGIS can easily access it.
+    # (For categorized styling of features within a layer, we can do
+    # operations on attributes within that table, so having filepath as
+    # an attribute is useful.)
+    with sqlite3.connect(gpkg_filepath) as connection:
+        cursor = connection.cursor()
+        relative_paths = []
+        for name in geometry_names:
+            cmd = f'SELECT destination_path FROM granules WHERE name IS "{name}"'
+            try:
+                result = cursor.execute(cmd)
+                rows = result.fetchall()
+                relative_path = rows[0][0]
+            except IndexError as ex:
+                # This is expected if there is no corresponding entry in the
+                # granules table.
+                print(f"Unable to find {name} in geopackage granules table")
+                print(f"{ex}")
+                relative_path = ""
+            except TypeError as ex:
+                print(f"Error in executing command: {cmd} \n {ex}")
+                relative_path = ""
+            except sqlite3.OperationalError as ex:
+                print(f"Error in executing command: {cmd} \n {ex}")
+                relative_path = ""
+
+            relative_paths.append(relative_path)
+
     gdf = gpd.GeoDataFrame(geometries, columns=["geometry"])
-    gdf["institution"] = [institution for _ in names]
-    gdf["region"] = [region.lower() for _ in names]
-    gdf["campaign"] = [campaign for _ in names]
+    gdf["institution"] = [institution for _ in geometry_names]
+    gdf["region"] = [region.lower() for _ in geometry_names]
+    gdf["campaign"] = [campaign for _ in geometry_names]
     gdf["segment"] = segments
     gdf["granule"] = granules
+    gdf["relative_path"] = relative_paths
     # TODO: Way to make this an enum?
-    gdf["availability"] = [availability for _ in names]
+    gdf["availability"] = [availability for _ in geometry_names]
     # TODO: this will probably need to be a lookup somewhere, unless URIs are
     # embedded in the comments in the CSV
-    gdf["uri"] = [None for _ in names]
-    gdf["name"] = names
+    gdf["uri"] = [None for _ in geometry_names]
+    gdf["name"] = geometry_names
     if region == "ARCTIC":
         gdf.crs = "EPSG:3413"
     elif region == "ANTARCTIC":
