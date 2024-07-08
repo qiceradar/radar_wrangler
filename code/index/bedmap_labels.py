@@ -139,9 +139,9 @@ available_campaigns = {
     # The data released at NSIDC is missing a few transects, so we want to keep plotting this.
     # "UTIG_2008_ICECAP_AIR_BM2": "UTIG/ICECAP",
     # "UTIG_2010_ICECAP_AIR_BM3": "UTIG/ICECAP",
-    # 4 Gimble lines made it into the ICECAP release, but I haven't
-    # found anything else.
-    # "UTIG_2013_GIMBLE_AIR_BM3":
+    # 4 Gimble lines made it into the ICECAP release; DAY released the rest
+    # to the Texas Data Repository.
+    "UTIG_2013_GIMBLE_AIR_BM3": "UTIG/GIMBLE",
     # EAGLE mostly matches BEDMAP. netCDF files are there, but the
     # extracted lines seem to be missing:
     # * most of PEL/JKB2n/Y18a
