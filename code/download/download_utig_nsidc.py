@@ -33,7 +33,9 @@ import os
 import os.path
 import pathlib
 import sqlite3
+import subprocess
 import sys
+import tempfile
 import time
 from getpass import getpass
 from urllib.error import HTTPError, URLError
@@ -228,7 +230,7 @@ def nsidc_download(dest_filepath, url) -> int:
         chunk_size = min(max(length, 1), 1024 * 1024)
         max_chunks = int(math.ceil(length / chunk_size))
         time_initial = time.time()
-        with open(dest_filepath, "wb") as out_file:
+        with tempfile.NamedTemporaryFile(delete=False) as out_file:
             for data in cmr_read_in_chunks(response, chunk_size=chunk_size):
                 out_file.write(data)
                 if not quiet:
@@ -236,6 +238,11 @@ def nsidc_download(dest_filepath, url) -> int:
                     time_elapsed = time.time() - time_initial
                     download_speed = get_speed(time_elapsed, count * chunk_size)
                     output_progress(count, max_chunks, status=download_speed)
+
+            move_cmd = ["mv", out_file.name, dest_filepath]
+            subprocess.check_call(move_cmd)
+            print(f"Got {dest_filepath}!")
+            filesize = os.path.getsize(dest_filepath)
         if not quiet:
             print()
     except HTTPError as e:
