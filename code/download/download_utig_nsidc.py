@@ -215,7 +215,7 @@ def nsidc_download(dest_filepath, url) -> int:
             credentials, token = get_login_credentials()
 
     try:
-        # This check is really slow; consider simply
+        # This check is really slow
         response = get_login_response(url, credentials, token)
         length = int(response.headers["content-length"])
         try:

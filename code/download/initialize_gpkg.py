@@ -47,6 +47,7 @@ def create_gpkg(empty_file: str, output_file: str):
         "ice_thickness",  # The index contains info about ice thickness lines, if that's all that is available.
         "bas_netcdf",
         "utig_netcdf",
+        "cresis_mat",
     ]
 
     cursor.execute("CREATE TABLE IF NOT EXISTS data_formats (name TEXT PRIMARY KEY)")

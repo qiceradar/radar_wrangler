@@ -105,7 +105,7 @@ UTIG's data is spread across multiple data centers, including:
 * AAD - much of ICECAP; unfortunately, only available as single large zip file
 * USAP-DC; AGASEA + LVS; not automatable (access by email / captcha)
 
-### TDR
+### TDR (Texas Data Repository)
 
 TDR is the simplest:
 `python3 download_utig_tdr.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
@@ -135,6 +135,16 @@ NASA's Earthdata requires a login to download. I prefer bearer token to avoid sa
 TODO: Consider refactoring; only copying the file to its final destination after download succeeds makes the file size check less important.
 
 `python3 download_utig_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg`
+
+## CReSIS
+
+ALL of CReSIS's data appears to be available from their KU servers.
+Some of it is also at NSIDC, and some of it is the COLDEX data that's also available at TDR.
+
+### KU
+
+`python3 download_cresis_ku.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+
 
 # Add Geometry
 
@@ -190,7 +200,19 @@ Eventually, they should all:
   * `download_all_bedmap.py` downloads CSVs for ice thickness used in each BEDMAP compilation. Bedmap2 and 3 break this out into individual institutions.
 
 * AWI: seems to be hit-or-miss, with more available in Greenland.
-  * Datasets:
+  * Datasets: (some allow an option for "download all files", if you log in!)
+    * DML ice shelves - 2023
+      - https://doi.pangaea.de/10.1594/PANGAEA.963264?format=html#download
+      - like Jutulstraumen's data;
+    * Another DML ice shelv:
+      - https://doi.pangaea.de/10.1594/PANGAEA.942989?format=html#download
+      - only 2 segments; .mat format
+    * and another ice helf one:
+      - https://doi.pangaea.de/10.1594/PANGAEA.942989?format=html#download
+    * Jutulstraumen Glacier -- 2018
+      - https://doi.pangaea.de/10.1594/PANGAEA.962670?format=html#download
+      - Data in (cresis's?) netCDF format; 10 MB granules
+      - Clicking "download data as tab-delimited text" gives a listing of all files; download link is easily retrieved from filename: https://download.pangaea.de/dataset/962670/files/Data_20181222_01_002_standard.nc
     * Radar profiles across ice-shelf channels at the Roi Baudouin Ice Shelf https://doi.pangaea.de/10.1594/PANGAEA.907146?format=html#download Reinhart Drews 2019
       * Data is in *.npy format
       * Example code provided
@@ -240,7 +262,7 @@ Eventually, they should all:
     * netCDF files split transects into ~100 MB "granules"
     * LHB may be willing to release a V2
   * They've released one radargram from the Thwaites survey: https://zenodo.org/records/8165343
-  * They've released
+  * LHB says they've released some from KRT2, but on their own server.
 
 
 * LDEO:
