@@ -219,6 +219,9 @@ def download_cresis(
                     for frame, data_url in frames.items():
                         filename = data_url.split("/")[-1]
                         dest_filepath = os.path.join(dest_dir, filename)
+                        rel_filepath = os.path.join(
+                            region, institution, campaign, product, segment, filename
+                        )
 
                         if os.path.exists(dest_filepath):
                             filesize = os.path.getsize(dest_filepath)
@@ -251,7 +254,7 @@ def download_cresis(
                                 data_format,
                                 download_method,
                                 data_url,
-                                str(dest_filepath),
+                                str(rel_filepath),
                                 str(filesize),
                             ],
                         )
