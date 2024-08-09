@@ -1,11 +1,10 @@
 # RadarWrangler
 
-The QIceRadar project has 3 primary software components:
+The QIceRadar project has 2 primary software components:
 1. [RadarWrangler](https://github.com/qiceradar/radar_wrangler): set of tools to generate the index (this repo)
-2. RadarDownloader: QGIS plugin that downloads radargrams on request
-3. RadarViewer: QGIS plugin that displays radargrams in geographic context
+2. [qiceradar_plugin](https://github.com/qiceradar/qiceradR_plugin): QGIS plugin that downloads radargrams on request and displays them in geographical context. 
 
-RadarWrangler's output is the QGIS layer that serves as the data index for both plugins.
+RadarWrangler's output is the QGIS layer that serves as the data index for the QGIS plugin.
 
 ## Structure of RadarWrangler repo
 
