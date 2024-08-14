@@ -270,7 +270,8 @@ Eventually, they should all:
     * netCDF files split transects into ~100 MB "granules"
     * LHB may be willing to release a V2
   * They've released one radargram from the Thwaites survey: https://zenodo.org/records/8165343
-  * LHB says they've released some from KRT2, but on their own server.
+  * 2016/2017 survey: https://kpdc.kopri.re.kr/search/269224ec-1718-43ef-a8e8-9d0a4311583e  (single file 79G download)
+  * KRT2: https://kpdc.kopri.re.kr/search/47c1f275-60cd-40c5-929e-410a484d7250 (zip for each flight; totaling 981 GB -- looking at the .txt conttents listing, this is just a dump of $WAIS/targ/xtra, along with some picks. They also don't appear to have broken it into PSTs? I only see F##T##a (with a lot of typos for F##G##a).)
 
 
 * LDEO:

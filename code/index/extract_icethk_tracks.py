@@ -1,13 +1,12 @@
 #! /usr/bin/env python3
 
-from radar_index_utils import subsample_tracks_rdp
-from radar_index_utils import count_skip_lines
+import os
+import pathlib
 
 import numpy as np
-import os
 import pandas as pd
-import pathlib
 import pyproj
+from radar_index_utils import count_skip_lines, subsample_tracks_rdp
 
 
 def extract_flightlines(data_directory, index_directory, epsilon, force):
@@ -25,6 +24,7 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
             "radarfilmstudio/antarctica_original_positioning",
             "SPRI_NSF_TUD",
         ),
+        ("ANTARCTIC", "UTIG", "LVS/vostok_radar_nav_lines", "SOAR_LVS"),
     ]
 
     for region, provider, data_dir, campaign in icethicknesses:
@@ -33,17 +33,24 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
 
         # Downloaded data format was a bunch of CSVs
         if provider == "STANFORD":
-            flight_filepaths = pathlib.Path(input_dir).glob("*.csv")
-            for flight_filepath in flight_filepaths:
-                flight = pathlib.Path(flight_filepath).stem
-                output_filepath = os.path.join(
-                    index_directory, region, provider, campaign, flight + ".csv"
+            filepaths = pathlib.Path(input_dir).glob("*.csv")
+        elif provider == "UTIG" and campaign == "SOAR_LVS":
+            filepaths = pathlib.Path(input_dir).glob("*.nav")
+        else:
+            print(f"Cannot extract campaign {campaign}")
+            return
+        for filepath in filepaths:
+            segment = pathlib.Path(filepath).stem
+            output_filepath = os.path.join(
+                index_directory, region, provider, campaign, segment + ".csv"
+            )
+            if force or not os.path.exists(output_filepath):
+                print(f"Processing {filepath} -> {output_filepath}".format(filepath))
+                extract_file(
+                    region, provider, filepath, output_filepath, epsilon
                 )
-                if force or not os.path.exists(output_filepath):
-                    print("Processing {}".format(flight_filepath))
-                    extract_file(
-                        region, provider, flight_filepath, output_filepath, epsilon
-                    )
+            else:
+                print(f"SKipping {filepath}")
 
 
 def extract_file(region, provider, input_filepath, output_filepath, epsilon):
@@ -71,6 +78,8 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
 
     if "STANFORD" == provider:
         result = extract_stanford_coords(input_filepath)
+    elif "UTIG" == provider and "LVS" in str(input_filepath):
+        result = extract_lvs_coords(input_filepath)
     else:
         print(
             "Unsupported data provider: {}. Skipping {}".format(
@@ -123,6 +132,19 @@ def extract_stanford_coords(filepath):
     lon_index = [col for col in data.columns if "LON" in col][0]
     lat = data[lat_index]
     lon = data[lon_index]
+    return np.array(lon), np.array(lat)
+
+
+# I haven't yet figured out how to extract this data from the segy
+# files (and hope to not support them), so just doing paths
+# for now.
+def extract_lvs_coords(filepath):
+    # tab-separated file with fields: [line, trace, lon, lat, alt]
+    data = pd.read_csv(filepath)
+    field_names = ["line", "trace", "LON", "LAT", "ALT"]
+    data = pd.read_csv(filepath, sep='\s+', names=field_names)  # noqa: W605
+    lat = data["LAT"]
+    lon = data["LON"]
     return np.array(lon), np.array(lat)
 
 

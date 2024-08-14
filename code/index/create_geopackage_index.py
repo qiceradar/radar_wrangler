@@ -86,9 +86,16 @@ def add_campaign_directory_gpkg(
             # UTIG CSVs are in UTIG/{campaign}/{segment}/{product}_{date}_{segment}_{granule}.csv
             # The KOPRI KRT1 data follows the same pattern
             # (This is the same as CRESIS, but keeping it separate in case we need product)
-            segment, _ = relative_path.parts
-            filename = relative_path.stem
-            granule = filename.split("_")[-1]
+            if "SOAR_LVS" == campaign:
+                segment = relative_path.stem
+            else:
+                try:
+                    segment, _ = relative_path.parts
+                    filename = relative_path.stem
+                    granule = filename.split("_")[-1]
+                except Exception as ex:
+                    print(f"Can't process {relative_path}")
+                    raise ex
         elif institution == "LDEO":
             # The AGAP_BANDIT CSVs are in
             # LDEO/AGAP_BANDIT/{segment}/{flight}_{segment}-{granule}_{product}.csv
@@ -109,15 +116,18 @@ def add_campaign_directory_gpkg(
             geometry_name = "_".join([institution, campaign, segment])
         else:
             geometry_name = "_".join([institution, campaign, segment, granule])
-        geometry_names.append(geometry_name)
-        granules.append(granule)
-        segments.append(segment)
 
         # Add a layer with these features to the GeoPackage
         xx, yy = load_xy(csv_filepath)
-        coords = np.array([[x1, y1] for x1, y1 in zip(xx, yy)])
-        points = LineString(coords)
-        geometries.append(points)
+        if len(xx) < 2:
+            print("Cannot create feature from {csv_filepath}; too few points")
+        else:
+            coords = np.array([[x1, y1] for x1, y1 in zip(xx, yy)])
+            points = LineString(coords)
+            geometry_names.append(geometry_name)
+            granules.append(granule)
+            segments.append(segment)
+            geometries.append(points)
     t1 = time.time()
 
     # Look up relative path to all granules.
@@ -296,12 +306,8 @@ def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
     ]
     campaigns.sort()
     for campaign in campaigns:
-        print("Processing {}".format(campaign))
-        # TODO: Update as I add support!
-        if institution in ["BAS"]:
-            availability = "s"  # Supported
-        else:
-            availability = "a"  # Available, not supported
+        print("Processing {} radargram tracks".format(campaign))
+        availability = "a"
         campaign_dir = os.path.join(data_dir, campaign)
         add_campaign_directory_gpkg(
             gpkg_filepath,
@@ -314,7 +320,7 @@ def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
         )
 
 
-def add_icethk_layers(region, institution, data_dir, gpkg_filepath):
+def add_icethk_layers(region, institution, data_dir, gpkg_filepath, availability="u"):
     data_dir = os.path.join(data_dir, region, institution)
     if not os.path.isdir(data_dir):
         print("No {} data from {}".format(region, institution))
@@ -324,8 +330,8 @@ def add_icethk_layers(region, institution, data_dir, gpkg_filepath):
     ]
     campaigns.sort()
     for campaign in campaigns:
-        print("Processing {}".format(campaign))
-        availability = "u"  # Unavailable
+        print("Processing {} ice thicknesses".format(campaign))
+        availability = availability
         campaign_dir = os.path.join(data_dir, campaign)
         add_campaign_directory_gpkg(
             gpkg_filepath,
@@ -381,6 +387,11 @@ if __name__ == "__main__":
         else:
             gpkg_file = args.antarctic_index
 
+        # Add the vostok lines ... these are available, but I don't
+        # yet support them, so am treating them like icethk lines
+        if region == "ANTARCTIC":
+            add_icethk_layers("ANTARCTIC", "UTIG", args.icethk_index_directory, gpkg_file, "a")
+
         if region == "ARCTIC":
             # TODO: Add Bedmachine coverage data?
             pass
@@ -394,7 +405,7 @@ if __name__ == "__main__":
 
         # TODO: For arctic, this may need to include UTIG
         for provider in ["BAS"]:
-            add_icethk_layers(region, provider, args.icethk_index_directory, gpkg_file)
+            add_icethk_layers(region, provider, args.icethk_index_directory, gpkg_file, "u")
 
         if region == "ANTARCTIC":
             add_spri_layers(args.icethk_index_directory, gpkg_file)
