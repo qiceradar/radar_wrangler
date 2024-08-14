@@ -1,22 +1,16 @@
 #! /usr/bin/env python3
 """
-In the future, I want data providers to be able to add one-off profiles
-by simply editing a CSV file with the appropriate fields.
-
-So, to experiment with that workflow, I'm dividing the UTIG download
-into creating the index and then downloading it.
-
-At NSIDC, UTIG's data is at:
-* hicars1: https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IR1HI1B.001/
-* hicars2: https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IR2HI1B.001/
+At NSIDC, CReSIS's data is at:
+* MCoRDS: https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IRMCR1B.002/
 
 The directory structure is
-* IR1HI1B.001 / IR2HI1B.001
+* ICRMCR1B.002/
   * yyyy.mm.dd/
-    * {instrument}_{yyyy}{doy}_{project}_{set}_{transect}_{granule}.nc
+    * {instrument}_{yyyy}{doy}_{flight}_{granule}.nc
+    * Alongside a .xml, _Echogram.jpg, _Echogram_Picks.jpg, _Map.jpg
 
-TODO: See if the authentication used in download_utig_nsidc is faster
-in this script. As is, it is shockingly slow.
+(This script is a copy-paste from generate_utig_nsidc_index; if I ever
+do a 3rd one, it'll be time to pull out some of these utilities!)
 """
 
 import csv
@@ -50,7 +44,8 @@ def main(index_filepath):
     # Crawling the NSIDC website finding URLs is terribly slow, so we
     # need to be able to resume.
     previous_csv = None
-    # By checking previous URLs, we'll capture both data product and flight/day
+
+    # Check previously-indexed URLs
     previous_urls = set()
     if os.path.isfile(index_filepath):
         print("loading index!")
@@ -59,38 +54,36 @@ def main(index_filepath):
             csv_reader = csv.DictReader(fp)
             previous_csv = []
             for dd in csv_reader:
-                institution = dd["institution"]
-                flight = dd["flight"]
                 url = dd["url"]
                 date_url = "/".join(url.split("/")[:-1])
                 previous_urls.add(date_url)
                 previous_csv.append(
-                    "{},{},{},{},{}\n".format(
-                        institution, flight, dd["segment"], dd["granule"], url
-                    )
+                    f'{dd["institution"]},{dd["flight"]},{dd["granule"]},{dd["url"]}'
                 )
         previous_urls = list(previous_urls)
         previous_urls.sort()
         print(previous_urls)
 
-    hicars1_url = "https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IR1HI1B.001"
-    hicars2_url = "https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IR2HI1B.001"
+    mcords_url = "https://n5eil01u.ecs.nsidc.org/ICEBRIDGE/IRMCR1B.002"
     # Extract information from the filename
-    regex = "(?P<instrument>[0-9a-zA-Z]+)_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[0-9a-zA-Z]+)_(?P<set>[0-9a-zA-Z]+)_(?P<transect>[0-9a-zA-Z]*)_(?P<granule>[0-9]*).nc"
+    # Example: 	IRMCR1B_20121013_01_001.nc
+    # TODO: update this for CReSIS filenames!
+
+    regex = "(?P<instrument>[0-9a-zA-Z]+)_(?P<flight_str>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3}).nc"
     token = credentials_from_netrc()
     with requests.sessions.Session() as session, open(index_filepath, "w") as fp:
-        fp.write("institution,flight,segment,granule,url\n")
+        fp.write("institution,flight,granule,url\n")
         if previous_csv is not None:
             fp.writelines(previous_csv)
 
         session.headers.update({"Authorization": "Bearer {0}".format(token)})
-        for instrument_url in [hicars1_url, hicars2_url]:
+        for instrument_url in [mcords_url]:
             print("*************")
             print("Checking {}".format(instrument_url))
             instrument_resp = session.get(instrument_url)
             instrument_soup = BeautifulSoup(instrument_resp.text, "html.parser")
 
-            # Each link shows up a few times
+            # Data is organized into yyyy.mm.dd folders
             flight_days = {
                 link.get("href").strip("/")
                 for link in instrument_soup.find_all("a")
@@ -103,6 +96,7 @@ def main(index_filepath):
                 print("Listing segments for {}".format(flight_day))
                 flight_url = "{}/{}".format(instrument_url, flight_day)
                 print(flight_url)
+                # This is fine, because we index all netcdfs in a given day at the same time.
                 if flight_url in previous_urls:
                     print("Skipping {} -- already scraped".format(flight_day))
                     continue
@@ -132,19 +126,14 @@ def main(index_filepath):
                 print(segment_files)
                 for segment_file in segment_files:
                     mm = re.match(regex, segment_file)
-                    _, _, _, project, ss, transect, granule = mm.groups()
-                    pst = "_".join((project, ss, transect))
+                    instrument, flight_str, granule = mm.groups()
 
                     segment_url = "{}/{}".format(flight_url, segment_file)
-                    fp.write(
-                        "{},{},{},{},{}\n".format(
-                            "UTIG", flight_day, pst, granule, segment_url
-                        )
-                    )
+                    fp.write(f"NASA,{flight_str},{granule},{segment_url}\n")
 
 
 if __name__ == "__main__":
-    index_dir = "../../data/UTIG"
+    index_dir = "../../data/NASA"
     try:
         pp = pathlib.Path(index_dir)
         pp.mkdir(parents=True, exist_ok=True)
@@ -152,5 +141,7 @@ if __name__ == "__main__":
         print("Could not create {}".format(index_dir))
         print(ex)
         raise (ex)
-    index_filepath = os.path.join(index_dir, "utig_nsidc_index.csv")
+    # NB: This creates a file including both arctic and antarctic data!
+    # The download step will need to determine which region to put data in.
+    index_filepath = os.path.join(index_dir, "cresis_nsidc_index.csv")
     main(index_filepath)

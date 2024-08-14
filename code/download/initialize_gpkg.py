@@ -48,6 +48,7 @@ def create_gpkg(empty_file: str, output_file: str):
         "bas_netcdf",
         "utig_netcdf",
         "cresis_mat",
+        "cresis_netcdf",
     ]
 
     cursor.execute("CREATE TABLE IF NOT EXISTS data_formats (name TEXT PRIMARY KEY)")

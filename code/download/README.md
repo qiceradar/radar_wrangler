@@ -139,12 +139,20 @@ TODO: Consider refactoring; only copying the file to its final destination after
 ## CReSIS
 
 ALL of CReSIS's data appears to be available from their KU servers.
-Some of it is also at NSIDC, and some of it is the COLDEX data that's also available at TDR.
+Some of it is also at NSIDC, and some of it is the COLDEX data that's also available (processed by UTIG) at TDR.
+
+Rather than decide which is the canonical format, we simply index all versions.
 
 ### KU
 
 `python3 download_cresis_ku.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
 
+### NSIDC
+
+These scripts are based off the UTIG ones:
+`python3 generate_cresis_nsidc_index.py`
+
+`python3 download_cresis_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg`
 
 # Add Geometry
 

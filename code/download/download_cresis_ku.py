@@ -21,7 +21,10 @@ from bs4 import BeautifulSoup
 
 # This is tricky, because these data aren't published with a DOI
 # or any information about requested citations.
-
+# TODO: I've emailed John Paden asking about this; waiting on his
+#   reply before I finish adding citations/metadata.
+# TODO: Look at the BEDMAP attributions for these datasets
+#   * Only 2009_Antarctica_TO and 2013_Antarctica_Basler were pure CReSIS
 data_citations = {}
 data_citations["2002_Antarctica_P3chile"] = ""
 data_citations["2004_Antarctica_P3chile"] = ""
