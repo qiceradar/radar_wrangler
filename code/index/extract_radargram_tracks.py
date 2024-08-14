@@ -1,23 +1,57 @@
 #! /usr/bin/env python3
 
-from radar_index_utils import subsample_tracks_rdp
+import os
+import pathlib
 
 import h5py
 import netCDF4
 import numpy as np
-import os
-import pathlib
 import pyproj
 import scipy
 import scipy.io
-
+from radar_index_utils import subsample_tracks_rdp
 
 corrupt_files = [
+    # UTIG campaign: COLDEX_2023
+    # See https://github.com/qiceradar/radar_wrangler/issues/15
+    "IR2HI1B_2023013_CLX_MKB2n_R70b_005",
+    "IR2HI1B_2022362_CXA1_MKB2m_F04T01a_014",
+    "IR2HI1B_2023007_CXA1_MKB2m_F07T10a_000",
+    "IR2HI1B_2023007_CXA1_MKB2n_F07T01a_000",
+    "IR2HI1B_2023008_CXA1_MKB2n_F08T01a_000",
+    "IR2HI1B_2023009_CXA1_MKB2n_F08T03a_002",
+    "IR2HI1B_2023010_CXA1_MKB2n_F10T01a_000",
+    "IR2HI1B_2023013_CXA1_MKB2n_F11T05a_004",
+    "IR2HI1B_2023013_CXA1_MKB2n_F12T01a_000",
+    "IR2HI1B_2023024_CXA1_MKB2n_F16T01a_000",
+    "IR2HI1B_2023025_CXA1_MKB2n_F16T05a_001",
+    "IR2HI1B_2023026_CXA1_MKB2n_F17T07a_001",
+    "IR2HI1B_2023026_CXA1_MKB2n_F18T01a_000",
+    "IR2HI1B_2023027_CXA1_MKB2n_F18T12a_001",
+    "IR2HI1B_2023028_CXA1_MKB2n_SPICE07a_005",
+
+    # UTIG campaign: COLDEX_2024
+    "IR2HI1B_2023352_CXA2_MKB2o_F04T01a_007",
+    "IR2HI1B_2023362_CXA2_MKB2o_F10T01a_000",
+    "IR2HI1B_2023362_CXA2_MKB2o_F10T01a_001",
+    "IR2HI1B_2023352_PPT_MKB2o_Y01d_000",
+    "IR2HI1B_2023352_PPT_MKB2o_Y01d_001",
+    "IR2HI1B_2023352_TAM_MKB2o_SHKTG01a_000",
+    "IR2HI1B_2023352_TAM_MKB2o_SHKTG01a_001",
+
+    # UTIG campaign: GIMBLE
+    "IRFOC1B_2013015_ICP5_JKB2h_RIGGS1a_003",
+    "IRFOC1B_2013025_ICP5_JKB2h_RIGGS1b_006",
+    "IRFOC1B_2014341_ICP6_MKB2l_F09T01a_004",
+
+    # UTIG campaign: ICECAP
     # These 3 have bad positioning data thanks to interpolating longitude (Issue #2)
     # https://github.com/qiceradar/radar_wrangler/issues/2
     "IR2HI1B_2011031_ICP3_JKB2d_F56T01e_002",
     "IR2HI1B_2013015_ICP5_JKB2h_RIGGS1a_003",
     "IR2HI1B_2013025_ICP5_JKB2h_RIGGS1b_006",
+
+    # CRESIS campaign: 2002_Antarctica_P3chile
     # And these CRESIS files have similarly corrupt data
     # (This seems to be in *every* flight from the 2002 season)
     # https://github.com/qiceradar/radar_wrangler/issues/4
@@ -128,9 +162,6 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
 
 
 def extract_file(region, provider, input_filepath, output_filepath, epsilon):
-    if pathlib.Path(input_filepath).stem in corrupt_files:
-        return
-
     # TODO: Can't assume perfectly clean input data directories, so this
     #       needs to handle detecting that it's been asked to process
     #       an invalid file.
@@ -200,6 +231,22 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     # I don't love transforming into and out of a map projection, but
     # I haven't yet figured out how to run RDP on geographic coordinates.
     xx, yy = proj.transform(lon, lat)
+
+    if pathlib.Path(input_filepath).stem in corrupt_files:
+        dx = xx[1:] - xx[0:-1]
+        dy = yy[1:] - yy[0:-1]
+        deltas = np.sqrt(dx**2 + dy**2)
+        # This only works because we know that we have a very small number
+        # of huge outliers, and are only running this on data known to have
+        # outliers.
+        # I originally tried to only remove the first of each pair, but
+        # UTIG has several in a row. For expediency's sake, I'll just remove
+        # the points on both sides of the jump.
+        bad_idxs = np.where(deltas > np.std(deltas))[0][:]
+        good_idxs = [idx for idx in np.arange(len(lat)) if idx not in bad_idxs]
+        xx = xx[good_idxs]
+        yy = yy[good_idxs]
+
     sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
     # TODO: This is massively hacky, and fails e.g. on sparsely sampled flights.
     #    Would probably be better to fall back to the along-track-distance
