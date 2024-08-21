@@ -4,6 +4,7 @@ import csv
 import os
 import os.path
 import pathlib
+import re
 import sqlite3
 import subprocess
 import tempfile
@@ -156,7 +157,23 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                 # download_method: 'wget' in this case.
 
                 # format is {campaign}_{segment}.nc
-                segment = flight["name"].split("_")[-1].split(".")[0]
+                # This is the problem -- need to be more robust to their file names.
+                # The challenge is we have an unpredictable number of underscores.
+                # e.g.: WISE_ISODYN_W09.nc, WISE_ISODYN_10_.nc, and WISE_IDOSYN_10B_A.nc
+                # and BBAS_B27.nc
+                # Whatever I do, GOG3 will break it: IR2HI2_2014130_GRANT_JKB2k_X2Aa_icethk
+                if campaign in ["AGAP", "BBAS", "FISS2015", "FISS2016", "ICEGRAV", "IMAFI", "POLARGAP"]:
+                    expr = r"(?P<campaig>[A-Z0-9]+)_(?P<flight>[A-Za-z0-9_]+).nc"
+                elif campaign in ["GRADES_IMAGE", "ITGC_2019", "WISE_ISODYN"]:
+                    expr = r"(?P<campaign>[A-Z0-9]+_[A-Z0-9]+)_(?P<flight>[A-Za-z0-9_]+).nc"
+                else:
+                    print(f"NYI: trying to parse filename from BAS campaign {campaign}")
+                    continue
+                mm = re.match(expr, flight["name"])
+                if mm is None:
+                    print(f"Unable to parse flight: {flight['name']}")
+                    continue
+                segment = mm.group('flight')
                 granule_name = pathlib.Path(
                     f"{institution}_{campaign}_{segment}"
                 ).with_suffix("")

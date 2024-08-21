@@ -71,6 +71,9 @@ def add_campaign_directory_gpkg(
             # except IndexError:
             #     # For the depths-only lines
             #     segment = relative_path.stem
+            # Ick -- this is yet another way of parsing the BAS filenames
+            # (download_bas uses regexes; this is simpler, but will break for GOG3)
+            # TODO: try to refactor and pull that parsing function into single place?
             segment = relative_path.stem
             if segment.startswith("BAS_"):
                 segment = segment[4:]
