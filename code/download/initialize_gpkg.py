@@ -45,6 +45,7 @@ def create_gpkg(empty_file: str, output_file: str):
 
     data_formats = [
         "ice_thickness",  # The index contains info about ice thickness lines, if that's all that is available.
+        "awi_netcdf",
         "bas_netcdf",
         "utig_netcdf",
         "cresis_mat",
@@ -59,7 +60,7 @@ def create_gpkg(empty_file: str, output_file: str):
     result = cursor.execute("SELECT * from data_formats")
     print(f"Available data formats: {result.fetchall()}")
 
-    download_methods = ["wget", "nsidc", "usapdc_email", "usapdc_captcha", "aad_s3"]
+    download_methods = ["curl", "wget", "nsidc", "usapdc_email", "usapdc_captcha", "aad_s3"]
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS download_methods (name TEXT PRIMARY KEY)"
     )
