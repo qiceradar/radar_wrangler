@@ -1,8 +1,14 @@
 #! /usr/bin/env python3
-from bs4 import BeautifulSoup  # For parsing html and extracting the links
+"""
+For now, I've given up on generating the index automatically;
+instead, download_awi_pangaea uses a manually-generated index
+which was copy-pasted from their accompanying README files.
+"""
 import pathlib  # for creating directory data will be saved to
-import requests  # For downloading index page
 import subprocess
+
+import requests  # For downloading index page
+from bs4 import BeautifulSoup  # For parsing html and extracting the links
 
 # TODO: This should probably be moved into data/AWI, mirroring the BAS indices
 datasets = {
