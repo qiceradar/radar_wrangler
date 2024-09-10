@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 import os
 import pathlib
+import re
 import sqlite3
 import time
 
@@ -62,7 +63,18 @@ def add_campaign_directory_gpkg(
     for csv_filepath in pathlib.Path(campaign_dir).rglob("*.csv"):
         relative_path = pathlib.Path(csv_filepath).relative_to(campaign_dir)
         granule = None
-        if institution == "BAS":
+        if institution == "AWI":
+            filename = relative_path.stem
+            expr = "Data_(?P<flight>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3})_standard.*"
+            mm = re.match(expr, filename)
+            if mm is None:
+                print(f"Unable to extract flight and segment from {filename}. Continuing")
+                continue
+            segment = mm.group('flight')
+            granule = mm.group('granule')
+
+            # CSVs are in AWI/campaign/DATA_{segment}_{granule}_standard.csv
+        elif institution == "BAS":
             # BAS CSVs are in BAS/{campaign}/{campaign}_{segment}.csv
             # Unfortunately, several of them have trailing underscores.
             # try:
@@ -401,7 +413,7 @@ if __name__ == "__main__":
         else:
             add_bedmap_layers(args.radargram_index_directory, gpkg_file)
 
-        for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
+        for provider in ["AWI", "BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
             add_radargram_layers(
                 region, provider, args.radargram_index_directory, gpkg_file
             )

@@ -78,7 +78,7 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
     for region in ["ARCTIC", "ANTARCTIC"]:
         print("Handling {} data".format(region))
         region_dir = os.path.join(data_directory, region)
-        for provider in ["BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
+        for provider in ["AWI", "BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
             provider_dir = os.path.join(region_dir, provider)
             if not os.path.isdir(provider_dir):
                 print(".. No {} data from {}".format(region, provider))
@@ -191,7 +191,9 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     # I'm not sure why my filesystem adds "._" files...
     if pathlib.Path(input_filepath).stem.startswith("."):
         return
-    if "BAS" == provider:
+    if "AWI" == provider:
+        result = extract_awi_coords(input_filepath)
+    elif "BAS" == provider:
         result = extract_bas_coords(input_filepath)
     elif "CRESIS" == provider:
         result = extract_cresis_coords(input_filepath)
@@ -272,6 +274,29 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         fp.write("ps71_easting,ps71_northing\n")
         data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sx, sy)]
         fp.writelines(data)
+
+
+def extract_awi_coords(input_filepath):
+    try:
+        dd = netCDF4.Dataset(input_filepath, "r")
+    except Exception:
+        print("Could not parse {}".format(input_filepath))
+        return
+    valid_survey = False
+    if "JuRaS_2018" in input_filepath:
+        valid_survey = True
+    if "CHIRP_2019" in input_filepath:
+        valid_survey = True
+    if valid_survey:
+        try:
+            lat = dd.variables["LATITUDE"][:].data
+            lon = dd.variables["LONGITUDE"][:].data
+            return lon, lat
+        except Exception:
+            print(f"Can't extract data from {input_filepath}")
+            return None
+    else:
+        print(f"Skipping (not valid survey): {input_filepath}")
 
 
 def extract_bas_coords(input_filepath):
