@@ -49,6 +49,37 @@ data_citations["2022_Antarctica_BaslerMKB"] = ""
 data_citations["2022_Antarctica_GroundGHOST"] = ""
 data_citations["2023_Antarctica_BaslerMKB"] = ""
 
+data_citations["1993_Greenland_P3"] = ""
+data_citations["1995_Greenland_P3"] = ""
+data_citations["1996_Greenland_P3"] = ""
+data_citations["1997_Greenland_P3"] = ""
+data_citations["1998_Greenland_P3"] = ""
+data_citations["1999_Greenland_P3"] = ""
+data_citations["2001_Greenland_P3"] = ""
+data_citations["2002_Greenland_P3"] = ""
+data_citations["2003_Greenland_P3"] = ""
+data_citations["2005_Greenland_TO"] = ""
+data_citations["2006_Greenland_TO"] = ""
+data_citations["2007_Greenland_P3"] = ""
+data_citations["2008_Greenland_Ground"] = ""
+data_citations["2008_Greenland_TO"] = ""
+data_citations["2009_Greenland_TO"] = ""
+data_citations["2010_Greenland_DC8"] = ""
+data_citations["2010_Greenland_P3"] = ""
+data_citations["2011_Greenland_P3"] = ""
+data_citations["2011_Greenland_TO"] = ""
+data_citations["2012_Greenland_P3"] = ""
+data_citations["2013_Greenland_P3"] = ""
+data_citations["2014_Greenland_P3"] = ""
+data_citations["2015_Greenland_C130"] = ""
+data_citations["2016_Greenland_G1XB"] = ""
+data_citations["2016_Greenland_P3"] = ""
+data_citations["2016_Greenland_Polar6"] = ""
+data_citations["2016_Greenland_TOdtu"] = ""
+data_citations["2017_Greenland_P3"] = ""
+data_citations["2018_Greenland_P3"] = ""
+data_citations["2019_Greenland_P3"] = ""
+
 science_citations = {}
 science_citations["2002_Antarctica_P3chile"] = ""
 science_citations["2004_Antarctica_P3chile"] = ""
@@ -73,6 +104,37 @@ science_citations["2022_Antarctica_BaslerMKB"] = ""
 science_citations["2022_Antarctica_GroundGHOST"] = ""
 science_citations["2023_Antarctica_BaslerMKB"] = ""
 
+science_citations["1993_Greenland_P3"] = ""
+science_citations["1995_Greenland_P3"] = ""
+science_citations["1996_Greenland_P3"] = ""
+science_citations["1997_Greenland_P3"] = ""
+science_citations["1998_Greenland_P3"] = ""
+science_citations["1999_Greenland_P3"] = ""
+science_citations["2001_Greenland_P3"] = ""
+science_citations["2002_Greenland_P3"] = ""
+science_citations["2003_Greenland_P3"] = ""
+science_citations["2005_Greenland_TO"] = ""
+science_citations["2006_Greenland_TO"] = ""
+science_citations["2007_Greenland_P3"] = ""
+science_citations["2008_Greenland_Ground"] = ""
+science_citations["2008_Greenland_TO"] = ""
+science_citations["2009_Greenland_TO"] = ""
+science_citations["2010_Greenland_DC8"] = ""
+science_citations["2010_Greenland_P3"] = ""
+science_citations["2011_Greenland_P3"] = ""
+science_citations["2011_Greenland_TO"] = ""
+science_citations["2012_Greenland_P3"] = ""
+science_citations["2013_Greenland_P3"] = ""
+science_citations["2014_Greenland_P3"] = ""
+science_citations["2015_Greenland_C130"] = ""
+science_citations["2016_Greenland_G1XB"] = ""
+science_citations["2016_Greenland_P3"] = ""
+science_citations["2016_Greenland_Polar6"] = ""
+science_citations["2016_Greenland_TOdtu"] = ""
+science_citations["2017_Greenland_P3"] = ""
+science_citations["2018_Greenland_P3"] = ""
+science_citations["2019_Greenland_P3"] = ""
+
 
 def reindex_cresis():
     print("Reindexing Cresis ")
@@ -93,6 +155,7 @@ def reindex_cresis():
 
     campaigns = list(campaigns)
     campaigns.sort()
+    print("All Campaigns: \n ", "\n".join(campaigns))
 
     # TODO: Fix this terrible nested dictionary
     cresis_datafiles = {"ANTARCTIC": {}, "ARCTIC": {}}
@@ -107,7 +170,6 @@ def reindex_cresis():
             region = "ANTARCTIC"
         else:
             region = "ARCTIC"
-            return
         if campaign in cresis_datafiles[region]:
             continue
 
@@ -185,8 +247,6 @@ def download_cresis(
         cursors[region].execute("PRAGMA foreign_keys = ON")
 
     for region, campaigns in datafiles.items():
-        if region == "ARCTIC":
-            continue
         for campaign in campaigns.keys():
             cursors[region].execute(
                 "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
