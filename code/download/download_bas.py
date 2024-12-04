@@ -12,41 +12,41 @@ import tempfile
 # I really don't love mixing data and code, but I'm feeling lazy,
 # and don't want to have to deal with additional config files.
 data_citations = {}
-data_citations[
-    "AGAP"
-] = "Corr, H., Ferraccioli, F., Jordan, T., & Robinson, C. (2021). Processed airborne radio-echo sounding data from the AGAP survey covering Antarctica's Gamburtsev Province, East Antarctica (2007/2009) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/A1ABF071-85FC-4118-AD37-7F186B72C847"
-data_citations[
-    "BBAS"
-] = "Corr, H., Ferraccioli, F., & Vaughan, D. (2021). Processed airborne radio-echo sounding data from the BBAS survey covering the Pine Island Glacier basin, West Antarctica (2004/2005) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/DB8BDBAD-6893-4A77-9D12-A9BCB7325B70"
-data_citations[
-    "FISS2015"
-] = "Nicholls, K., Robinson, C., Corr, H., & Jordan, T. (2021). Processed airborne radio-echo sounding data from the FISS 2015 survey covering the Foundation Ice Stream, Bungenstock Ice Rise, and the Filchner Ice Shelf system, West Antarctica (2015/2016) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/3507901F-D03E-45A6-8D9B-59CF98A03E1D"
+data_citations["AGAP"] = (
+    "Corr, H., Ferraccioli, F., Jordan, T., & Robinson, C. (2021). Processed airborne radio-echo sounding data from the AGAP survey covering Antarctica's Gamburtsev Province, East Antarctica (2007/2009) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/A1ABF071-85FC-4118-AD37-7F186B72C847"
+)
+data_citations["BBAS"] = (
+    "Corr, H., Ferraccioli, F., & Vaughan, D. (2021). Processed airborne radio-echo sounding data from the BBAS survey covering the Pine Island Glacier basin, West Antarctica (2004/2005) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/DB8BDBAD-6893-4A77-9D12-A9BCB7325B70"
+)
+data_citations["FISS2015"] = (
+    "Nicholls, K., Robinson, C., Corr, H., & Jordan, T. (2021). Processed airborne radio-echo sounding data from the FISS 2015 survey covering the Foundation Ice Stream, Bungenstock Ice Rise, and the Filchner Ice Shelf system, West Antarctica (2015/2016) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/3507901F-D03E-45A6-8D9B-59CF98A03E1D"
+)
 
-data_citations[
-    "FISS2016"
-] = "Corr, H., Robinson, C., Jordan, T., Nicholls, K., & Brisbourne, A. (2021). Processed airborne radio-echo sounding data from the FISS 2016 surveys covering the Filchner and Halley Ice Shelves, and the English Coast (western Palmer Land), West Antarctica (2016/2017) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/0CB61583-3985-4875-B141-5743E68ABE35"
-data_citations[
-    "GRADES_IMAGE"
-] = "Corr, H. (2021). Processed airborne radio-echo sounding data from the GRADES-IMAGE survey covering the Evans and Rutford Ice Streams, and ice rises in the Ronne Ice Shelf, West Antarctica (2006/2007) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/C7EA5697-87E3-4529-A0DD-089A2ED638FB"
-data_citations[
-    "ICEGRAV"
-] = "Ferraccioli, F., Corr, H., Jordan, T., Forsberg, R., Matsuoka, K., Diez, A., Olesen, A., Ghidella, M., Zakrajsek, A., Robinson, C., & King, O. (2021). Processed airborne radio-echo sounding data from the ICEGRAV survey covering the Recovery Catchment and interior Dronning Maud Land, East Antarctica (2012/2013) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/C6324118-94A2-4E03-8715-B24B82322A57"
-data_citations[
-    "IMAFI"
-] = "Ross, N., Bingham, R., Ferraccioli, F., Jordan, T., Le Brocq, A., Rippin, D., & Siegert, M. (2021). Processed airborne radio-echo sounding data from the IMAFI survey covering the Institute and Moller ice streams and the Patriot Hills, West Antarctica (2010/2011) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/F32B298B-7906-4360-9E34-16739AF73BB7"
-data_citations[
-    "ITGC_2019"
-] = "Jordan, T., & Robinson, C. (2021). Processed airborne radio-echo sounding data for the Thwaites Glacier 2019 survey, West Antarctica (2019/2020) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/E7ABA676-1FDC-4C9A-B125-1EBE6124E5DC"
-data_citations[
-    "POLARGAP"
-] = "Ferraccioli, F., Forsberg, R., Matsuoka, K., Olesen, A., Jordan, T., Corr, H., Robinson, C., & Kohler, J. (2021). Processed airborne radio-echo sounding data from the POLARGAP survey covering the South Pole, and Foundation and Recovery Glaciers, East Antarctica (2015/2016) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/E8A29FA7-A245-4A04-8B56-098DEFA134B9"
-data_citations[
-    "WISE_ISODYN"
-] = "Ferraccioli, F., Corr, H., Jordan, T., Robinson, C., Armadillo, E., Bozzo, E., & Caneva, G. (2021). Processed airborne radio-echo sounding data from the WISE-ISODYN survey across the Wilkes Subglacial Basin, East Antarctica (2005/2006) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/70ADAB3D-3632-400D-9AA1-DDF2D62A11B3"
+data_citations["FISS2016"] = (
+    "Corr, H., Robinson, C., Jordan, T., Nicholls, K., & Brisbourne, A. (2021). Processed airborne radio-echo sounding data from the FISS 2016 surveys covering the Filchner and Halley Ice Shelves, and the English Coast (western Palmer Land), West Antarctica (2016/2017) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/0CB61583-3985-4875-B141-5743E68ABE35"
+)
+data_citations["GRADES_IMAGE"] = (
+    "Corr, H. (2021). Processed airborne radio-echo sounding data from the GRADES-IMAGE survey covering the Evans and Rutford Ice Streams, and ice rises in the Ronne Ice Shelf, West Antarctica (2006/2007) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/C7EA5697-87E3-4529-A0DD-089A2ED638FB"
+)
+data_citations["ICEGRAV"] = (
+    "Ferraccioli, F., Corr, H., Jordan, T., Forsberg, R., Matsuoka, K., Diez, A., Olesen, A., Ghidella, M., Zakrajsek, A., Robinson, C., & King, O. (2021). Processed airborne radio-echo sounding data from the ICEGRAV survey covering the Recovery Catchment and interior Dronning Maud Land, East Antarctica (2012/2013) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/C6324118-94A2-4E03-8715-B24B82322A57"
+)
+data_citations["IMAFI"] = (
+    "Ross, N., Bingham, R., Ferraccioli, F., Jordan, T., Le Brocq, A., Rippin, D., & Siegert, M. (2021). Processed airborne radio-echo sounding data from the IMAFI survey covering the Institute and Moller ice streams and the Patriot Hills, West Antarctica (2010/2011) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/F32B298B-7906-4360-9E34-16739AF73BB7"
+)
+data_citations["ITGC_2019"] = (
+    "Jordan, T., & Robinson, C. (2021). Processed airborne radio-echo sounding data for the Thwaites Glacier 2019 survey, West Antarctica (2019/2020) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/E7ABA676-1FDC-4C9A-B125-1EBE6124E5DC"
+)
+data_citations["POLARGAP"] = (
+    "Ferraccioli, F., Forsberg, R., Matsuoka, K., Olesen, A., Jordan, T., Corr, H., Robinson, C., & Kohler, J. (2021). Processed airborne radio-echo sounding data from the POLARGAP survey covering the South Pole, and Foundation and Recovery Glaciers, East Antarctica (2015/2016) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/E8A29FA7-A245-4A04-8B56-098DEFA134B9"
+)
+data_citations["WISE_ISODYN"] = (
+    "Ferraccioli, F., Corr, H., Jordan, T., Robinson, C., Armadillo, E., Bozzo, E., & Caneva, G. (2021). Processed airborne radio-echo sounding data from the WISE-ISODYN survey across the Wilkes Subglacial Basin, East Antarctica (2005/2006) (Version 1.0) [Data set]. NERC EDS UK Polar Data Centre. https://doi.org/10.5285/70ADAB3D-3632-400D-9AA1-DDF2D62A11B3"
+)
 
-data_citations[
-    "GOG3"
-] = "Benham, T., Christoffersen, P., Dowdeswell, J., Siegert, M., Blankenship, D., Young, D., Kempf, S., & Palmer, S. (2020). Airborne geophysical data from the Queen Elizabeth Islands, Canadian Arctic, 2014 (Version 1.0) [Data set]. UK Polar Data Centre, Natural Environment Research Council, UK Research & Innovation. https://doi.org/10.5285/D31550DE-13C2-4779-AA10-9E0A43BBEB1A"
+data_citations["GOG3"] = (
+    "Benham, T., Christoffersen, P., Dowdeswell, J., Siegert, M., Blankenship, D., Young, D., Kempf, S., & Palmer, S. (2020). Airborne geophysical data from the Queen Elizabeth Islands, Canadian Arctic, 2014 (Version 1.0) [Data set]. UK Polar Data Centre, Natural Environment Research Council, UK Research & Innovation. https://doi.org/10.5285/D31550DE-13C2-4779-AA10-9E0A43BBEB1A"
+)
 
 # Unlike some places, BAS doesn't explicitly request science citations
 # for using the data, though they do provide them for reference.
@@ -56,9 +56,9 @@ science_citations["AGAP"] = (
     "Ferraccioli, F., C. Finn, T. A. Jordan, R. E. Bell, L. M. Anderson and D. Damaske (2011). East Antarctic rifting triggers uplift of the Gamburtsev Mountains. Nature 479: 388-392, doi: 10.1038/nature10566. \n\n"
     "Rose, K.C., Ferraccioli, F., Jamieson, S.S., Bell, R.E., Corr, H., Creyts, T.T., Braaten, D., Jordan, T.A., Fretwell, P.T. and Damaske, D. (2013). Early east Antarctic Ice Sheet growth recorded in the landscape of the Gamburtsev Subglacial Mountains. Earth and Planetary Science Letters, 375, pp.1-12. doi: 10.1016/j.epsl.2013.03.053 \n\n"
 )
-science_citations[
-    "BBAS"
-] = "Vaughan, D.G., Corr, H.F.J., Ferraccioli, F., Frearson, N., O'Hare, A., Mach, D., Holt, J.W., Blankenship, D., Morse, D.L. & Young, D.A. 2006. New boundary conditions for the West Antarctic ice sheet: Subglacial topography beneath Pine Island Glacier. Geophysical Research Letters. 33. L09501, doi:10.1029/2005GL025588."
+science_citations["BBAS"] = (
+    "Vaughan, D.G., Corr, H.F.J., Ferraccioli, F., Frearson, N., O'Hare, A., Mach, D., Holt, J.W., Blankenship, D., Morse, D.L. & Young, D.A. 2006. New boundary conditions for the West Antarctic ice sheet: Subglacial topography beneath Pine Island Glacier. Geophysical Research Letters. 33. L09501, doi:10.1029/2005GL025588."
+)
 science_citations["FISS2015"] = ""  # Not listed at the landing page
 science_citations["FISS2016"] = ""  # Not listed at the landing page
 science_citations["GRADES_IMAGE"] = (
@@ -162,7 +162,15 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                 # e.g.: WISE_ISODYN_W09.nc, WISE_ISODYN_10_.nc, and WISE_IDOSYN_10B_A.nc
                 # and BBAS_B27.nc
                 # Whatever I do, GOG3 will break it: IR2HI2_2014130_GRANT_JKB2k_X2Aa_icethk
-                if campaign in ["AGAP", "BBAS", "FISS2015", "FISS2016", "ICEGRAV", "IMAFI", "POLARGAP"]:
+                if campaign in [
+                    "AGAP",
+                    "BBAS",
+                    "FISS2015",
+                    "FISS2016",
+                    "ICEGRAV",
+                    "IMAFI",
+                    "POLARGAP",
+                ]:
                     expr = r"(?P<campaig>[A-Z0-9]+)_(?P<flight>[A-Za-z0-9_]+).nc"
                 elif campaign in ["GRADES_IMAGE", "ITGC_2019", "WISE_ISODYN"]:
                     expr = r"(?P<campaign>[A-Z0-9]+_[A-Z0-9]+)_(?P<flight>[A-Za-z0-9_]+).nc"
@@ -173,7 +181,7 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                 if mm is None:
                     print(f"Unable to parse flight: {flight['name']}")
                     continue
-                segment = mm.group('flight')
+                segment = mm.group("flight")
                 granule_name = pathlib.Path(
                     f"{institution}_{campaign}_{segment}"
                 ).with_suffix("")
