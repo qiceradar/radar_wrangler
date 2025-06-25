@@ -159,6 +159,7 @@ def reindex_cresis():
 
     # TODO: Fix this terrible nested dictionary
     cresis_datafiles = {"ANTARCTIC": {}, "ARCTIC": {}}
+
     # Hack to do a *partial* reindex
     # index_filepath = "../../data/CRESIS/cresis_datafiles.pkl"
     # cresis_datafiles = pickle.load(open(index_filepath, "rb"))
@@ -172,8 +173,6 @@ def reindex_cresis():
             region = "ARCTIC"
         if campaign in cresis_datafiles[region]:
             continue
-
-        cresis_datafiles[region][campaign] = {}
 
         campaign_url = "{}/{}".format(cresis_url, campaign)
         reqs = requests.get(campaign_url)
@@ -193,7 +192,6 @@ def reindex_cresis():
                 product = pp
                 break
         print("Product: {}".format(product))
-        cresis_datafiles[region][campaign][product] = {}
 
         product_url = "{}/{}".format(campaign_url, product)
         reqs = requests.get(product_url)
@@ -210,6 +208,7 @@ def reindex_cresis():
         segments = list(segments)
         segments.sort()
 
+        product_datafiles = {}
         for segment in segments:
             segment_url = "{}/{}".format(product_url, segment)
             reqs = requests.get(segment_url)
@@ -223,9 +222,16 @@ def reindex_cresis():
             files = list(files)
             files.sort()
 
-            cresis_datafiles[region][campaign][product][segment] = {
+            product_datafiles[segment] = {
                 file: "{}/{}".format(segment_url, file) for file in files
             }
+
+        # In order to be compatible with the partial-reindex hack / have
+        # the ability to restart the script, don't create the campaign key
+        # until we're ready to fill it in
+        cresis_datafiles[region][campaign] = {}
+        cresis_datafiles[region][campaign][product] = product_datafiles
+
     return cresis_datafiles
 
 
@@ -241,7 +247,7 @@ def download_cresis(
     connections = {}
     cursors = {}
     connections["ANTARCTIC"] = sqlite3.connect(antarctic_index)
-    connections["ARCTIC"] = sqlite3.connect(antarctic_index)
+    connections["ARCTIC"] = sqlite3.connect(arctic_index)
     for region in ["ANTARCTIC", "ARCTIC"]:
         cursors[region] = connections[region].cursor()
         cursors[region].execute("PRAGMA foreign_keys = ON")
@@ -261,8 +267,8 @@ def download_cresis(
 
     for region, campaigns in datafiles.items():
         print(region)
-        if region == "ARCTIC":
-            continue
+        # if region == "ARCTIC":
+        #     continue
         for campaign, products in campaigns.items():
             print(campaign)
             for product, segments in products.items():
