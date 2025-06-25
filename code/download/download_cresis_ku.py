@@ -25,6 +25,7 @@ from bs4 import BeautifulSoup
 #   reply before I finish adding citations/metadata.
 # TODO: Look at the BEDMAP attributions for these datasets
 #   * Only 2009_Antarctica_TO and 2013_Antarctica_Basler were pure CReSIS
+# TODO: It is particularly ugly that these need to be updated before the indexing script can run.
 data_citations = {}
 data_citations["2002_Antarctica_P3chile"] = ""
 data_citations["2004_Antarctica_P3chile"] = ""
@@ -48,6 +49,7 @@ data_citations["2019_Antarctica_GV"] = ""
 data_citations["2022_Antarctica_BaslerMKB"] = ""
 data_citations["2022_Antarctica_GroundGHOST"] = ""
 data_citations["2023_Antarctica_BaslerMKB"] = ""
+data_citations["2024_Antarctica_GroundGHOST2"] = ""
 
 data_citations["1993_Greenland_P3"] = ""
 data_citations["1995_Greenland_P3"] = ""
@@ -103,6 +105,7 @@ science_citations["2019_Antarctica_GV"] = ""
 science_citations["2022_Antarctica_BaslerMKB"] = ""
 science_citations["2022_Antarctica_GroundGHOST"] = ""
 science_citations["2023_Antarctica_BaslerMKB"] = ""
+science_citations["2024_Antarctica_GroundGHOST2"] = ""
 
 science_citations["1993_Greenland_P3"] = ""
 science_citations["1995_Greenland_P3"] = ""
@@ -136,7 +139,7 @@ science_citations["2018_Greenland_P3"] = ""
 science_citations["2019_Greenland_P3"] = ""
 
 
-def reindex_cresis():
+def reindex_cresis(index_filepath: str, partial: bool):
     print("Reindexing Cresis ")
     cresis_url = "https://data.cresis.ku.edu/data/rds"
     reqs = requests.get(cresis_url)
@@ -157,12 +160,10 @@ def reindex_cresis():
     campaigns.sort()
     print("All Campaigns: \n ", "\n".join(campaigns))
 
-    # TODO: Fix this terrible nested dictionary
-    cresis_datafiles = {"ANTARCTIC": {}, "ARCTIC": {}}
-
-    # Hack to do a *partial* reindex
-    # index_filepath = "../../data/CRESIS/cresis_datafiles.pkl"
-    # cresis_datafiles = pickle.load(open(index_filepath, "rb"))
+    if partial:
+        cresis_datafiles = pickle.load(open(index_filepath, "rb"))
+    else:
+        cresis_datafiles = {"ANTARCTIC": {}, "ARCTIC": {}}
 
     for campaign in campaigns:
         print()
@@ -231,6 +232,9 @@ def reindex_cresis():
         # until we're ready to fill it in
         cresis_datafiles[region][campaign] = {}
         cresis_datafiles[region][campaign][product] = product_datafiles
+        # Cache progress, since this is so slow
+        with open(index_filepath, "wb") as fp:
+            pickle.dump(cresis_datafiles, fp)
 
     return cresis_datafiles
 
@@ -333,15 +337,13 @@ def download_cresis(
         connection.close()
 
 
-def main(data_dir: str, antarctic_index: str, arctic_index: str, reindex: bool):
+def main(data_dir: str, antarctic_index: str, arctic_index: str, reindex: bool, partial: bool):
     index_filepath = "../../data/CRESIS/cresis_datafiles.pkl"
     if not reindex:
         cresis_datafiles = pickle.load(open(index_filepath, "rb"))
 
     else:
-        cresis_datafiles = reindex_cresis()
-        with open(index_filepath, "wb") as fp:
-            pickle.dump(cresis_datafiles, fp)
+        cresis_datafiles = reindex_cresis(index_filepath, partial)
 
     download_cresis(data_dir, cresis_datafiles, antarctic_index, arctic_index)
 
@@ -362,5 +364,12 @@ if __name__ == "__main__":
         help="Geopackage database to update with metadata about Arctic campaigns and granules",
     )
     parser.add_argument("--reindex", action="store_true")
+    parser.add_argument(
+        "--partial",
+        help="If reindexing, start from existing index?",
+        action="store_true"
+    )
+
     args = parser.parse_args()
-    main(args.data_directory, args.antarctic_index, args.arctic_index, args.reindex)
+
+    main(args.data_directory, args.antarctic_index, args.arctic_index, args.reindex, args.partial)
