@@ -1,0 +1,146 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+# The granule dependencies look better with "right" on default engine
+direction: right
+
+QIceRadar layers: {
+  comments: {
+    shape: text
+    width: 100
+    style.font-size: 24
+
+    label: |md
+      Each layer in the QIceRadar index will have its own table in the \
+      database that contains all of the spatial information for plotting \
+      the granules included in the layer. (Granules are rows in the table).
+
+      We group radar ground tracks into QGIS layers at the level of a \
+      campaign since a more granular display impacted QGIS performance \
+      unacceptably.
+
+      The driver we use to write the geopackage file will also update the \
+      corresponding row in the required gpkg_* tables.
+
+      We intentionally duplicate fields here such that some metadata is \
+      easily accessible within QGIS without using the QIceRadar plugin to \
+      do database joins.
+    |
+  }
+
+  2019_Greenland_P3: {
+    shape: sql_table
+    fid: {constraint: primary_key}
+    name: granule name for this geometry (FK not enforced by schema)
+    geom: all geometry information for this row
+    region: \{ arctic, antarctic \}
+    institution: {constraint: foreign_key}
+    campaign: {constraint: foreign_key}
+    segment: e.g. PST name for UTIG, flight number for UTIG
+    granule: sequential chunk of segment, where data has been split across files
+    relative_path: path to downloaded radargram
+    availability: \{ supported, available, unavailable\} used by plugin to set display color
+    uri
+  }
+
+  # Force horizontal layout within container
+  comments -- 2019_Greenland_P3: {style: {stroke-width: 0}}
+}
+
+qiceradar metadata: {
+  data_formats: {
+    shape: sql_table
+    name: \{ ice_thickness, awi_netcdf, bas_netcdf, cresis_mat, cresis_netcdf, utig_netcdf \} {constraint: primary_key}
+  }
+
+  download_methods: {
+    shape: sql_table
+    name: \{ aad_eagle, aad_oia, curl, nsidc, usap_email, usap_captcha, wget \} {constraint: primary_key}
+  }
+
+  institutions: {
+    shape: sql_table
+    name: \{ AWI, BAS, CReSIS, KOPRI, LDEO, NASA, NPI, UTIG \} {constraint: primary_key}
+  }
+
+  campaigns: {
+    shape: sql_table
+    name: {constraint: primary_key}
+    institution: {constraint: foreign_key}
+    data_citation: required citation for using the data
+    science_citation: suggested citation(s) of relevant papers
+  }
+  campaigns.institution -> institutions
+
+  granules: {
+    shape: sql_table
+    name: e.g. CRESIS_1997_Greenland_01_19930623_01_001 {constraint: primary_key}
+    institution: {constraint: foreign_key}
+    campaign: {constraint: foreign_key}
+    segment: e.g. PST name for UTIG, flight number for UTIG
+    granule: sequential chunk of segment, where data has been split across files
+    data_product: processing that has been applied (e.g. pik1, CSARP_standard)
+    data_format: {constraint: foreign_key}
+    download_method: {constraint: foreign_key}
+    url
+    destination_path
+    filesize: (int)
+  }
+  granules.institution -> institutions
+  granules.campaign -> campaigns
+  granules.data_format -> data_formats
+  granules.download_method -> download_methods
+}
+
+GPKG required tables: {
+  gpkg_contents: {
+    shape: sql_table
+    table_name: table containing the geometry information, e.g. 2019_Greenland_P3 {constraint: primary_key}
+    datatype: e.g. feature
+    identifier: (same as feature name)
+    description
+    last_change: timestamp of last update
+    min_x: bounding box, in srs coordinates
+    min_y
+    max_y
+    max_y
+    srs_id: e.g. 3413 {constraint: foreign_key}
+  }
+
+  gpkg_spatial_ref_sys: {
+    shape: sql_table
+    srs_name: e.g. WGS 84 / NSIDC Sea Ice Polar Stereographic North
+    srs_id: e.g. 3413 {constraint: primary_key}
+    organization: e.g. EPSG
+    organization_coordsys_id: e.g. 3413
+    definition
+    description
+  }
+
+  gpkg_geometry_columns: {
+    shape: sql_table
+    table_name
+    column_name: e.g. geom
+    geometry_type_name: e.g. LINESTRING
+    srs_id: e.g. 3413
+    z
+    m
+  }
+
+  gpkg_extensions: {
+    shape: sql_table
+    table_name
+    column_name: e.g. geom
+    extension_name: e.g. gpkg_rtree_index
+    definition
+    scope: e.g. write-only
+  }
+
+  gpkg_contents -- gpkg_extensions: {style: {stroke-width: 0}}
+  gpkg_extensions -- gpkg_geometry_columns: {style: {stroke-width: 0}}
+  gpkg_contents.srs_id -> gpkg_spatial_ref_sys.srs_id
+  gpkg_geometry_columns.srs_id -> gpkg_spatial_ref_sys.srs_id
+}
