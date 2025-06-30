@@ -42,32 +42,10 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 
-# This is trickier than I wanted, because the split is HiCARS1/2,
-# not per-season. Uggggh.
-# I think I'm going to create two "campaigns", that only appear in the
-# database. They'll be used for looking up citations, but not for where
-# the data is put.
-
-# HiCARS1:
-#
-# HiCARS2:
-#
 # TODO: how to handle the "date accessed" requirement?
 #   Save that in the index when the user downloads it?
 #   it's easy enough to add a collumn to the granules table that is
 #   left blank until the user downloads it? Or just ignore that bit?
-
-
-data_citations = {}
-data_citations[
-    "ICECAP_HiCARS1"
-] = "Blankenship, D. D., Kempf, S. D., Young, D. A., Richter, T. G., Schroeder, D. M., Greenbaum, J. S., van Ommen, T., Warner, R. C., Roberts, J. L., Young, N. W., Lemeur, E., Siegert, M. J. & Holt, J. W. (2017). IceBridge HiCARS 1 L1B Time-Tagged Echo Strength Profiles, Version 1 [Data Set]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/W2KXX0MYNJ9G."
-data_citations[
-    "ICECAP_HiCARS2"
-] = "Blankenship, D. D., Kempf, S. D., Young, D. A., Richter, T. G., Schroeder, D. M., Ng, G., Greenbaum, J. S., van Ommen, T., Warner, R. C., Roberts, J. L., Young, N. W., Lemeur, E. & Siegert, M. J. (2017). IceBridge HiCARS 2 L1B Time-Tagged Echo Strength Profiles, Version 1 [Data Set]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/0I7PFBVQOGO5."
-science_citations = {}
-science_citations["ICECAP_HiCARS1"] = ""
-science_citations["ICECAP_HiCARS2"] = ""
 
 
 def get_username():
@@ -263,19 +241,6 @@ def main(url_filepath: str, data_dir: str, antarctic_index: str):
     connection = sqlite3.connect(antarctic_index)
     cursor = connection.cursor()
     cursor.execute("PRAGMA foreign_keys = ON")
-
-    # Add campaign to geopackage
-    for db_campaign in data_citations.keys():
-        cursor.execute(
-            "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
-            [
-                db_campaign,
-                institution,
-                data_citations[db_campaign],
-                science_citations[db_campaign],
-            ],
-        )
-    connection.commit()
 
     data_format = "utig_netcdf"
     download_method = "nsidc"

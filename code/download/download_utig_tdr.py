@@ -15,7 +15,6 @@ import sqlite3
 import subprocess
 import tempfile
 from dataclasses import dataclass
-from typing import List
 
 import requests
 
@@ -29,29 +28,6 @@ dois["COLDEX_2024"] = "doi:10.18738/T8/FV6VNT"
 dataverse_url = "https://dataverse.tdl.org/api/datasets/:persistentId?persistentId="
 # Append individual file ID to this URL to download data
 download_url = "https://dataverse.tdl.org/api/access/datafile/"
-
-data_citations = {}
-data_citations[
-    "GIMBLE"
-] = "Young, Duncan A.; Blankenship, Donald D.; Greenbaum, Jamin S.; Quartini, Enrica; Muldoon, Gail L; Habbal, Feras; Lindzey, Laura E.; Greene, Chad A.; Powell, Evelyn M.; Ng, Gregory C.; Richter, Thomas G.; Echeverry, Gonzalo; Kempf, Scott, 2024, Geophysical Investigations of Marie Byrd Land Lithospheric Evolution (GIMBLE) Airborne VHF Radar Transects: 2012/2013 and 2014/2015, https://doi.org/10.18738/T8/BMXUHX, Texas Data Repository, V1"
-data_citations[
-    "COLDEX_2023"
-] = "Young, Duncan; Greenbaum, Jamin S.; Kerr, Megan E.; Singh, Shivangini; Chan, Kristian; Buhl, Dillon P.; Ng, Gregory C.; Kempf, Scott D.; Echeverry, Gonzalo; Blankenship, Donald D., 2024, COLDEX Unfocused Airborne VHF Radar Transects: 2022-2023 South Pole Field Season, https://doi.org/10.18738/T8/XPMLCC, Texas Data Repository, V1"
-data_citations[
-    "COLDEX_2024"
-] = "Young, Duncan; Singh, Shivangini; Kerr, Megan E.; Ng, Gregory; Buhl, Dillon P.; Blankenship, Donald D, 2024, COLDEX Unfocused Airborne VHF Radar Transects: 2023-2024 South Pole Field Season, https://doi.org/10.18738/T8/FV6VNT, Texas Data Repository, V1"
-
-# Really, maybe this should be "related"? (Some groups use it for processing details, other for a scientific paper)
-science_citations = {}
-science_citations[
-    "GIMBLE"
-] = "Quartini, E., Blankenship, D. D., and Young, D. A., 2021, Active subglacial volcanism in West Antarctica, Geological Society Of London, Special Publication, 55, 785-803, https://dx.doi.org/10.1144/M55-2019-3 doi: 10.1144/M55-2019-3"
-science_citations[
-    "COLDEX_2023"
-] = "Peters, M. E., Blankenship, D. D., and Morse, D. L., 2005, Analysis techniques for coherent airborne radar sounding: Application to West Antarctic ice streams, Journal Of Geophysical Research, 110, B06303, 10.1029/2004JB003222 doi: 0.1029/2004JB003222"
-science_citations[
-    "COLDEX_2024"
-] = "Peters, M. E., Blankenship, D. D., and Morse, D. L., 2005, Analysis techniques for coherent airborne radar sounding: Application to West Antarctic ice streams, Journal Of Geophysical Research, 110, B06303, 10.1029/2004JB003222 doi: 10.1029/2004JB003222"
 
 
 @dataclass
@@ -113,38 +89,6 @@ def create_dataverse_index():
     return granules
 
 
-def update_qiceradar_antarctic_index_campaigns(
-    granules: List[Granule], antarctic_index: str
-):
-    """
-    Update the database file to include metadata for campaigns.
-    (Can't update granules because that wants filesize info, which
-    is coupled with the download step.)
-    """
-    connection = sqlite3.connect(antarctic_index)
-    cursor = connection.cursor()
-    cursor.execute("PRAGMA foreign_keys = ON")
-    institution = "UTIG"
-
-    # Update the campaigns table
-    for campaign in dois.keys():
-        try:
-            science_citation = science_citations[campaign]
-        except KeyError:
-            science_citation = ""
-        cursor.execute(
-            "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
-            [
-                campaign,
-                institution,
-                data_citations[campaign],
-                science_citation,
-            ],
-        )
-        connection.commit()
-    connection.close
-
-
 def maybe_download_wget(url: str, dest_filepath: str) -> int:
     filename = pathlib.Path(dest_filepath).name
     if os.path.exists(dest_filepath):
@@ -199,7 +143,6 @@ def download_utig_dataverse(
     """
     # UTIG data is saved to ANTARCTIC/UTIG/{campaign}/{transect}/{granule}.nc
     granules = create_dataverse_index()
-    update_qiceradar_antarctic_index_campaigns(granules, antarctic_index)
 
     connection = sqlite3.connect(antarctic_index)
     cursor = connection.cursor()

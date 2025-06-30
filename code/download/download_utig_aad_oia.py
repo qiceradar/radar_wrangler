@@ -28,7 +28,6 @@ import sqlite3
 import subprocess
 import tempfile
 from dataclasses import dataclass
-from typing import List
 
 # This required me to run
 # python3 -m pip install boto3
@@ -50,23 +49,6 @@ secret_keys["EAGLE"] = os.environ['EAGLE_SECRET_KEY']
 dois = {}
 # dois["EAGLE"] = "doi:10.26179/5bcff4afc287d"
 dois["OIA"] = "doi:10.26179/5wkf-7361"
-
-# TODO: check with DAY about this!
-data_citations = {}
-data_citations["EAGLE"] = "Blankenship, D.D., Roberts, J.L., Greenbaum, J.S., Young, D.A., Van Ommen, T., Le Meur, E. and Beem, L.H. (2018) EAGLE/ICECAP II RADARGRAMS, Ver. 1, Australian Antarctic Data Centre - doi:10.26179/5bcff4afc287d"
-data_citations[
-    "OIA"
-] = "Young, D., Roberts, J.L., Blankenship, D.D., Van Ommen, T., Ritz, C., Caviite, M.G. and Frezzotti, M. (2021) ICECAP radargrams in support of the international old ice search at Dome C - 2016, Ver. 1, Australian Antarctic Data Centre - doi:10.26179/5wkf-7361"
-
-# Really, maybe this should be "related"? (Some groups use it for processing details, other for a scientific paper)
-science_citations = {}
-science_citations["EAGLE"] = (
-
-)
-science_citations["OIA"] = (
-    "Young D.A., Roberts J.L., Ritz C., Frezzotti M., Quartini E., Cavitte M.G.P., Tozer C.R., Steinhage D., Urbini S., Corr H.F.J., van Ommen T.D., Blankenship D.D. (2017) High-resolution boundary conditions of an old ice target near Dome C, Antarctica, The Cryosphere 11. 1897-1911",
-    "Cavitte M.G.P., Young D.A., Mulvaney R., Ritz C., Roberts J.L. (2021) A detailed radiostratigraphic data set for the central East Antarctic Plateau spanning from the Holocene to the mid-Pleistocene, Earth Systems Science Data"
-)
 
 
 # TODO: This should probably be put into a more general include?
@@ -174,42 +156,6 @@ def create_aad_s3_index():
     return granules
 
 
-# TODO: This should probably be put into a more general include?
-# Though that could be more confusing, since it assumes there will be
-# a file-global variable for the citations.
-def update_qiceradar_antarctic_index_campaigns(
-    granules: List[Granule], antarctic_index: str
-):
-    """
-    Update the database file to include metadata for campaigns.
-    (Can't update granules because that wants filesize info, which
-    is coupled with the download step.)
-    """
-    connection = sqlite3.connect(antarctic_index)
-    cursor = connection.cursor()
-    cursor.execute("PRAGMA foreign_keys = ON")
-    institution = "UTIG"
-
-    # Update the campaigns table
-    for campaign in dois.keys():
-        try:
-            citation_list = science_citations[campaign]
-            science_citation = "\n".join(citation_list)
-        except KeyError:
-            science_citation = ""
-        cursor.execute(
-            "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
-            [
-                campaign,
-                institution,
-                data_citations[campaign],
-                science_citation
-            ],
-        )
-        connection.commit()
-    connection.close
-
-
 # NB: Need to test this briefly before pointing it at a directory where I've
 # already downloaded the data.
 def maybe_download_boto3(url: str, dest_filepath: str, campaign: str) -> int:
@@ -261,7 +207,6 @@ def download_utig_aad(
     """
     # UTIG data is saved to ANTARCTIC/UTIG/{campaign}/{transect}/{granule}.nc
     granules = create_aad_s3_index()
-    update_qiceradar_antarctic_index_campaigns(granules, antarctic_index)
 
     connection = sqlite3.connect(antarctic_index)
     cursor = connection.cursor()

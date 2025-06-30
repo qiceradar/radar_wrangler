@@ -64,16 +64,57 @@ Arguments:
 
 ## Layer Creation
 
-I am currently experimenting with using a single GeoPackage as the database that holds all tracks for the index. However, since importing the GeoPackage directly in to QGIS only seems to allow one level of nesting, there needs to be a separate qlr file that styles the layers and organizes them.
+We use a single GeoPackage as the database that holds all tracks for the index. However, since importing the GeoPackage directly in to QGIS only seems to allow one level of nesting, there needs to be a separate qlr file that styles the layers and organizes them.
 
 
-1) ./create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk antarctic_index.gpkg arctic_index.gpkg
+1) Initialize index
+
+We use a geopackage database to track geometry and metadata about each radargram.
+
+Start with the empty template package downloaded from:
+http://www.geopackage.org/data/empty.gpkg
+
+Then run:
+```
+python3 initialize_gpkg.py ../../data/empty.gpkg qiceradar_antarctic_index.gpkg
+python3 initialize_gpkg.py ../../data/empty.gpkg qiceradar_arctic_index.gpkg
+```
+
+This will set up the "campaigns" and "granules" tables that will be incrementally filled in with relevant info by the download scripts.
+
+Investigate the database schema:
+```
+sqlite3 qiceradar_antarctic_index.gpkg
+.schema
+```
+
+
+Next, fill in the manually-specified citation metadata for each campaign:
+```
+python3 initialize_campaigns.py qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
+```
+
+To confirm the changes:
+```
+sqlite3 qiceradar_antarctic_index.gpkg
+.mode columns
+select * from campaigns;
+```
+
+
+
+
+2) Add flightpath geometry to index
+```
+./create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk qiceradar_antarctic_index_2025.gpkg qiceradar_arctic_index_2025.gpkg
+```
+
 
   * Generates qiceradar_index.gpkg
   * Uses (manually updated) `available_campaigns` variable from bedmap_labels.py to not create layers for BEDMAP2/3 campaigns that are directly downloaded as radargrams to avoid duplication.
   * Adds geometry to already-existing geopackage files
 
-2) ./style_geopackage_index.py ARCTIC ~/RadarData/targ/qiceradar_arctic_index.gpkg ~/RadarData/targ/qiceradar_arctic_index.qlr
+3) ./style_geopackage_index.py ARCTIC ~/RadarData/targ/qiceradar_arctic_index.gpkg ~/RadarData/targ/qiceradar_arctic_index.qlr
 
   * Generates qice_radar_index.qlr
   * Uses the 'available' attribute attached to each geometry to determine which color the points should be.

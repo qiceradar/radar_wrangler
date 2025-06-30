@@ -1,0 +1,58 @@
+# Data at NSIDC is categorized as HiCARS1/2, not per-season.
+# To deal with this, I've created two "campaigns", that only appear in the
+# database. They'll be used for looking up citations, but not for where
+# the data is saved or how it is grouped into layers.
+- campaign: ICECAP_HiCARS1
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+    Blankenship, D. D., Kempf, S. D., Young, D. A., Richter, T. G., Schroeder, D. M., Greenbaum, J. S., van Ommen, T., Warner, R. C., Roberts, J. L., Young, N. W., Lemeur, E., Siegert, M. J. & Holt, J. W. (2017). IceBridge HiCARS 1 L1B Time-Tagged Echo Strength Profiles, Version 1 [Data Set]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/W2KXX0MYNJ9G.
+  science_citation:
+
+- campaign: ICECAP_HiCARS2
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+    Blankenship, D. D., Kempf, S. D., Young, D. A., Richter, T. G., Schroeder, D. M., Ng, G., Greenbaum, J. S., van Ommen, T., Warner, R. C., Roberts, J. L., Young, N. W., Lemeur, E. & Siegert, M. J. (2017). IceBridge HiCARS 2 L1B Time-Tagged Echo Strength Profiles, Version 1 [Data Set]. Boulder, Colorado USA. NASA National Snow and Ice Data Center Distributed Active Archive Center. https://doi.org/10.5067/0I7PFBVQOGO5.
+  science_citation:
+
+- campaign: COLDEX_2023
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+    Young, Duncan; Greenbaum, Jamin S.; Kerr, Megan E.; Singh, Shivangini; Chan, Kristian; Buhl, Dillon P.; Ng, Gregory C.; Kempf, Scott D.; Echeverry, Gonzalo; Blankenship, Donald D., 2024, COLDEX Unfocused Airborne VHF Radar Transects: 2022-2023 South Pole Field Season, https://doi.org/10.18738/T8/XPMLCC, Texas Data Repository, V1
+  science_citation: |
+    Peters, M. E., Blankenship, D. D., and Morse, D. L., 2005, Analysis techniques for coherent airborne radar sounding: Application to West Antarctic ice streams, Journal Of Geophysical Research, 110, B06303, 10.1029/2004JB003222 doi: 0.1029/2004JB003222
+
+- campaign: COLDEX_2024
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+    Young, Duncan; Singh, Shivangini; Kerr, Megan E.; Ng, Gregory; Buhl, Dillon P.; Blankenship, Donald D, 2024, COLDEX Unfocused Airborne VHF Radar Transects: 2023-2024 South Pole Field Season, https://doi.org/10.18738/T8/FV6VNT, Texas Data Repository, V1
+  science_citation: |
+    Peters, M. E., Blankenship, D. D., and Morse, D. L., 2005, Analysis techniques for coherent airborne radar sounding: Application to West Antarctic ice streams, Journal Of Geophysical Research, 110, B06303, 10.1029/2004JB003222 doi: 0.1029/2004JB003222
+
+- campaign: EAGLE
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+      Blankenship, D.D., Roberts, J.L., Greenbaum, J.S., Young, D.A., Van Ommen, T., Le Meur, E. and Beem, L.H. (2018) EAGLE/ICECAP II RADARGRAMS, Ver. 1, Australian Antarctic Data Centre - doi:10.26179/5bcff4afc287d
+  science_citation:
+
+- campaign: GIMBLE
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+    Young, Duncan A.; Blankenship, Donald D.; Greenbaum, Jamin S.; Quartini, Enrica; Muldoon, Gail L; Habbal, Feras; Lindzey, Laura E.; Greene, Chad A.; Powell, Evelyn M.; Ng, Gregory C.; Richter, Thomas G.; Echeverry, Gonzalo; Kempf, Scott, 2024, Geophysical Investigations of Marie Byrd Land Lithospheric Evolution (GIMBLE) Airborne VHF Radar Transects: 2012/2013 and 2014/2015, https://doi.org/10.18738/T8/BMXUHX, Texas Data Repository, V1
+  science_citation: |
+    Quartini, E., Blankenship, D. D., and Young, D. A., 2021, Active subglacial volcanism in West Antarctica, Geological Society Of London, Special Publication, 55, 785-803, https://dx.doi.org/10.1144/M55-2019-3 doi: 10.1144/M55-2019-3
+
+- campaign: OIA
+  region: ANTARCTIC
+  institution: UTIG
+  data_citation: |
+      Young, D., Roberts, J.L., Blankenship, D.D., Van Ommen, T., Ritz, C., Caviite, M.G. and Frezzotti, M. (2021) ICECAP radargrams in support of the international old ice search at Dome C - 2016, Ver. 1, Australian Antarctic Data Centre - doi:10.26179/5wkf-7361
+  science_citation:
+    Young D.A., Roberts J.L., Ritz C., Frezzotti M., Quartini E., Cavitte M.G.P., Tozer C.R., Steinhage D., Urbini S., Corr H.F.J., van Ommen T.D., Blankenship D.D. (2017) High-resolution boundary conditions of an old ice target near Dome C, Antarctica, The Cryosphere 11. 1897-1911
+
+    Cavitte M.G.P., Young D.A., Mulvaney R., Ritz C., Roberts J.L. (2021) A detailed radiostratigraphic data set for the central East Antarctic Plateau spanning from the Holocene to the mid-Pleistocene, Earth Systems Science Data
