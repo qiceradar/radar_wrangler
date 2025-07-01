@@ -8,22 +8,20 @@ have good metadata for who actually owns the data.
 """
 
 
-import os
 import pathlib
-import pickle
 import sqlite3
 import subprocess
-from typing import Dict
+
+from index_utils import Granule, read_granule_list
 
 
 def download_cresis(
-    data_dir: str, datafiles: Dict, antarctic_index: str, arctic_index: str
+    data_dir: str, granules: list[Granule], antarctic_index: str, arctic_index: str
 ):
     """
     Download all CReSIS data from the KU servers.
     """
 
-    institution = "CRESIS"
     connections = {}
     cursors = {}
     connections["ANTARCTIC"] = sqlite3.connect(antarctic_index)
@@ -32,80 +30,66 @@ def download_cresis(
         cursors[region] = connections[region].cursor()
         cursors[region].execute("PRAGMA foreign_keys = ON")
 
-    for region, campaigns in datafiles.items():
-        print(region)
-        # if region == "ARCTIC":
-        #     continue
-        for campaign, products in campaigns.items():
-            print(campaign)
-            for product, segments in products.items():
-                print(".. {}".format(product))
-                for segment, frames in segments.items():
-                    print(".... {}".format(segment))
-                    dest_dir = "{}/{}/CRESIS/{}/{}/{}".format(
-                        data_dir, region, campaign, product, segment
-                    )
-                    try:
-                        pp = pathlib.Path(dest_dir)
-                        pp.mkdir(parents=True, exist_ok=True)
-                    except FileExistsError:
-                        raise Exception("Could not create {}.".format(dest_dir))
-                        continue
+    for granule in granules:
+        dest_filepath = pathlib.Path(data_dir, granule.relative_filepath)
+        try:
+            pp = dest_filepath.parent
+            pp.mkdir(parents=True, exist_ok=True)
+        except FileExistsError:
+            raise Exception("Could not create {}.".format(pp))
+            continue
 
-                    for frame, data_url in frames.items():
-                        filename = data_url.split("/")[-1]
-                        dest_filepath = os.path.join(dest_dir, filename)
-                        rel_filepath = os.path.join(
-                            region, institution, campaign, product, segment, filename
-                        )
+        if dest_filepath.is_file():
+            filesize = dest_filepath.stat().st_size
+        else:
+            print(f"Downloading {dest_filepath}")
+            wget_cmd = 'wget -c --directory-prefix="{}" "{}"'.format(
+                pp, granule.download_url
+            )
+            print(wget_cmd)
+            subprocess.getoutput(wget_cmd)
 
-                        if os.path.exists(dest_filepath):
-                            filesize = os.path.getsize(dest_filepath)
-                            print(
-                                f"Skipping {filename}: file already exists with size {filesize}"
-                            )
-                        else:
-                            print(f"Downloading {dest_filepath}")
-                            wget_cmd = 'wget -c --directory-prefix="{}" "{}"'.format(
-                                dest_dir, data_url
-                            )
-                            print(wget_cmd)
-                            subprocess.getoutput(wget_cmd)
+        # Check if download succeeded
+        try:
+            filesize = dest_filepath.stat().st_size
+        except Exception as ex:
+            # There are a handful of files that are listed in the CReSIS website
+            # but where the actual radargram gives
+            # "Forbidden: You don't have permission to access this resource".
+            # So, check that download was successful
+            print(f"Cannot find downloaded file {dest_filepath}")
+            print(f"{ex}")
+            continue
 
-                        # And, update the database with info about this granule/frame
-                        filesize = os.path.getsize(dest_filepath)
-                        granule = frame.split(".")[0].split("_")[-1]
-                        granule_name = f"{institution}_{campaign}_{segment}_{granule}"
-                        data_format = "cresis_mat"
-                        download_method = "wget"
-                        cursors[region].execute(
-                            "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            [
-                                str(granule_name),
-                                institution,
-                                campaign,
-                                segment,
-                                granule,
-                                product,
-                                data_format,
-                                download_method,
-                                data_url,
-                                str(rel_filepath),
-                                str(filesize),
-                            ],
-                        )
-                        connections[region].commit()
+        # And, update the database with info about this granule/frame
+        cursors[granule.region].execute(
+            "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                granule.granule_name,
+                granule.institution,
+                granule.campaign,
+                granule.segment,
+                granule.granule,
+                granule.data_product,
+                granule.data_format,
+                granule.download_method,
+                granule.download_url,
+                granule.relative_filepath,
+                str(filesize),  # eventually won't know file size
+            ],
+        )
+        connections[region].commit()
 
     for _region, connection in connections.items():
         connection.close()
 
 
 def main(data_dir: str, antarctic_index: str, arctic_index: str):
-    index_filepath = "../../data/CRESIS/cresis_datafiles.pkl"
+    index_filepath = "../../data/cresis_granules.csv"
 
-    cresis_datafiles = pickle.load(open(index_filepath, "rb"))
+    cresis_granules = read_granule_list(index_filepath)
 
-    download_cresis(data_dir, cresis_datafiles, antarctic_index, arctic_index)
+    download_cresis(data_dir, cresis_granules, antarctic_index, arctic_index)
 
 
 if __name__ == "__main__":
