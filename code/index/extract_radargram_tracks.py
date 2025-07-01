@@ -11,6 +11,9 @@ import scipy
 import scipy.io
 from radar_index_utils import subsample_tracks_rdp
 
+# We apply an extra filtering step to the positioning data from these files
+# to remove large jumps before the ground tracks are added to the index.
+#
 corrupt_files = [
     # UTIG campaign: COLDEX_2023
     # See https://github.com/qiceradar/radar_wrangler/issues/15
@@ -380,9 +383,12 @@ def main():
         "index_directory", help="Root directory for generated subsampled files"
     )
     parser.add_argument(
-        "--epsilon", default=5.0, help="Maximum cross-track error for RDP subsampling."
+        "--epsilon", default=5.0,
+        help="Maximum cross-track error for RDP subsampling."
     )
-    parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--force", action="store_true"
+    )
     args = parser.parse_args()
     extract_flightlines(
         args.data_directory, args.index_directory, args.epsilon, args.force

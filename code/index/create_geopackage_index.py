@@ -60,7 +60,9 @@ def add_campaign_directory_gpkg(
     granules = []
     segments = []
     t0 = time.time()
-    for csv_filepath in pathlib.Path(campaign_dir).rglob("*.csv"):
+    # TODO: This is another place that running on my new Mac Air
+    # cause problems thanks to ._ files added to the directory structure
+    for csv_filepath in [pp for pp in pathlib.Path(campaign_dir).rglob("*.csv") if not pp.stem.startswith(".")]:
         relative_path = pathlib.Path(csv_filepath).relative_to(campaign_dir)
         granule = None
         if institution == "AWI":
@@ -121,7 +123,7 @@ def add_campaign_directory_gpkg(
             segment = filename.split("-")[0]
             granule = filename.split("-")[1].split("_")[0]
         elif institution == "STANFORD":
-            # Another ground-tracks-only dataset.abs
+            # Another ground-tracks-only dataset.
             segment = relative_path.stem
         else:
             print(f"institution {institution} not supported!")
@@ -133,9 +135,14 @@ def add_campaign_directory_gpkg(
             geometry_name = "_".join([institution, campaign, segment, granule])
 
         # Add a layer with these features to the GeoPackage
-        xx, yy = load_xy(csv_filepath)
+        try:
+            xx, yy = load_xy(csv_filepath)
+        except Exception as ex:
+            print(f"Could not load XY from {csv_filepath}")
+            print(f"{ex}")
+            continue
         if len(xx) < 2:
-            print("Cannot create feature from {csv_filepath}; too few points")
+            print(f"Cannot create feature from {csv_filepath}; too few points")
         else:
             coords = np.array([[x1, y1] for x1, y1 in zip(xx, yy)])
             points = LineString(coords)
@@ -268,12 +275,13 @@ def add_csv_gpkg(
 def add_bedmap_layers(data_dir, gpkg_filepath):
     bedmap_dir = os.path.join(data_dir, "ANTARCTIC", "BEDMAP")
 
-    institutions = list(os.listdir(bedmap_dir))
+    institutions = [dd for dd in os.listdir(bedmap_dir) if not dd.startswith('.')]
     institutions.sort()
 
     for institution in institutions:
         institution_dir = os.path.join(bedmap_dir, institution)
-        filenames = [ff for ff in os.listdir(institution_dir) if ff.endswith("csv")]
+        print(f"Adding Bedmap layers for institution {institution}; dir = {institution_dir}")
+        filenames = [ff for ff in os.listdir(institution_dir) if ff.endswith("csv") and not ff.startswith('.')]
 
         # TODO: This sorts by *year*, rather than by campaign name
         filenames.sort()  # QUESTION: Why doesn't this seem to be working?
@@ -314,7 +322,7 @@ def add_bedmap_layers(data_dir, gpkg_filepath):
 def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
     data_dir = os.path.join(data_dir, region, institution)
     if not os.path.isdir(data_dir):
-        print("No {} data from {}".format(region, institution))
+        print(f"No {region} data from {institution}. dir={data_dir}")
         return
     campaigns = [
         dd for dd in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, dd))
@@ -338,7 +346,7 @@ def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
 def add_icethk_layers(region, institution, data_dir, gpkg_filepath, availability="u"):
     data_dir = os.path.join(data_dir, region, institution)
     if not os.path.isdir(data_dir):
-        print("No {} data from {}".format(region, institution))
+        print("No {} icethk data from {}".format(region, institution))
         return
     campaigns = [
         dd for dd in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, dd))
