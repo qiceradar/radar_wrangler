@@ -39,19 +39,6 @@ A later index step will add the per-campaign tables containing geometry, along w
 pip3 install --user requests
 pip3 install --user bs4
 
-# Initial Index Setup
-
-We use a geopackage database to track geometry and metadata about each radargram.
-
-Start with the empty template package downloaded from:
-http://www.geopackage.org/data/empty.gpkg
-
-Then run:
-
-`python3 initialize_gpkg.py empty.gpkg qiceradar_antarctic_index.gpkg`
-`python3 initialize_gpkg.py empty.gpkg qiceradar_arctic_index.gpkg`
-
-This will set up the "campaigns" and "granules" tables that will be incrementally filled in with relevant info by the download scripts.
 
 # Download
 
@@ -94,7 +81,9 @@ For Arctic surveys:
 
 Download:
 
-`python3 download_bas.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+```
+python3 download_bas.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
+```
 
 
 ## UTIG
@@ -108,7 +97,9 @@ UTIG's data is spread across multiple data centers, including:
 ### TDR (Texas Data Repository)
 
 TDR is the simplest:
-`python3 download_utig_tdr.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+```
+python3 download_utig_tdr.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
+```
 
 ### NSIDC
 
@@ -126,7 +117,9 @@ NASA's Earthdata requires a login to download. I prefer bearer token to avoid sa
 
 **Generate index**:
 
-`python3 generate_utig_nsidc_index.py`
+```
+python3 generate_utig_nsidc_index.py
+```
 
 **Download data**:
 
@@ -134,7 +127,9 @@ NASA's Earthdata requires a login to download. I prefer bearer token to avoid sa
 
 TODO: Consider refactoring; only copying the file to its final destination after download succeeds makes the file size check less important.
 
-`python3 download_utig_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg`
+```
+python3 download_utig_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg
+```
 
 ## CReSIS
 
@@ -145,14 +140,18 @@ Rather than decide which is the canonical format, we simply index all versions.
 
 ### KU
 
-`python3 download_cresis_ku.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+```
+python3 download_cresis_ku.py --reindex ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
+```
 
 ### NSIDC
 
 These scripts are based off the UTIG ones:
-`python3 generate_cresis_nsidc_index.py`
+```
+python3 generate_cresis_nsidc_index.py
 
-`python3 download_cresis_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg`
+python3 download_cresis_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg
+```
 
 # Add Geometry
 
@@ -160,12 +159,16 @@ See the README in ../index to finish adding transect geometry to the geopackage.
 
 The short version is:
 
-`python3 ../index/create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg`
+```
+python3 ../index/create_geopackage_index.py ~/RadarData/targ ~/RadarData/targ/icethk qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
+```
 
 Then set up environment variables to use the QGIS version of python,
 and style the geopackage.
 
-`python3 ../index/style_geopackage_index.py ANTARCTIC ~/Documents/QIceRadar/code/radar_wrangler/code/download/qiceradar_antarctic_index.gpkg ./qiceradar_antarctic_index.qlr`
+```
+python3 ../index/style_geopackage_index.py ANTARCTIC ~/Documents/QIceRadar/code/radar_wrangler/code/download/qiceradar_antarctic_index.gpkg ./qiceradar_antarctic_index.qlr
+```
 
 NB: the script requires the full path to the geopackage file, not the relative filepath.
 
