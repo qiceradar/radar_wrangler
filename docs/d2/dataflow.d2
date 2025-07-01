@@ -1,0 +1,217 @@
+# -----------------------DATA SERVERS----------------------
+
+bas_server: {
+  shape: cloud
+  label: ramadda.data.bas.ac.uk
+}
+
+cresis_server: {
+  shape: cloud
+  label: data.cresis.ku.edu
+}
+
+nsidc_server: {
+  shape: cloud
+  label: NSIDC
+}
+
+tdr_server: {
+  shape: cloud
+  label: Texas Data Repository
+}
+
+# -----------------------INDEX SCRIPTS----------------------
+
+generate_utig_nsidc_index: {
+  label: generate_utig_nsidc_index.py
+}
+
+# -----------------------GENERATED INDICES----------------------
+
+bas_campaign_csv: {
+  shape: page
+  label: |md
+    data/BAS/AGAP.csv \
+    data/BAS/POLARGAP.csv \
+    (etc... manually downloaded.)
+  |
+}
+
+cresis_index: {
+  shape: page
+  # Yes, this particular folder is not all caps for CReSIS
+  label: radar_wrangler/data/CReSIS/cresis_datafiles.pkl
+}
+
+utig_nsidc_index: {
+  shape: page
+  label: radar_wrangler/data/UTIG/utig_nsidc_index.csv
+}
+
+# -----------------------DESTINATION RADARGRAM DIRECTORIES----------------------
+
+bas_radargram_filepath: {
+  shape: page
+  label: RADAR_DATA/ANTARCTIC/BAS/AGAP/AGAP_A03.nc
+}
+
+cresis_radargram_filepath: {
+  shape: page
+  label: RADAR_DATA/\{region\}/CRESIS/\{campaign\}/\{product\}/\{yyyymmdd_ff\}/Data_yyyymmdd_ff_ggg.mat
+}
+
+utig_radargram_filepath: {
+  shape: page
+  label: |md
+    RADAR_DATA/ANTARCTIC/UTIG/ICECAP/\{$PST\}/IR1HI1B\_yyyyjjj\_\{$PST\}\_ggg.nc \
+    RADAR_DATA/ANTARCTIC/UTIG/GIMBLE/\{$iPST\}/IRFOC1B\_yyyyjjj\_\{$PST\}\_ggg.nc
+  |
+}
+
+# ---------------------------------------------
+
+groundtrack_filepaths: {
+  shape: page
+  label: |md
+    RADAR_DATA/targ/ANTARCTIC/BAS/AGAP/AGAP_A03.csv \
+    RADAR_DATA/targ/\{region\}/CRESIS/\{campaign\}/\{yyyymmdd_ff\}/Data_yyyymmdd_ff_ggg.csv \
+    RADAR_DATA/targ/ANTARCTIC/UTIG/EAGLE/ASB1_JKB2r_R42a/ER2HI1B_2017031_ASB1_JKB2r_R42a_003.csv
+  |
+}
+
+# --------------------DOWNLOAD SCRIPTS-------------------------
+
+download_bas: {
+  label: download_bas.py
+}
+
+download_cresis_ku: {
+  label: download_cresis_ku.py
+}
+
+download_utig_nsidc: {
+  label: download_utig_nsidc.py
+}
+
+download_utig_tdr: {
+  label: download_utig_tdr.py
+}
+
+# ---------------------------------------------
+
+extract_radargram_tracks: {
+  # Reimplements radargram parsing to get latitude and longitude; does not use classes implemented by the viewer
+  # Transforms to map coordinate system
+  # cleans up outliers on known-problem files
+  # runs RDP to subsample
+  label: extract_radargram_tracks.py
+}
+
+create_geopackage_index: {
+  label: create_geopackage_index.py
+}
+
+style_geopackage_index: {
+  label: style_geopackage_index.py
+}
+
+qiceradar_index: {
+  shape: page
+  label: qiceradar_antarctic_index.gpkg
+}
+
+qiceradar_stylefile: {
+  shape: page
+  label: qiceradar_antarctic_index.qlr
+}
+
+initialize_gpkg: {
+  label: initialize_gpkg.py
+}
+
+populate_campaigns: {
+  label: populate_campaigns.py
+}
+
+empty_gpkg: {
+  shape: page
+  label: empty.gpkg
+}
+
+campaign_metadata: {
+  shape: page
+  label: |md
+    awi_campaigns.yaml \
+    bas_campaigns.yaml \
+    cresis_campaigns.yaml \
+    utig_campaigns.yaml
+  |
+}
+
+# ##############
+#
+empty_gpkg -> initialize_gpkg
+initialize_gpkg -> qiceradar_index: {
+  label: |md
+    create and populate:
+    * institutions
+    * data_formats
+    * download_methods
+    define schema for:
+    * campaigns
+    * granules
+  |
+}
+
+campaign_metadata -> populate_campaigns
+populate_campaigns -> qiceradar_index: {
+  label: |md
+    campaigns: name, institution, citations
+  |
+}
+
+initialize_gpkg -- populate_campaigns: {style: {stroke-width: 0}}
+
+bas_server -> download_bas
+bas_campaign_csv -> download_bas
+download_bas -> bas_radargram_filepath
+
+cresis_server -> download_cresis_ku
+cresis_index -> download_cresis_ku
+download_cresis_ku -> cresis_index
+download_cresis_ku -> cresis_radargram_filepath
+
+nsidc_server -> generate_utig_nsidc_index
+generate_utig_nsidc_index -> utig_nsidc_index
+utig_nsidc_index -> download_utig_nsidc
+nsidc_server -> download_utig_nsidc
+download_utig_nsidc -> utig_radargram_filepath
+tdr_server -> download_utig_tdr
+download_utig_tdr -> utig_radargram_filepath
+
+# TODO: I hope to refactor this link away, replaced by granule metadata and a script to check file sizes
+download_cresis_ku -> qiceradar_index: {
+  label: |md
+    *granules* : name, institution, campaign, segment, granule, filesize
+  |
+}
+
+bas_radargram_filepath -> extract_radargram_tracks
+cresis_radargram_filepath -> extract_radargram_tracks
+utig_radargram_filepath -> extract_radargram_tracks
+
+extract_radargram_tracks -> groundtrack_filepaths: {
+  label: |md
+    subsampled ground tracks using RDP
+  |
+}
+groundtrack_filepaths -> create_geopackage_index
+
+create_geopackage_index -> qiceradar_index: {
+  label: |md
+    {campaign}: GeoDataFrame
+  |
+}
+
+qiceradar_index -> style_geopackage_index
+style_geopackage_index -> qiceradar_stylefile

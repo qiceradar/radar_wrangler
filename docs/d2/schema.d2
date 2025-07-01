@@ -125,7 +125,7 @@ GPKG required tables: {
     table_name
     column_name: e.g. geom
     geometry_type_name: e.g. LINESTRING
-    srs_id: e.g. 3413
+    srs_id: e.g. 3413 {constraint: foreign_key}
     z
     m
   }
@@ -139,7 +139,7 @@ GPKG required tables: {
     scope: e.g. write-only
   }
 
-  gpkg_contents -- gpkg_extensions: {style: {stroke-width: 0}}
+  #   gpkg_contents -- gpkg_extensions: {style: {stroke-width: 0}}
   gpkg_extensions -- gpkg_geometry_columns: {style: {stroke-width: 0}}
   gpkg_contents.srs_id -> gpkg_spatial_ref_sys.srs_id
   gpkg_geometry_columns.srs_id -> gpkg_spatial_ref_sys.srs_id
