@@ -11,7 +11,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from index_utils import Granule, read_granule_list, write_granule_list
+from radar_wrangler_utils import Granule, read_granule_list, write_granule_list
 
 
 def reindex_cresis(index_filepath: str, partial: bool) -> None:
@@ -141,7 +141,7 @@ def reindex_cresis(index_filepath: str, partial: bool) -> None:
 
 
 def main(partial: bool):
-    index_filepath = "../../data/cresis_granules.csv"
+    index_filepath = "../data/cresis_granules.csv"
 
     reindex_cresis(index_filepath, partial)
 

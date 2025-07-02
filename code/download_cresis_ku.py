@@ -12,7 +12,7 @@ import pathlib
 import sqlite3
 import subprocess
 
-from index_utils import Granule, read_granule_list
+from radar_wrangler_utils import Granule, read_granule_list
 
 
 def download_cresis(

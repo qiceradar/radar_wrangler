@@ -13,10 +13,10 @@ import yaml
 
 def main(antarctic_index, arctic_index):
     campaign_filepaths = [
-        "../../data/awi_campaigns.yaml",
-        "../../data/bas_campaigns.yaml",
-        "../../data/cresis_campaigns.yaml",
-        "../../data/utig_campaigns.yaml"
+        "../data/awi_campaigns.yaml",
+        "../data/bas_campaigns.yaml",
+        "../data/cresis_campaigns.yaml",
+        "../data/utig_campaigns.yaml"
     ]
 
     connections = {}

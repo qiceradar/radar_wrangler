@@ -371,7 +371,7 @@ def main(data_directory, force):
     # Set up configuration. These values were chosen interactively
     # using detangle_bedmap_general.ipynb
     # 1) Distance from bm1 point to campaign point for a match (meters)
-    max_dists = {campaign: 1 for campaign in campaign_points.keys()}
+    max_dists = dict.fromkeys(campaign_points, 1)
     max_dists["BAS_1998_Dufek_AIR_BM2"] = 100
     max_dists["NIPR_1992_JARE33_GRN_BM3"] = 100
     max_dists["NIPR_1996_JARE37_GRN_BM3"] = 100
@@ -380,7 +380,7 @@ def main(data_directory, force):
             max_dists[campaign] = 100
 
     # 2) How long of a gap in bedmap1 indices should we look at?
-    max_gap_lengths = {campaign: 100 for campaign in campaign_points.keys()}
+    max_gap_lengths = dict.fromkeys(campaign_points, 100)
     for campaign in campaign_points.keys():
         if "SPRI" in campaign:
             max_gap_lengths[campaign] = 1000
@@ -388,9 +388,7 @@ def main(data_directory, force):
             # RESPAC doesn't seem to have gaps
             max_gap_lengths[campaign] = 0
     # 3)
-    max_crosstrack_dists = {
-        campaign: 100 for campaign in campaign_points.keys()
-    }  # meters
+    max_crosstrack_dists = dict.fromkeys(campaign_points, 100)
     for campaign in campaign_points.keys():
         if "AWI" in campaign:
             # AWI is pretty continuous, so grab everythign in the gaps.
