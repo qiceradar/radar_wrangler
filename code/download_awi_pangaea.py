@@ -46,7 +46,7 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
         print(ex)
         raise Exception(f"Could not create {dest_dir}; already exists")
 
-    for ff in open(f"../../data/AWI/dataset_{dataset}_files.txt", 'r'):
+    for ff in open(f"../data/AWI/dataset_{dataset}_files.txt", 'r'):
         filename = ff.strip()
 
         mm = re.match(expr, filename)

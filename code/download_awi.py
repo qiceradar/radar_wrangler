@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 """
+THIS IS THE OLDER VERSION
+
 For now, I've given up on generating the index automatically;
 instead, download_awi_pangaea uses a manually-generated index
 which was copy-pasted from their accompanying README files.
