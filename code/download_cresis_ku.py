@@ -10,6 +10,7 @@ have good metadata for who actually owns the data.
 
 import pathlib
 import subprocess
+import tempfile
 
 from radar_wrangler_utils import Granule, read_granule_list
 
@@ -29,12 +30,20 @@ def download_cresis(data_dir: str, granules: list[Granule]):
             continue
 
         if not dest_filepath.is_file():
-            print(f"Downloading {dest_filepath}")
-            wget_cmd = 'wget -c --directory-prefix="{}" "{}"'.format(
-                pp, granule.download_url
-            )
-            print(wget_cmd)
-            subprocess.getoutput(wget_cmd)
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                wget_cmd = [
+                    "wget",
+                    "--quiet",
+                    "--output-document",
+                    temp_file.name,
+                    granule.download_url,
+                ]
+                print(f"{dest_filepath}: {' '.join(wget_cmd)}")
+                subprocess.check_call(wget_cmd)
+                print("subprocess returned...")
+                move_cmd = ["mv", temp_file.name, dest_filepath]
+                subprocess.check_call(move_cmd)
+                print("Got {}!".format(pathlib.Path(dest_filepath).name))
 
         # Check if download succeeded
         if not dest_filepath.is_file():
