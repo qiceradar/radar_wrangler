@@ -3,14 +3,16 @@ import os
 import pathlib
 import re
 import sqlite3
+import sys
 import time
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from shapely.geometry import LineString, MultiPoint
+
 from bedmap_labels import available_campaigns
 from radar_index_utils import count_skip_lines
-from shapely.geometry import LineString, MultiPoint
 
 
 def load_xy(filepath):
@@ -35,104 +37,121 @@ def load_xy(filepath):
 
 
 def add_campaign_directory_gpkg(
-    gpkg_filepath, campaign_dir, layer_name, region, campaign, institution, availability
+    gpkg_filepath: pathlib.Path,
+    campaign_dir: pathlib.Path,
+    layer_name: str,
+    region: str,
+    campaign: str,
+    institution: str,
+    availability: str,
 ):
     """
     QGIS can't handle having a separate layer for each flight or segment,
     so collect all granules for each season into a single layer/GeoDataFrame,
     with per-granule metadata providing info on where to download data.
-
-    TODO: I haven't yet figured out how to track metadata from download
-        through extraction and into database creation.
-        This should probably eventually include:
-        * download_uri -- address for wget
-        * display_uri  -- file:///path/to/radaragram
-        * campaign -- foreign key into separate table with detailed
-            information about the season. (or maybe just let that live in
-            the netCDFs provided?)
-        * institution -- eventually another foreign key
-        * instrumment -- eventually another foreign key into table with ifo
-            about different instruments. (Maybe leave this attached per-radargram?)
-
     """
     geometry_names = []
     geometries = []
-    granules = []
-    segments = []
+    granules: list[str] = []
+    segments: list[str] = []
     t0 = time.time()
-    # TODO: This is another place that running on my new Mac Air
-    # cause problems thanks to ._ files added to the directory structure
-    for csv_filepath in [pp for pp in pathlib.Path(campaign_dir).rglob("*.csv") if not pp.stem.startswith(".")]:
-        relative_path = pathlib.Path(csv_filepath).relative_to(campaign_dir)
+    # This is ugly ... figure out segment/granule from filename
+    for csv_filepath in [
+        pp for pp in campaign_dir.rglob("*.csv") if not pp.stem.startswith(".")
+    ]:
         granule = None
         if institution == "AWI":
-            filename = relative_path.stem
-            expr = "Data_(?P<flight>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3})_standard.*"
-            mm = re.match(expr, filename)
-            if mm is None:
-                print(f"Unable to extract flight and segment from {filename}. Continuing")
-                continue
-            segment = mm.group('flight')
-            granule = mm.group('granule')
+            filename = csv_filepath.stem
 
+            # Logic copied from download_awi_pangaea
+            # For the MCoRDS data
             # CSVs are in AWI/campaign/DATA_{segment}_{granule}_standard.csv
+            mcords_expr = (
+                "Data_(?P<segment>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3})_standard"
+            )
+            # Filenames for the 1995/96 EMR data
+            # antr1996_9602102402_EMR600_19960210_00.nc
+            emr95_expr = "antr[0-9]{4}_(?P<ymd>[0-9]{6})(?P<hs>[0-9]{4})_(?P<emr>EMR[0-9]{2,3})_[0-9]{8}_(?P<granule>[0-9]{2})"
+            # Filenames for the 1996/97 EMR data. And 97/98.
+            # It appears that the 5th digit indicates system: 2 for EMR600, 3 for EMR60
+            # 19973209_stp10.nc
+            emr_expr = "(?P<flight>[0-9]{8})_stp[0-9]{1,2}"
+
+            mcords_match = re.match(mcords_expr, filename)
+            emr95_match = re.match(emr95_expr, filename)
+            emr_match = re.match(emr_expr, filename)
+
+            if mcords_match is not None:
+                segment = mcords_match.group("segment")
+                granule = mcords_match.group("granule")
+            elif emr95_match is not None:
+                segment = emr95_match.group("ymd") + "_" + emr95_match.group("emr")
+                granule = emr95_match.group("hs")
+            elif emr_match is not None:
+                segment = emr_match.group("flight")
+            else:
+                print(f"Unable to extract segment from filename {filename}")
+                raise Exception
+
         elif institution == "BAS":
             # BAS CSVs are in BAS/{campaign}/{campaign}_{segment}.csv
             # Unfortunately, several of them have trailing underscores.
-            # try:
-            #     # For the radar lines
-            #     segment = relative_path.stem.split('_')[-1]
-            # except IndexError:
-            #     # For the depths-only lines
-            #     segment = relative_path.stem
-            # Ick -- this is yet another way of parsing the BAS filenames
-            # (download_bas uses regexes; this is simpler, but will break for GOG3)
-            # TODO: try to refactor and pull that parsing function into single place?
-            segment = relative_path.stem
+            segment = csv_filepath.stem
             if segment.startswith("BAS_"):
-                segment = segment[4:]
+                segment = segment.removeprefix("BAS_")
             prefix = f"{campaign}_"
             if segment.startswith(prefix):
-                segment = segment[len(prefix) :]
+                segment = segment.removeprefix(prefix)
         elif institution == "CRESIS":
             # CRESIS CSVs are in CRESIS/{campaign}/{segment}/Data_{segment}_{granule}.csv
-            segment, _ = relative_path.parts
-            filename = relative_path.stem
+            segment = csv_filepath.parent.name
+            filename = csv_filepath.stem
             granule = filename.split("_")[-1]
         elif institution in ["KOPRI", "UTIG"]:
             # UTIG CSVs are in UTIG/{campaign}/{segment}/{product}_{date}_{segment}_{granule}.csv
             # The KOPRI KRT1 data follows the same pattern
             # (This is the same as CRESIS, but keeping it separate in case we need product)
-            if "SOAR_LVS" == campaign:
-                segment = relative_path.stem
+            if "LVS" == campaign:
+                segment = csv_filepath.stem
+            elif "AGASEA" == campaign:
+                transect, granule = csv_filepath.stem.split("_")
+                segment = f"THW_SJB_{transect}"
+            elif "KRT1" == campaign:
+                filename = csv_filepath.stem
+                expr = "KHERA1B_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[a-zA-Z0-9]*)_(?P<set>[a-zA-Z0-9]*)_(?P<transect>[a-zA-Z0-9]*)_(?P<granule>[0-9]{3})"
+                mm = re.match(expr, filename)
+                # Since this is unzipped from a tarball, it doesn't have the
+                # directory structure grouping netCDFs for each granule by PST.
+                segment = f"{mm['project']}_{mm['set']}_{mm['transect']}"
+                granule = mm["granule"]
             else:
                 try:
-                    segment, _ = relative_path.parts
-                    filename = relative_path.stem
+                    segment = csv_filepath.parent.name
+                    filename = csv_filepath.stem
                     granule = filename.split("_")[-1]
                 except Exception as ex:
-                    print(f"Can't process {relative_path}")
-                    raise ex
+                    print(f"Can't process {csv_filepath}")
+                    raise
         elif institution == "LDEO":
             # The AGAP_BANDIT CSVs are in
             # LDEO/AGAP_BANDIT/{segment}/{flight}_{segment}-{granule}_{product}.csv
             # Unfortunately, {segment}-{granule} is not necessarily unique;
             # they have overlaps for F39b and F51b on T10210, so we'll include
             # the flight in the segment name.
-            filename = relative_path.stem
+            filename = csv_filepath.stem
             segment = filename.split("-")[0]
             granule = filename.split("-")[1].split("_")[0]
         elif institution == "STANFORD":
             # Another ground-tracks-only dataset.
-            segment = relative_path.stem
+            segment = csv_filepath.stem
         else:
             print(f"institution {institution} not supported!")
 
         # QUESTION: Does this need to be unique? (e.g. guarantee only one F01 in the whole dataset?)
         if granule is None:
-            geometry_name = "_".join([institution, campaign, segment])
+            geometry_name = f"{institution}_{campaign}_{segment}"
         else:
-            geometry_name = "_".join([institution, campaign, segment, granule])
+            geometry_name = f"{institution}_{campaign}_{segment}_{granule}"
 
         # Add a layer with these features to the GeoPackage
         try:
@@ -147,7 +166,7 @@ def add_campaign_directory_gpkg(
             coords = np.array([[x1, y1] for x1, y1 in zip(xx, yy)])
             points = LineString(coords)
             geometry_names.append(geometry_name)
-            granules.append(granule)
+            granules.append(str(granule))
             segments.append(segment)
             geometries.append(points)
     t1 = time.time()
@@ -160,8 +179,10 @@ def add_campaign_directory_gpkg(
     with sqlite3.connect(gpkg_filepath) as connection:
         cursor = connection.cursor()
         relative_paths = []
-        for name in geometry_names:
-            cmd = f'SELECT destination_path FROM granules WHERE name IS "{name}"'
+        for geometry_name in geometry_names:
+            cmd = (
+                f'SELECT destination_path FROM granules WHERE name IS "{geometry_name}"'
+            )
             try:
                 result = cursor.execute(cmd)
                 rows = result.fetchall()
@@ -169,9 +190,10 @@ def add_campaign_directory_gpkg(
             except IndexError as ex:
                 # This is expected if there is no corresponding entry in the
                 # granules table.
-                print(f"Unable to find {name} in geopackage granules table")
+                print(f"Unable to find {geometry_name} in geopackage granules table")
                 print(f"{ex}")
                 relative_path = ""
+                raise
             except TypeError as ex:
                 print(f"Error in executing command: {cmd} \n {ex}")
                 relative_path = ""
@@ -190,8 +212,7 @@ def add_campaign_directory_gpkg(
     gdf["relative_path"] = relative_paths
     # TODO: Way to make this an enum?
     gdf["availability"] = [availability for _ in geometry_names]
-    # TODO: this will probably need to be a lookup somewhere, unless URIs are
-    # embedded in the comments in the CSV
+    # This info is stored in the granules table, rather than with the geometry
     gdf["uri"] = [None for _ in geometry_names]
     gdf["name"] = geometry_names
     if region == "ARCTIC":
@@ -199,9 +220,8 @@ def add_campaign_directory_gpkg(
     elif region == "ANTARCTIC":
         gdf.crs = "EPSG:3031"
     else:
-        raise (Exception("Unrecognized region: {}".format(region)))
+        raise (Exception(f"Unrecognized region: {region}"))
 
-    # TODO: Create campaign table and add metadata
     t2 = time.time()
     # This takes > 1 sec/write, which seems excessive. It looks like some work
     # has been done speeding this up, but it's in Fiona 1.9/2.x
@@ -212,9 +232,7 @@ def add_campaign_directory_gpkg(
     gdf.to_file(gpkg_filepath, driver="GPKG", layer=layer_name)
     t3 = time.time()
     print(
-        "{:0.4f} s loading geometry; {:0.4f} sec creating GeoDataFrame; {:0.4f} adding to GeoPackage".format(
-            t1 - t0, t2 - t1, t3 - t2
-        )
+        f"{(t1 - t0):0.4f} s loading geometry; {(t2 - t1):0.4f} sec creating GeoDataFrame; {(t3 - t2):0.4f} adding to GeoPackage"
     )
 
 
@@ -269,7 +287,7 @@ def add_csv_gpkg(
     elif region.lower() == "antarctic":
         gdf.crs = "EPSG:3031"
     else:
-        raise (Exception("Unrecognized region: {}".format(region)))
+        raise (Exception(f"Unrecognized region: {region}"))
 
     # TODO: Create campaign table and add metadata
 
@@ -279,13 +297,19 @@ def add_csv_gpkg(
 def add_bedmap_layers(data_dir, gpkg_filepath):
     bedmap_dir = os.path.join(data_dir, "ANTARCTIC", "BEDMAP")
 
-    institutions = [dd for dd in os.listdir(bedmap_dir) if not dd.startswith('.')]
+    institutions = [dd for dd in os.listdir(bedmap_dir) if not dd.startswith(".")]
     institutions.sort()
 
     for institution in institutions:
         institution_dir = os.path.join(bedmap_dir, institution)
-        print(f"Adding Bedmap layers for institution {institution}; dir = {institution_dir}")
-        filenames = [ff for ff in os.listdir(institution_dir) if ff.endswith("csv") and not ff.startswith('.')]
+        print(
+            f"Adding Bedmap layers for institution {institution}; dir = {institution_dir}"
+        )
+        filenames = [
+            ff
+            for ff in os.listdir(institution_dir)
+            if ff.endswith("csv") and not ff.startswith(".")
+        ]
 
         # TODO: This sorts by *year*, rather than by campaign name
         filenames.sort()  # QUESTION: Why doesn't this seem to be working?
@@ -295,15 +319,15 @@ def add_bedmap_layers(data_dir, gpkg_filepath):
             else:
                 ff = filename.strip(".csv")
                 if ff in available_campaigns:
-                    print("Skipping {}; full data is available".format(ff))
+                    print(f"Skipping {ff}; full data is available")
                     continue
                 tokens = ff.split("_")
                 # intentionally include the year
                 campaign = "_".join(tokens[1:-2])
 
             csv_filepath = os.path.join(institution_dir, filename)
-            print("Trying to create a layer from {}".format(csv_filepath))
-            layer_name = "_".join([institution, campaign])
+            print(f"Trying to create a layer from {csv_filepath}")
+            layer_name = f"{institution}_{campaign}"
 
             granule = None
             segment = None
@@ -323,19 +347,19 @@ def add_bedmap_layers(data_dir, gpkg_filepath):
             )
 
 
-def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
-    data_dir = os.path.join(data_dir, region, institution)
-    if not os.path.isdir(data_dir):
-        print(f"No {region} data from {institution}. dir={data_dir}")
+def add_radargram_layers(
+    region: str, institution: str, data_dir: pathlib.Path, gpkg_filepath: pathlib.Path
+):
+    institution_dir = data_dir / region / institution
+    if not institution_dir.is_dir():
+        print(f"No {region} data from {institution}. dir={institution_dir}")
         return
-    campaigns = [
-        dd for dd in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, dd))
-    ]
+    campaigns = [dd for dd in institution_dir.iterdir() if dd.is_dir()]
     campaigns.sort()
-    for campaign in campaigns:
-        print("Processing {} radargram tracks".format(campaign))
+    for campaign_dir in campaigns:
+        print(f"Processing {campaign_dir.name} radargram tracks")
         availability = "a"
-        campaign_dir = os.path.join(data_dir, campaign)
+        campaign = campaign_dir.name
         add_campaign_directory_gpkg(
             gpkg_filepath,
             campaign_dir,
@@ -347,19 +371,22 @@ def add_radargram_layers(region, institution, data_dir, gpkg_filepath):
         )
 
 
-def add_icethk_layers(region, institution, data_dir, gpkg_filepath, availability="u"):
-    data_dir = os.path.join(data_dir, region, institution)
-    if not os.path.isdir(data_dir):
-        print("No {} icethk data from {}".format(region, institution))
+def add_icethk_layers(
+    region: str,
+    institution: str,
+    track_dir: pathlib.Path,
+    gpkg_filepath: pathlib.Path,
+    availability: str = "u",
+):
+    data_dir = track_dir / region / institution
+    if not data_dir.is_dir():
+        print(f"No {region} icethk data from {institution}")
         return
-    campaigns = [
-        dd for dd in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, dd))
-    ]
+    campaigns = [dd for dd in data_dir.iterdir() if dd.is_dir()]
     campaigns.sort()
-    for campaign in campaigns:
-        print("Processing {} ice thicknesses".format(campaign))
-        availability = availability
-        campaign_dir = os.path.join(data_dir, campaign)
+    for campaign_dir in campaigns:
+        campaign = campaign_dir.name
+        print(f"Processing {campaign} ice thicknesses")
         add_campaign_directory_gpkg(
             gpkg_filepath,
             campaign_dir,
@@ -376,7 +403,7 @@ def add_spri_layers(index_dir, gpkg_filepath):
     campaign = "SPRI_NSF_TUD"
     spri_dir = os.path.join(index_dir, "ANTARCTIC", institution, campaign)
     print(spri_dir)
-    layer_name = "_".join([institution, campaign])
+    layer_name = f"{institution}_{campaign}"
 
     # TODO: Stanford is a special case here, since radargrams are available but
     #   not yet in a format that I can support.
@@ -386,53 +413,65 @@ def add_spri_layers(index_dir, gpkg_filepath):
     )
 
 
+def main(antarctic: bool, track_dir, gpkg_filepath):
+    # Add the vostok lines ... these are available, but I don't
+    # yet support them, so am treating them like icethk lines
+
+    # for provider in ["AWI", "BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
+    # DO NOT COMMIT. Jumping to where errors are ...revolutionise2
+    for provider in ["AWI"]:
+        add_radargram_layers(region, provider, track_dir, gpkg_file)
+
+    return
+
+    # TODO: For arctic, this may need to include UTIG
+    for provider in ["BAS"]:
+        add_icethk_layers(region, provider, track_dir, gpkg_file, "u")
+
+    if antarctic:
+        add_spri_layers(track_dir, gpkg_file)
+
+    # ------- confirmed to work ----------
+    if antarctic:
+        add_icethk_layers("ANTARCTIC", "UTIG", track_dir / "icethk", gpkg_filepath, "a")
+
+    if antarctic:
+        add_bedmap_layers(track_dir, gpkg_file)
+    else:
+        # TODO: Add Bedmachine coverage data?
+        pass
+
+
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
+
+    parser.add_argument("--antarctic", action="store_true")
+    parser.add_argument("--arctic", action="store_true")
+
     parser.add_argument(
-        "radargram_index_directory",
+        "track_dir",
         help="Root directory for generated subsampled files derived from radargrams",
     )
     parser.add_argument(
-        "icethk_index_directory",
-        help="Root directory for generated subsampled files derived from icethk-only",
-    )
-    parser.add_argument(
-        "antarctic_index",
-        help="Geopackage database to update with geometry for Antarctic radar lines",
-    )
-    parser.add_argument(
-        "arctic_index",
-        help="Geopackage database to update with geometry for Arctic radar lines",
+        "index",
+        help="Geopackage database to update with geometry for radar lines",
     )
     args = parser.parse_args()
 
-    for region in ["ANTARCTIC", "ARCTIC"]:
-        if region == "ARCTIC":
-            gpkg_file = args.arctic_index
-        else:
-            gpkg_file = args.antarctic_index
+    antarctic = False
+    if args.antarctic:
+        antarctic = True
+        region = "ANTARCTIC"
+    elif args.arctic:
+        antarctic = False
+        region = "ARCTIC"
+    else:
+        print("ERROR: Must specify either --antarctic or --arctic")
+        sys.exit(-1)
 
-        # Add the vostok lines ... these are available, but I don't
-        # yet support them, so am treating them like icethk lines
-        if region == "ANTARCTIC":
-            add_icethk_layers("ANTARCTIC", "UTIG", args.icethk_index_directory, gpkg_file, "a")
+    gpkg_file = pathlib.Path(args.index)
+    track_dir = pathlib.Path(args.track_dir)
 
-        if region == "ARCTIC":
-            # TODO: Add Bedmachine coverage data?
-            pass
-        else:
-            add_bedmap_layers(args.radargram_index_directory, gpkg_file)
-
-        for provider in ["AWI", "BAS", "CRESIS", "KOPRI", "LDEO", "UTIG"]:
-            add_radargram_layers(
-                region, provider, args.radargram_index_directory, gpkg_file
-            )
-
-        # TODO: For arctic, this may need to include UTIG
-        for provider in ["BAS"]:
-            add_icethk_layers(region, provider, args.icethk_index_directory, gpkg_file, "u")
-
-        if region == "ANTARCTIC":
-            add_spri_layers(args.icethk_index_directory, gpkg_file)
+    main(antarctic, track_dir, gpkg_file)
