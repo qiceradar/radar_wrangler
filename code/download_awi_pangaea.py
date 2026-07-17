@@ -1,9 +1,11 @@
 #! /usr/bin/env python3
 
 """
-On first run, this script created a bunch of 12kB files.
-However, with no modifications, it then seemed to work fine.
-So ... there's some error that I'm not catching.
+Download AWI radar data from Pangaea.
+
+Pangaea may return small HTML placeholder files (~10kB) instead of actual
+data when the requested files need to be loaded from tape. This script
+detects those placeholders and retries every 30s for up to 5 minutes.
 """
 
 import os
@@ -13,6 +15,7 @@ import re
 import sqlite3
 import subprocess
 import tempfile
+import time
 
 # mapping from campaign to dataset
 datasets = {}
@@ -46,7 +49,27 @@ datasets["ANT_23_24"] = 981128
 datasets["ANT_24_25_CHARISO"] = 991465
 
 
+# experimentally determined. 15 wasn't ever enough; 20 has been mixed.
+# The longest wait I've seen so far is 100 seconds.
+TAPE_RETRY_WAIT = 20  # seconds
+MAX_TAPE_RETRIES = 10  # 10 retries
 
+
+def is_valid_netcdf(filepath: str) -> bool:
+    """Check if file starts with NetCDF/HDF5 magic bytes."""
+    with open(filepath, 'rb') as f:
+        magic = f.read(4)
+    return magic == b'\x89HDF' or magic[:3] == b'CDF'
+
+
+def is_tape_placeholder(filepath: str) -> bool:
+    """Check if file is an HTML placeholder returned when data is on tape."""
+    try:
+        with open(filepath, 'r', errors='ignore') as f:
+            head = f.read(1024)
+        return '<!doctype html>' in head.lower()
+    except Exception:
+        return False
 
 
 def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
@@ -117,19 +140,48 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
             filesize = os.path.getsize(dest_filepath)
             print(f"Skipping {dest_filepath}: file already exists with size {filesize}")
         else:
-            print(f"Downloading {filename} to {dest_filepath}")
-            try:
-                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                    curl_cmd = ["curl", url, "--output", temp_file.name]
-                    print(f"downloading to {temp_file.name}")
-                    subprocess.check_call(curl_cmd)
-                    # TODO: for plugin download, replace this with
-                    #       `shutil.move` for cross-platform compatibility
-                    move_cmd = ["mv", temp_file.name, dest_filepath]
-                    subprocess.check_call(move_cmd)
+            print(f"\n Downloading {filename} to {dest_filepath}")
+            download_ok = False
+            for attempt in range(MAX_TAPE_RETRIES + 1):
+                try:
+                    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                        curl_cmd = ["curl", url, "--output", temp_file.name]
+                        print(f"downloading to {temp_file.name}")
+                        subprocess.check_call(curl_cmd)
+                        # TODO: for plugin download, replace this with
+                        #       `shutil.move` for cross-platform compatibility
+                        move_cmd = ["mv", temp_file.name, dest_filepath]
+                        subprocess.check_call(move_cmd)
+                except subprocess.CalledProcessError as ex:
+                    print(f"Failed to download {dataset}, {filename}: {ex}")
+                    break
+
+                if is_valid_netcdf(dest_filepath):
                     filesize = os.path.getsize(dest_filepath)
-            except subprocess.CalledProcessError as ex:
-                print(f"Failed to download {dataset}, {filename}: {ex}")
+                    download_ok = True
+                    break
+                elif is_tape_placeholder(dest_filepath):
+                    with open(dest_filepath, 'r', errors='ignore') as f:
+                        head_lines = [f.readline() for _ in range(5)]
+                    print(f"Received HTML placeholder for {filename}:")
+                    for line in head_lines:
+                        print(f"  {line.rstrip()}")
+                    os.remove(dest_filepath)
+                    if attempt < MAX_TAPE_RETRIES:
+                        print(f"Data center is loading {filename} from tape. "
+                              f"Waiting {TAPE_RETRY_WAIT}s before retrying "
+                              f"(attempt {attempt + 1}/{MAX_TAPE_RETRIES})...")
+                        time.sleep(TAPE_RETRY_WAIT)
+                    else:
+                        print(f"Giving up on {filename} after {MAX_TAPE_RETRIES} "
+                              f"retries. Re-run the script later to try again.")
+                else:
+                    print(f"Unexpected file type returned for {filename}; skipping")
+                    os.remove(dest_filepath)
+                    break
+
+            if not download_ok:
+                continue
 
         cursor.execute(
             "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
