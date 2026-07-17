@@ -10,13 +10,13 @@ import subprocess
 import tempfile
 
 
-def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str):
+def download_all_bas(antarctic: bool, qiceradar_dir: str, index: str):
     """
     Ensures that all BAS data has been downloaded to the specified root
     directory, and updates the input index database with url and path info.
     """
     institution = "BAS"
-    index_dir = "../../data/BAS"
+    index_dir = "../data/BAS"
 
     campaign_indices = {
         ff.split(".")[0]: f"{index_dir}/{ff}"
@@ -24,13 +24,22 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
         if ff.endswith(".csv")
     }
 
+    if antarctic:
+        requested_region = "ANTARCTIC"
+    else:
+        requested_region = "ARCTIC"
+
+
     for campaign, filepath in campaign_indices.items():
         if campaign in ["GOG3"]:
             region = "ARCTIC"
-            connection = sqlite3.connect(arctic_index)
         else:
             region = "ANTARCTIC"
-            connection = sqlite3.connect(antarctic_index)
+        if region != requested_region:
+            print(f"Skipping {campaign}; not {requested_region}")
+            continue
+
+        connection = sqlite3.connect(index)
         cursor = connection.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
 
@@ -165,16 +174,24 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("--antarctic", action="store_true")
+    parser.add_argument("--arctic", action="store_true")
+
     parser.add_argument(
         "data_directory", help="Root directory for all QIceRadar-managed radargrams."
     )
     parser.add_argument(
-        "antarctic_index",
-        help="Geopackage database to update with metadata about Antarctic campaigns and granules",
-    )
-    parser.add_argument(
-        "arctic_index",
-        help="Geopackage database to update with metadata about Arctic campaigns and granules",
+        "index",
+        help="Geopackage database to update with metadata about campaigns and granules",
     )
     args = parser.parse_args()
-    download_all_bas(args.data_directory, args.antarctic_index, args.arctic_index)
+    antarctic = False
+    if args.antarctic:
+        antarctic = True
+    elif args.arctic:
+        antarctic = False
+    else:
+        print(f"ERROR: Must specify either --antarctic or --arctic")
+        exit(-1)
+
+    download_all_bas(antarctic, args.data_directory, args.index)
