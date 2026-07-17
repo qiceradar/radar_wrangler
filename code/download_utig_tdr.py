@@ -61,6 +61,15 @@ class Granule:
 
 
 def create_dataverse_index():
+
+    # TDR is blocking programmatic access to the index page, despite
+    # the Dataverse documentation saying it should be possible. So far
+    # as I can tell, I'm forming my request as they specify:
+    # https://guides.dataverse.org/en/latest/api/dataaccess.html#
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+
     # First, build the index mapping individual granules to all data about them
     granules = []
     region = "ANTARCTIC"
@@ -68,7 +77,8 @@ def create_dataverse_index():
         institution = institutions[campaign]
         query_url = f"{dataverse_url}{doi}"
         print(f"querrying URL: {query_url}")
-        resp = requests.get(query_url)
+
+        resp = requests.get(query_url, headers=headers)
         if resp.status_code != 200:
             msg = f"Could not access data API! status = {resp.status_code}"
             raise Exception(msg)
@@ -135,6 +145,8 @@ def maybe_download_wget(url: str, dest_filepath: str) -> int:
                 wget_cmd = [
                     "wget",
                     "--quiet",
+                    "--user-agent",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                     "--output-document",
                     temp_file.name,
                     url,
