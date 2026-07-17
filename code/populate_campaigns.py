@@ -12,7 +12,7 @@ import sqlite3
 import yaml
 
 
-def main(antarctic_index, arctic_index):
+def main(antarctic: bool, database):
     campaign_filepaths = [
         "../data/awi_campaigns.yaml",
         "../data/bas_campaigns.yaml",
@@ -21,20 +21,24 @@ def main(antarctic_index, arctic_index):
         "../data/utig_campaigns.yaml",
     ]
 
+    if antarctic:
+        region = "ANTARCTIC"
+    else:
+        region = "ARCTIC"
+
     connections = {}
     cursors = {}
-    connections["ANTARCTIC"] = sqlite3.connect(antarctic_index)
-    connections["ARCTIC"] = sqlite3.connect(arctic_index)
-    for region in ["ANTARCTIC", "ARCTIC"]:
-        cursors[region] = connections[region].cursor()
-        cursors[region].execute("PRAGMA foreign_keys = ON")
+    connection = sqlite3.connect(database)
+    cursor = connection.cursor()
 
     for campaign_filepath in campaign_filepaths:
         campaigns = yaml.safe_load(open(campaign_filepath, "r"))
         for campaign in campaigns:
-            region = campaign["region"]
+            if campaign["region"] != region:
+                print(f"Skipping {campaign['campaign']}; not {region}")
+                continue
             try:
-                cursors[region].execute(
+                cursor.execute(
                     "INSERT OR REPLACE INTO campaigns VALUES(?, ?, ?, ?)",
                     [
                         campaign["campaign"],
@@ -52,22 +56,28 @@ def main(antarctic_index, arctic_index):
                 print(msg)
                 raise ex
 
-            connections[region].commit()
+            connection.commit()
 
 
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("--antarctic", action="store_true")
+    parser.add_argument("--arctic", action="store_true")
     parser.add_argument(
-        "antarctic_index",
-        help="Geopackage database to update with metadata about Antarctic campaigns and granules",
-    )
-    parser.add_argument(
-        "arctic_index",
-        help="Geopackage database to update with metadata about Arctic campaigns and granules",
+        "index",
+        help="Geopackage database to update with metadata about campaigns and granules",
     )
 
     args = parser.parse_args()
+    antarctic = False
+    if args.antarctic:
+        antarctic = True
+    elif args.arctic:
+        antarctic = False
+    else:
+        print(f"ERROR: Must specify either --antarctic or --arctic")
+        exit(-1)
 
-    main(args.antarctic_index, args.arctic_index)
+    main(antarctic, args.index)
