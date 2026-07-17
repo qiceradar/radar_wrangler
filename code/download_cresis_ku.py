@@ -39,7 +39,14 @@ def download_cresis(data_dir: str, granules: list[Granule]):
                     granule.download_url,
                 ]
                 print(f"{dest_filepath}: {' '.join(wget_cmd)}")
-                subprocess.check_call(wget_cmd)
+                # TODO: Make this error more obvious! it is currently lost in the flood of status updates
+                try:
+                    output = subprocess.check_output(wget_cmd)
+                except subprocess.CalledProcessError as ex:
+                    print(f"wget command failed for {granule.granule_name}")
+                    print(f"{ex}")
+                    continue
+
                 print("subprocess returned...")
                 move_cmd = ["mv", temp_file.name, dest_filepath]
                 subprocess.check_call(move_cmd)
