@@ -63,6 +63,7 @@ class Granule:
     product: str  # e.g. ER2HI1B, IR1HI1B, KHERA1B, etc.
     # path (including filename) relative to QIceRadar base data directory where data will be saved
     relpath: str
+    download_method: str
     url: str  # download link
 
 
@@ -107,9 +108,12 @@ def create_aad_s3_index():
             return None
 
         # Used to extract PST and granule
-        expr = "AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/SR2HI1B_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[a-zA-Z0-9]*)_(?P<set>[a-zA-Z0-9]*)_(?P<transect>[a-zA-Z0-9]*)_(?P<granule>[0-9]{3}).nc"
+        oia_expr = "AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/SR2HI1B_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[a-zA-Z0-9]*)_(?P<set>[a-zA-Z0-9]*)_(?P<transect>[a-zA-Z0-9]*)_(?P<granule>[0-9]{3}).nc"
+        eagle_expr = "AAS_4346_EAGLE_ICECAP_LEVEL2_RADAR_DATA/[0-9]{4}_AN_UTIG.ER2HI1B.tar/[0-9]{4}_AN_UTIG.ER2HI1B/ER2HI1B_(?P<year>[0-9]{4})(?P<doy>[0-9]{3})_(?P<project>[a-zA-Z0-9]*)_(?P<set>[a-zA-Z0-9]*)_(?P<transect>[a-zA-Z0-9]*)_(?P<granule>[0-9]{3}).nc"
         # Used to extract filename
-        filename_expr = "AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/(?P<filename>.*)"
+        oia_filename_expr =   "AAS_4346_ICECAP_OIA_RADARGRAMS/ICECAP_OIA.SR2HI1B/(?P<filename>.*)"
+        eagle_filename_expr = "AAS_4346_EAGLE_ICECAP_LEVEL2_RADAR_DATA/[0-9]{4}_AN_UTIG.ER2HI1B.tar/[0-9]{4}_AN_UTIG.ER2HI1B/(?P<filename>.*)"
+
 
         for ff in result["Contents"]:
             if not ff["Key"].endswith(".nc"):
@@ -131,11 +135,23 @@ def create_aad_s3_index():
             # constant for the whole dataset.
             product = "SR2HI1B"
 
-            m1 = re.match(expr, key)
-            transect = "_".join([m1['project'], m1['set'], m1['transect']])
+            match_oia = re.match(oia_expr, key)
+            match_eagle = re.match(eagle_expr, key)
+            if match_oia is not None:
+                print(f"...file from OIA!")
+                m1 = match_oia
+                m2 = re.match(oia_filename_expr, key)
+                download_method = "aad_oia"
+            elif match_eagle is not None:
+                print(f"...file from EAGLE")
+                m1 = match_eagle
+                download_method = "aad_eagle"
+                m2 = re.match(eagle_filename_expr, key)
+            else:
+                print(f"...filename did not match expected format. Skipping")
+                continue
             granule_seq = m1['granule']
-
-            m2 = re.match(filename_expr, key)
+            transect = "_".join([m1['project'], m1['set'], m1['transect']])
             filename = m2['filename']
 
             granule_relpath = f"{region}/{institution}/{campaign}/{transect}/{filename}"
@@ -149,6 +165,7 @@ def create_aad_s3_index():
                 granule_seq,
                 product,
                 granule_relpath,
+                download_method,
                 granule_url,
             )
             granules.append(granule)
@@ -156,8 +173,6 @@ def create_aad_s3_index():
     return granules
 
 
-# NB: Need to test this briefly before pointing it at a directory where I've
-# already downloaded the data.
 def maybe_download_boto3(url: str, dest_filepath: str, campaign: str) -> int:
 
     s3_client = create_aad_s3_client(campaign)
@@ -215,10 +230,11 @@ def download_utig_aad(
     # Update the granules table
     data_format = "utig_netcdf"
     # Make sure this format is in the table
+    # TODO: If it was not in the table, this should emit an error message
+    #       indicating that the initialization script needs to be updated.
     cursor.execute(f"INSERT OR REPLACE INTO data_formats VALUES('{data_format}')")
-    # TODO: rename this to something more accurate? What I really  mean
-    #   is something like "URL, no password, can use simple wget or requests.get"
-    download_method = "aad_s3"
+    download_method = "aad_oia"
+
 
     for granule in granules:
         if granule.region != "ANTARCTIC":
@@ -242,7 +258,7 @@ def download_utig_aad(
                 granule.granule,
                 granule.product,
                 data_format,
-                download_method,
+                granule.download_method,
                 granule.url,
                 granule.relpath,
                 str(filesize),
