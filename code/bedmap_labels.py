@@ -4,6 +4,30 @@
 # instead, it is assumed that it will be added in a layer that's based on other extracted data.
 available_campaigns = {
     # ###################################
+    # #              AWI               ##
+    # ###################################
+    # "AWI_1994_DML1_AIR_BM2":
+    "AWI_1995_DML2_AIR_BM2": "AWI/ANT_95_96",
+    "AWI_1996_DML3_AIR_BM2": "AWI/ANT_96_97",
+    # "AWI_1997_DML4_AIR_BM2": # Has one segment missing from "AWI/ANT_97_98",
+    # "AWI_1998_DML5_AIR_BM2": # Also missing one segment from "AWI/ANT_98_99",
+    # "AWI_2000_DML6_AIR_BM2":  # Has one line that seems to have the wrong GPS coords "AWI/ANT_00_01",
+    "AWI_2001_DML7_AIR_BM2": "AWI/ANT_01_02",
+    # "AWI_2002_DML8_AIR_BM2": # Not included in release at all?
+    # "AWI_2003_DML9_AIR_BM2": # Not included in release at all?
+    # "AWI_2004_DML10_AIR_BM2": # Not included in release at all?
+    "AWI_2005_ANTSYSO_AIR_BM2": "AWI/ANT_05_06",
+    # "AWI_2007_ANTR_AIR_BM2": # Missing a segment. "AWI/ANT_07_08",
+    # "AWI_2013_GEA-IV_AIR_BM3": # Not included in release at all?
+    # "AWI_2014_Recovery-Glacier_AIR_BM3": # Not included in release at all?
+    # "AWI_2015_GEA-DML_AIR_BM3": # Missing one ice shelf segment "AWI/ANT_15_16",
+    # ANT 16/17 seems to include some lines that didn't make it into bedmap3
+    "AWI_2016_OIR_AIR_BM3": "AWI/ANT_16_17",
+    # "AWI_2018_ANIRES_AIR_BM3":
+    # "AWI_2018_DML-Coast_AIR_BM3":
+    # "AWI_2018_JURAS_AIR_BM3": # missinf one flight? "AWI/ANT_18_19_JURAS"
+    "AWI_2019_JURAS_AIR_BM3": "AWI/ANT_18_19_JURAS",
+    # ###################################
     # #              BAS               ##
     # ###################################
     # Evans only available as bed elevation: https://data.bas.ac.uk/metadata.php?id=GB/NERC/BAS/PDC/01347

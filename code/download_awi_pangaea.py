@@ -31,6 +31,7 @@ datasets["ANT_00_01"] = 974431
 datasets["ANT_01_02"] = 974432
 datasets["ANT_02_03"] = 982598
 
+datasets["ANT_04_05"] = 983337
 datasets["ANT_05_06"] = 974441
 
 datasets["ANT_07_08"] = 974448
@@ -39,7 +40,8 @@ datasets["ANT_08_09"] = 974453
 datasets["ANT_10_11"] = 974319
 
 datasets["ANT_15_16"] = 987347
-datasets["ANT_16_17"] = 984741
+datasets["ANT_16_17"] = 982745
+datasets["ANT_16_17_MABAJU"] = 984741
 
 # datasets["JuRaS_2018"] = 962670 -- this one was replaced by 976759
 datasets["ANT_18_19_JURAS"] = 976759

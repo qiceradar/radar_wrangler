@@ -19,7 +19,6 @@
   institution: AWI
   data_citation: |
     Helm, Veit; Franke, Steven; Steinhage, Daniel; Eisen, Olaf; Zuhr, Alexandra; Bodart, Julien A; Sutter, Johannes (2026): ANT 2023/24: AWI airborne ultra-wideband radar data between Sør Rondane Mountains and the eastern DML ice divide (CHARISO Project) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.990049
-
   science_citation: |
 
 
@@ -40,6 +39,7 @@
     Koch, Inka; Drews, Reinhard; Franke, Steven; Jansen, Daniela; Oraschewski, Falk M; Muhle, Leah Sophie; Višnjević, Vjeran; Matsuoka, Kenichi; Pattyn, Frank; Eisen, Olaf (2023): Radar internal reflection horizons from multisystem data reflect ice dynamic and surface accumulation history along the Princess Ragnhild Coast, Dronning Maud Land, East Antarctica. Journal of Glaciology, 1-19, https://doi.org/10.1017/jog.2023.93
 
     Zhou, Yan; Franke, Steven; Kleiner, Thomas; Drews, Reinhard; Humbert, Angelika; Jansen, Daniela; Steinhage, Daniel; Eisen, Olaf (2025): Reactivation of a Subglacial Channel Around the Grounding Zone of Roi Baudouin Ice Shelf, Antarctica. Geophysical Research Letters, 52(2), e2024GL112476, https://doi.org/10.1029/2024GL112476
+
     Zhou, Yan; Franke, Steven; Kleiner, Thomas; Drews, Reinhard; Humbert, Angelika; Jansen, Daniela; Steinhage, Daniel; Eisen, Olaf (2025): Reactivation of a Subglacial Channel Around the Grounding Zone of Roi Baudouin Ice Shelf, Antarctica. Geophysical Research Letters, 52(2), e2024GL112476, https://doi.org/10.1029/2024GL112476
 
 
@@ -58,8 +58,15 @@
     Neckel, Niklas; Franke, Steven; Helm, Veit; Drews, Reinhard; Jansen, Daniela (2021): Evidence of cascading subglacial water flow at Jutulstraumen Glacier (Antarctica) derived from Sentinel-1 and ICESat-2 measurements. Geophysical Research Letters, 48(20), https://doi.org/10.1029/2021GL094472
 
 
-
 - campaign: ANT_16_17
+  region: ANTARCTIC
+  institution: AWI
+  data_citation: |
+    Eisen, Olaf; Eagles, Graeme; Steinhage, Daniel; Helm, Veit; Binder, Tobias (2025): ANT 2016/17: AWI airborne Radio-Echo Sounding data over central Dronning Maund Land and around the Dome Fuji ice core site (OIR Dome F and GEA-Vb-FMA projects) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.982745
+  science_citation: |
+    Karlsson, Nanna Bjørnholt; Binder, Tobias; Eagles, Graeme; Helm, Veit; Pattyn, Frank; Van Liefferinge, Brice; Eisen, Olaf (2018): Glaciological characteristics in the Dome Fuji region and new assessment for “Oldest Ice”. The Cryosphere, 12(7), 2413-2424, https://doi.org/10.5194/tc-12-2413-2018
+
+- campaign: ANT_16_17_MABAJU
   region: ANTARCTIC
   institution: AWI
   data_citation: |
@@ -100,6 +107,7 @@
     Steinhage, Daniel; Jokat, Wilfried; Helm, Veit (2025): ANT 2007/08: AWI airborne Radio-Echo Sounding data over central Dronning Maund Land and East Antarctica connecting the Vostok, Dome C and Talus Dome ice core sites (DoCo and VISA projects) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.974448
   science_citation: |
     Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+
     Winter, Anna; Steinhage, Daniel; Arnold, Emily J; Blankenship, Donald D; Cavitte, Marie G P; Corr, Hugh F J; Paden, John D; Urbini, Stefano; Young, Duncan A; Eisen, Olaf (2017): Comparison of measurements from different radio-echo sounding systems and synchronization with the ice core at Dome C, Antarctica. The Cryosphere, 11(1), 653-668, https://doi.org/10.5194/tc-11-653-2017
 
 - campaign: ANT_05_06
@@ -109,7 +117,16 @@
     Jokat, Wilfried; Miller, Heinrich; Nixdorf, Uwe; Nogi, Yoshifumi (2025): ANT 2005/06: AWI airborne Radio-Echo Sounding data over the Ekström Isen and Shireas Glacier Basin, Eastern DML (ANTSYO project) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.974441
   science_citation: |
     Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+
     Nogi, Yoshifumi; Jokat, Wilfried; Kitada, Kazuya; Steinhage, Daniel (2013): Geological structures inferred from airborne geophysical surveys around Lützow-Holm Bay, East Antarctica. Precambrian Research, 234, 279-287, https://doi.org/10.1016/j.precamres.2013.02.008
+
+- campaign: ANT_04_05
+  region: ANTARCTIC
+  institution: AWI
+  data_citation: |
+    Miller, Heinrich; Jokat, Wilfried; Steinhage, Daniel; Helm, Veit (2025): ANT 2004/05: AWI airborne Radio-Echo Sounding Data over western DML, south of Heimefrontfjella and over the upstream region of Slessor Ice Stream, East Antarctica (EPICA and VISA projects) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.983337
+  science_citation: |
+
 
 
 - campaign: ANT_02_03
@@ -119,6 +136,7 @@
     Miller, Heinrich; Jokat, Wilfried; Steinhage, Daniel; Helm, Veit (2025): ANT 2002/03: AWI airborne Radio-Echo Sounding Data over western DML, Jutulstraumen, Coats Land and the EDML and Dome Fuji ice core site (EPICA, SEAL, and VISA projects) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.982598
   science_citation: |
     Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+
     Neckel, Niklas; Drews, Reinhard; Rack, Wolfgang; Steinhage, Daniel (2012): Basal melting at the Ekström Ice Shelf, Antarctica, estimated from mass flux divergence. Annals of Glaciology, 53(60), 294-302, https://doi.org/10.3189/2012AoG60A167
 
 - campaign: ANT_01_02

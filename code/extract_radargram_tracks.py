@@ -10,7 +10,6 @@ import numpy as np
 import pyproj
 import scipy
 import scipy.io
-
 from radar_index_utils import subsample_tracks_rdp
 
 # We apply an extra filtering step to the positioning data from these files
@@ -74,6 +73,7 @@ corrupt_files = [
 bad_files = [
     "antr1996_9510130001_EMR60_19951013_00",  # coords are in Germany; test flight?
     "20093104_stp10",  # coords are in the ocean between Norway and Greenland
+    "20052199_stp10", # lat/lon coords are both approximately zero
 ]
 
 

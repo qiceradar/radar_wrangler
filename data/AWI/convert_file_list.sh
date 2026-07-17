@@ -16,11 +16,13 @@ cat AWI_EMR_ANT1998-99.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974402_files.
 cat AWI_EMR_ANT2000-01.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974431_files.txt
 cat AWI_EMR_ANT2001-02.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974432_files.txt
 cat AWI_EMR_ANT2002-03.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_982598_files.txt
+cat AWI_EMR_ANT2004-05.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_983337_files.txt
 cat AWI_EMR_ANT2005-06.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974441_files.txt
 cat AWI_EMR_ANT2007-08.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974448_files.txt
 cat AWI_EMR_ANT2008-09.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974453_files.txt
 cat AWI_EMR_ANT2010-11_EPICA.tab | grep -o '[0-9]*_stp10*\.nc' > dataset_974319_files.txt
 cat AWI_EMR_ANT2015-16.tab | grep -o '[0-9]*_stp7*\.nc' > dataset_987347_files.txt
+cat AWI_EMR_ANT2016-17.tab | grep -o '[0-9]*_stp7*\.nc' > dataset_982745_files.txt
 
 # Example filename: Data_20170121_08_008_standard.nc
 cat AWI_UWB_ANT2016-17_V2.tab | grep -o 'Data_.*_standard\.nc' > dataset_984741_files.txt
