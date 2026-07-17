@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "boto3>=1.42.97",
     "bs4>=0.0.2",
     "geopandas>=1.0.1",
     "h5py>=3.14.0",
@@ -17,4 +18,5 @@ dependencies = [
     "rdp>=0.8",
     "requests>=2.32.4",
     "scipy>=1.13.1",
+    "segpy>=2.1.0",
 ]
