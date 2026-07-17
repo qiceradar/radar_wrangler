@@ -123,7 +123,8 @@ def add_campaign(region: str, gpkg_filepath, group, campaign, availability):
         # "a": "0,0,0",
         # "u": "0,0,0",
         "s": "31,120,188,255",  # blue for available and supported
-        "a": "136,136,136,255",  # grey for unsupported
+        # "a": "136,136,136,255",  # grey for unsupported
+        "a": "68,68,68,255",  # Darker grey
         "u": "251,154,153,255",  # Salmon for unavailable data
     }
     if geometry == "MULTIPOINT":
