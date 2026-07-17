@@ -9,23 +9,23 @@ import sqlite3
 from radar_wrangler_utils import read_granule_list
 
 
-def main(data_dir: str, antarctic_index: str, arctic_index: str) -> None:
+def main(antarctic: bool, data_dir: str, index: str,) -> None:
     granule_filepaths = [
-        "../data/cresis_granules.csv",
+        "../data/CReSIS/cresis_granules.csv",
     ]
 
-    connections = {}
-    cursors = {}
-    connections["ANTARCTIC"] = sqlite3.connect(antarctic_index)
-    connections["ARCTIC"] = sqlite3.connect(arctic_index)
-    for region in ["ANTARCTIC", "ARCTIC"]:
-        cursors[region] = connections[region].cursor()
-        cursors[region].execute("PRAGMA foreign_keys = ON")
+    connection = sqlite3.connect(index)
+    cursor = connection.cursor()
+    cursor.execute("PRAGMA foreign_keys = ON")
 
     for granule_filepath in granule_filepaths:
         granules = read_granule_list(granule_filepath)
 
         for granule in granules:
+            # Only process one region
+            if antarctic and granule.region != "ANTARCTIC":
+                continue
+
             dest_filepath = pathlib.Path(data_dir, granule.relative_filepath)
             try:
                 filesize = dest_filepath.stat().st_size
@@ -37,7 +37,7 @@ def main(data_dir: str, antarctic_index: str, arctic_index: str) -> None:
                 print(f"Cannot find downloaded file {dest_filepath}")
                 filesize = -1
 
-            cursors[granule.region].execute(
+            cursor.execute(
                 "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
                     granule.granule_name,
@@ -53,11 +53,9 @@ def main(data_dir: str, antarctic_index: str, arctic_index: str) -> None:
                     str(filesize),
                 ],
             )
+        connection.commit()
 
-        connections[region].commit()
-
-    for _region, connection in connections.items():
-        connection.close()
+    connection.close()
 
 
 if __name__ == "__main__":
@@ -65,18 +63,28 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("--antarctic", action="store_true")
+    parser.add_argument("--arctic", action="store_true")
+
+
     parser.add_argument(
         "data_directory", help="Root directory for all QIceRadar-managed radargrams."
     )
     parser.add_argument(
-        "antarctic_index",
-        help="Geopackage database to update with metadata about Antarctic campaigns and granules",
-    )
-    parser.add_argument(
-        "arctic_index",
-        help="Geopackage database to update with metadata about Arctic campaigns and granules",
+        "index",
+        help="Geopackage database to update with metadata about  campaigns and granules",
     )
 
     args = parser.parse_args()
 
-    main(args.data_directory, args.antarctic_index, args.arctic_index)
+
+    antarctic = False
+    if args.antarctic:
+        antarctic = True
+    elif args.arctic:
+        antarctic = False
+    else:
+        print(f"ERROR: Must specify either --antarctic or --arctic")
+        exit(-1)
+
+    main(antarctic, args.data_directory, args.index)
