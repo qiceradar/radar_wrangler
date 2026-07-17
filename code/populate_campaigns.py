@@ -26,8 +26,6 @@ def main(antarctic: bool, database):
     else:
         region = "ARCTIC"
 
-    connections = {}
-    cursors = {}
     connection = sqlite3.connect(database)
     cursor = connection.cursor()
 

@@ -1,14 +1,12 @@
 #! /usr/bin/env python3
 """
-Update the granules table using contents unzipped tarball.
+Update the granules table using contents of unzipped tarball from Zenodo.
 """
 
 import os
 import pathlib
 import re
 import sqlite3
-
-from radar_wrangler_utils import read_granule_list
 
 
 def main(data_dir: str, index: str,) -> None:
