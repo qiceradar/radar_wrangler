@@ -16,7 +16,7 @@ def main(data_dir: str, index: str,) -> None:
 
     campaign_basedir = pathlib.Path(f"{data_dir}/ANTARCTIC/UTIG/AGASEA")
 
-    granule_filepaths = list(campaign_basedir.glob("**/*.nc"))
+    granule_filepaths = [fp for fp in campaign_basedir.glob("**/*.nc") if not fp.name.startswith('.')]
 
     if len(granule_filepaths) == 0:
         print(f"Unable to find any netCDFs under {campaign_basedir}")
