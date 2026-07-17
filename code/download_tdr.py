@@ -166,9 +166,7 @@ def maybe_download_wget(url: str, dest_filepath: str) -> int:
     return filesize
 
 
-def download_utig_dataverse(
-    qiceradar_dir: str, antarctic_index: str, arctic_index: str
-):
+def download_utig_dataverse(qiceradar_dir: str, antarctic_index: str):
     """
     Ensures that all data has been downloaded to the specified root
     directory, and updates the input index database with url and path info.
@@ -231,11 +229,5 @@ if __name__ == "__main__":
         "antarctic_index",
         help="Geopackage database to update with metadata about Antarctic campaigns and granules",
     )
-    parser.add_argument(
-        "arctic_index",
-        help="Geopackage database to update with metadata about Arctic campaigns and granules",
-    )
     args = parser.parse_args()
-    download_utig_dataverse(
-        args.data_directory, args.antarctic_index, args.arctic_index
-    )
+    download_utig_dataverse(args.data_directory, args.antarctic_index)
