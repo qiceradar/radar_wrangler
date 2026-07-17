@@ -8,6 +8,7 @@ changed.
 """
 
 import sqlite3
+
 import yaml
 
 
@@ -16,7 +17,8 @@ def main(antarctic_index, arctic_index):
         "../data/awi_campaigns.yaml",
         "../data/bas_campaigns.yaml",
         "../data/cresis_campaigns.yaml",
-        "../data/utig_campaigns.yaml"
+        "../data/kopri_campaigns.yaml",
+        "../data/utig_campaigns.yaml",
     ]
 
     connections = {}
@@ -28,7 +30,7 @@ def main(antarctic_index, arctic_index):
         cursors[region].execute("PRAGMA foreign_keys = ON")
 
     for campaign_filepath in campaign_filepaths:
-        campaigns = yaml.safe_load(open(campaign_filepath, 'r'))
+        campaigns = yaml.safe_load(open(campaign_filepath, "r"))
         for campaign in campaigns:
             region = campaign["region"]
             try:

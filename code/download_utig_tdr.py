@@ -3,9 +3,15 @@
 Create index of PST <-> persistent URL for
 campaigns stored at the Texas Data Repository.
 
-So far, this is:
+This includes both UTIG and KOPRI data.
+
+So far, UTIG has:
 * COLDEX, seasons 1 & 2
 * GIMBLE
+
+And KOPRI has:
+* ASE3
+* ASE4
 """
 
 import json
@@ -23,6 +29,16 @@ dois = {}
 dois["GIMBLE"] = "doi:10.18738/T8/BMXUHX"
 dois["COLDEX_2023"] = "doi:10.18738/T8/XPMLCC"
 dois["COLDEX_2024"] = "doi:10.18738/T8/FV6VNT"
+dois["ASE3"] = "doi:10.18738/T8/730HSL"  # 2020/21; ANA10B
+dois["ASE4"] = "doi:10.18738/T8/3RSCPO"  # 2022/23; ANA12C
+
+institutions = {}
+institutions["GIMBLE"] = "UTIG"
+institutions["COLDEX_2023"] = "UTIG"
+institutions["COLDEX_2024"] = "UTIG"
+institutions["ASE3"] = "KOPRI"
+institutions["ASE4"] = "KOPRI"
+
 
 # to request info about the datasets, append DOI to this URL
 dataverse_url = "https://dataverse.tdl.org/api/datasets/:persistentId?persistentId="
@@ -47,9 +63,9 @@ class Granule:
 def create_dataverse_index():
     # First, build the index mapping individual granules to all data about them
     granules = []
-    institution = "UTIG"
     region = "ANTARCTIC"
     for campaign, doi in dois.items():
+        institution = institutions[campaign]
         query_url = f"{dataverse_url}{doi}"
         print(f"querrying URL: {query_url}")
         resp = requests.get(query_url)
@@ -60,7 +76,10 @@ def create_dataverse_index():
         files = parsed["data"]["latestVersion"]["files"]
         for ff in files:
             filename = ff["dataFile"]["filename"]
-            if ff["dataFile"]["contentType"] != "application/x-netcdf":
+            if ff["dataFile"]["contentType"] not in [
+                "application/x-netcdf",
+                "application/netcdf",
+            ]:
                 if filename.endswith(".nc"):
                     msg = f"Bad assumption! file {filename} not of type application/x-netcdf"
                     raise Exception(msg)
@@ -91,6 +110,7 @@ def create_dataverse_index():
 
 def maybe_download_wget(url: str, dest_filepath: str) -> int:
     filename = pathlib.Path(dest_filepath).name
+    filesize = -1
     if os.path.exists(dest_filepath):
         filesize = os.path.getsize(dest_filepath)
         print(

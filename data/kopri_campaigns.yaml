@@ -1,0 +1,15 @@
+- campaign: ASE4
+  region: ANTARCTIC
+  institution: KOPRI
+  data_citation: |
+    Lee, Won Sang; Lee, Choon-Ki; Yun, Sukyoung; Beem, Lucas; Pierce, Chris; Stutz, Jamey; Buhl, Dillon; Ng, Gregory; Young, Duncan Alexander; Blankenship, Donald, 2026, "ASE4/ANA12C (February 2023) LIONESS-TG Helicopter Radar (HeRa) 1D Focused Radargrams", https://doi.org/10.18738/T8/3RSCPO, Texas Data Repository, V1
+  science_citation: |
+    Pierce C, Skidmore M, Beem L, et al. Characterizing the subglacial environment of lower Thwaites Glacier using radar modeling. Journal of Glaciology. 2026;72:e46. doi:10.1017/jog.2026.10160doi: 10.1017/jog.2026.10160
+
+- campaign: ASE3
+  region: ANTARCTIC
+  institution: KOPRI
+  data_citation: |
+    Lee, Won Sang; Lee, Choon-Ki; Beem, Lucas; Buhl, Dillon; Rutishauser, Anja; Wolfenbarger, Natalie; Young, Duncan Alexander; Blankenship, Donald, 2026, "ASE3/ANA10B (January-February 2020) LIONESS-TG Helicopter Radar (HeRa) 1D Focused Radargrams", https://doi.org/10.18738/T8/730HSL, Texas Data Repository, V1
+  science_citation: |
+    Pierce C, Skidmore M, Beem L, et al. Characterizing the subglacial environment of lower Thwaites Glacier using radar modeling. Journal of Glaciology. 2026;72:e46. doi:10.1017/jog.2026.10160doi: 10.1017/jog.2026.10160
