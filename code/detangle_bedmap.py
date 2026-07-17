@@ -52,22 +52,22 @@ There are 3 parameters controlling the matching behavior.
        the bedmap index ranges corresponding to RESPAC.
 """
 
-import matplotlib.pyplot as plt
-
 import csv
 import json
-import numpy as np
 import os
 import pathlib
-import pandas as pd
 import pickle
+import time
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import pyproj
 import scipy.spatial  # Used for KDTree
 from shapely.geometry import (
     LineString,
     Point,
 )  # Used for projecting BM1 points onto survey segments
-import time
 
 # Campaigns that were released in BEDMAP2/3 but whose points were also
 # included in BEDMAP1
@@ -97,10 +97,11 @@ def load_bedmap_xy(filepath) -> np.ndarray:
     return coords
 
 
-def load_respac_surveys(filepath):
+def load_respac_surveys(filepath: str) -> dict[str, np.ndarray]:
     """
     The raw data was provided in a format I haven't seen before.
-    There are labeled columns, with different campaigns separated by a single line saying "Line ####"
+    There are labeled columns, with different campaigns separated
+    by a single line saying "Line ####"
     """
     seasons = {}
     season = None
@@ -375,7 +376,7 @@ def export_segments(selected_idxs, filepath):
     json.dump(segments, open(filepath, "w"))
 
 
-def main(data_directory, force):
+def main(data_directory: str, force: bool):
     bm1_points, campaign_points = load_data(data_directory)
     # Set up configuration. These values were chosen interactively
     # using detangle_bedmap_general.ipynb
