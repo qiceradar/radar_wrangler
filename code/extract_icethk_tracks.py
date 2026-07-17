@@ -58,10 +58,10 @@ def extract_flightlines(
             )
 
             if force or not os.path.exists(output_filepath):
-                print(f"Processing {filepath} -> {output_filepath}".format(filepath))
+                print(f"Processing {filepath} -> {output_filepath}")
                 extract_file(region, provider, filepath, output_filepath, epsilon)
             else:
-                print(f"SKipping {filepath}")
+                print(f"Skipping {filepath}")
 
 
 def extract_file(region, provider, input_filepath, output_filepath, epsilon):
@@ -84,7 +84,7 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         # https://www.qgreenland.org/files/inline-files/UserGuide_3.pdf
         proj = pyproj.Proj("epsg:3413")
     else:
-        print("Unrecognized region {} -- cannot downsample.".format(region))
+        print(f"Unrecognized region {region} -- cannot downsample.")
         return
 
     if "STANFORD" == provider:
@@ -92,15 +92,11 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     elif "UTIG" == provider and "LVS" in str(input_filepath):
         result = extract_lvs_coords(input_filepath)
     else:
-        print(
-            "Unsupported data provider: {}. Skipping {}".format(
-                provider, input_filepath
-            )
-        )
+        print(f"Unsupported data provider: {provider}. Skipping {input_filepath}")
         return
 
     if result is None:
-        print("Unable to extract data from: {}".format(input_filepath))
+        print(f"Unable to extract data from: {input_filepath}")
         return
 
     # Only create output directory if we have something to put there.
@@ -109,9 +105,9 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
     output_dir = pathlib.Path(output_filepath).parent
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
-    except FileExistsError as ex:
-        print("Could not create {}".format(output_dir))
-        raise (ex)
+    except FileExistsError:
+        print(f"Could not create {output_dir}")
+        raise
 
     lon, lat = result
     lat = np.array(lat)
@@ -127,10 +123,10 @@ def extract_file(region, provider, input_filepath, output_filepath, epsilon):
         np.array(sx), np.array(sy), direction=pyproj.enums.TransformDirection.INVERSE
     )
 
-    print("Saving subsampled data to {}".format(output_filepath))
+    print(f"Saving subsampled data to {output_filepath}")
     with open(output_filepath, "w") as fp:
         fp.write("ps71_easting,ps71_northing\n")
-        data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sx, sy)]
+        data = [f"{pt[0]},{pt[1]}\n" for pt in zip(sx, sy)]
         fp.writelines(data)
 
 
@@ -180,16 +176,16 @@ def extract_bas_respac(data_directory, index_directory, epsilon):
                 tokens = line.split()
 
                 (
-                    current_record,
+                    _current_record,
                     season,
                     lon,
                     lat,
                     xx,
                     yy,
-                    wgs84_height,
-                    tice,
-                    srfelev,
-                    bedelev,
+                    _wgs84_height,
+                    _tice,
+                    _srfelev,
+                    _bedelev,
                 ) = tokens
                 try:
                     curr_line.append((float(lon), float(lat)))
@@ -200,15 +196,15 @@ def extract_bas_respac(data_directory, index_directory, epsilon):
     # Split each season into segments that can be plotted as line segments.
     ps71 = pyproj.Proj("epsg:3031")
     for season, points in seasons.items():
-        season_name = "BAS_19{}_19{}".format(season[0:2], season[2:4])
+        season_name = f"BAS_19{season[0:2]}_19{season[2:4]}"
         print(season_name)
         season_dir = os.path.join(index_directory, "ANTARCTIC", "BAS", season_name)
 
         try:
             pathlib.Path(season_dir).mkdir(parents=True, exist_ok=True)
-        except FileExistsError as ex:
-            print("Could not create {}".format(season_dir))
-            raise (ex)
+        except FileExistsError:
+            print(f"Could not create {season_dir}")
+            raise
 
         # break each season into segments that can be plotted with line segments
         # Find distance between consecutive points
@@ -232,7 +228,7 @@ def extract_bas_respac(data_directory, index_directory, epsilon):
             if len(segment) <= 1:
                 continue
             segment_filepath = os.path.join(
-                season_dir, "segment{:03d}.csv".format(segment_count)
+                season_dir, f"segment{segment_count:03d}.csv"
             )
             segment_count += 1
             lon = segment[:, 0]
@@ -241,7 +237,7 @@ def extract_bas_respac(data_directory, index_directory, epsilon):
             sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
             with open(segment_filepath, "w") as fp:
                 fp.write("ps71_easting,ps71_northing\n")
-                data = ["{},{}\n".format(pt[0], pt[1]) for pt in zip(sx, sy)]
+                data = [f"{pt[0]},{pt[1]}\n" for pt in zip(sx, sy)]
                 fp.writelines(data)
 
 
