@@ -85,7 +85,9 @@ def download_all_bas(qiceradar_dir: str, antarctic_index: str, arctic_index: str
                 elif campaign in ["GRADES_IMAGE", "ITGC_2019", "WISE_ISODYN"]:
                     expr = r"(?P<campaign>[A-Z0-9]+_[A-Z0-9]+)_(?P<flight>[A-Za-z0-9_]+).nc"
                 else:
-                    print(f"NYI: trying to parse filename from BAS campaign {campaign}")
+                    # So far, these are just the GOG3 icethickness data.
+                    print(f"NYI: trying to parse filename from BAS campaign {campaign}. Skipping.")
+                    print(flight["name"])
                     continue
                 mm = re.match(expr, flight["name"])
                 if mm is None:
