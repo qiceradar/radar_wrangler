@@ -46,7 +46,7 @@ datasets["ANT_18_19_JURAS"] = 976759
 # datasets["CHIRP_2019"] = 963264 -- this one was replaced by 982515
 datasets["ANT_18_19"] = 982515
 
-datasets["ANT_22_23"] = 971622  # Embargoed until 2027
+# datasets["ANT_22_23"] = 971622  # Embargoed until 2027
 datasets["ANT_23_24_CHARISO"] = 990049
 datasets["ANT_23_24"] = 981128
 datasets["ANT_24_25_CHARISO"] = 991465
@@ -55,7 +55,7 @@ datasets["ANT_24_25_CHARISO"] = 991465
 # experimentally determined. 15 wasn't ever enough; 20 has been mixed.
 # The longest (successful) wait I've seen so far is 100 seconds.
 TAPE_RETRY_WAIT = 45  # seconds
-MAX_TAPE_RETRIES = 10  # 10 retries
+MAX_TAPE_RETRIES = 3  # 10 retries
 BUFFER_SIZE = 10
 
 
