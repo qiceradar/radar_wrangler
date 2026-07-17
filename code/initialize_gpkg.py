@@ -50,6 +50,7 @@ def create_gpkg(empty_file: str, output_file: str):
         "utig_netcdf",
         "cresis_mat",
         "cresis_netcdf",
+        "lvs_segy",
     ]
 
     cursor.execute("CREATE TABLE IF NOT EXISTS data_formats (name TEXT PRIMARY KEY)")
@@ -60,7 +61,7 @@ def create_gpkg(empty_file: str, output_file: str):
     result = cursor.execute("SELECT * from data_formats")
     print(f"Available data formats: {result.fetchall()}")
 
-    download_methods = ["curl", "wget", "nsidc", "usapdc_agasea", "usapdc_captcha", "aad_oia", "aad_eagle", "zenodo_krt1"]
+    download_methods = ["curl", "wget", "nsidc", "usapdc_agasea", "usapdc_lvs", "aad_oia", "aad_eagle", "zenodo_krt1"]
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS download_methods (name TEXT PRIMARY KEY)"
     )
