@@ -7,9 +7,9 @@ This is the most complete set of data collected by CReSIS, but it doesn't
 have good metadata for who actually owns the data.
 """
 
-
 import pathlib
 import subprocess
+import sys
 import tempfile
 
 from radar_wrangler_utils import Granule, read_granule_list
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     elif args.arctic:
         antarctic = False
     else:
-        print(f"ERROR: Must specify either --antarctic or --arctic")
-        exit(-1)
+        print("ERROR: Must specify either --antarctic or --arctic")
+        sys.exit(-1)
 
     main(antarctic, args.data_directory)
