@@ -8,7 +8,10 @@ import pathlib
 import sqlite3
 
 
-def main(data_dir: str, index: str,) -> None:
+def main(
+    data_dir: str,
+    index: str,
+) -> None:
 
     campaign_basedir = pathlib.Path(f"{data_dir}/ANTARCTIC/UTIG/LVS")
 
@@ -32,9 +35,7 @@ def main(data_dir: str, index: str,) -> None:
     data_format = "lvs_segy"
     download_method = "usapdc_lvs"
 
-    # This dataset didn't break lines up into granules
-    granule_seq = 0
-
+    granule_seq = 0  # This dataset doesn't have granules
 
     for filepath in granule_filepaths:
         filename = filepath.name
@@ -42,7 +43,7 @@ def main(data_dir: str, index: str,) -> None:
 
         segment = filepath.stem
         relpath = f"{region}/{institution}/{campaign}/{filename}"
-        granule_name = f"{institution}_{campaign}_{segment}_{granule_seq}"
+        granule_name = f"{institution}_{campaign}_{segment}"
 
         cursor.execute(
             "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
