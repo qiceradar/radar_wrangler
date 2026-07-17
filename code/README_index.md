@@ -45,6 +45,7 @@ TODO: If we stick with using a GeoPackage, it might make sense to combine this s
 
 Subsample bedmap data to 200m along-track spacing (RDP algorithm doesn't work well with the full-season datasets in Bedmap).
 
+# TODO: I think this comment is now out-of-date? It's using the bm1_matched_segments.json file
 Uses the `duplicate_segments` variable from bedmap_labels.py to filter out some of the points from BEDMAP1's layer that also appear in other BEDMAP2/3 layers or are extracted from directly available radargram or flight tracks.
 
 2)  ./extract_radargram_tracks.py ~/RadarData ~/RadarData/targ --force
@@ -65,6 +66,7 @@ Arguments:
 ## Layer Creation
 
 We use a single GeoPackage as the database that holds all tracks for the index. However, since importing the GeoPackage directly in to QGIS only seems to allow one level of nesting, there needs to be a separate qlr file that styles the layers and organizes them.
+
 
 
 1) Initialize index
@@ -113,6 +115,9 @@ select * from campaigns;
   * Generates qiceradar_index.gpkg
   * Uses (manually updated) `available_campaigns` variable from bedmap_labels.py to not create layers for BEDMAP2/3 campaigns that are directly downloaded as radargrams to avoid duplication.
   * Adds geometry to already-existing geopackage files
+
+Where we have flight paths split into flights or transects, this creates linestring features.
+For surveys where we only have points, it has to be a multipoint, to avoid drawing spurious lines.
 
 3) ./style_geopackage_index.py ARCTIC ~/RadarData/targ/qiceradar_arctic_index.gpkg ~/RadarData/targ/qiceradar_arctic_index.qlr
 

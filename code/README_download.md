@@ -23,7 +23,7 @@ A later index step will add the per-campaign tables containing geometry, along w
   * geometry
   * region
   * institution
-  * campaign -- the colloquial name, used for foders
+  * campaign -- the colloquial name, used for folders
   * segment
   * granule
   * relative_path -- used to loo up whether data has been downloaded, in a context where additional database lookups aren't possible.
@@ -53,96 +53,25 @@ in any order and even re-run.
 
 ## BAS
 
-BAS has a data portal: https://www.bas.ac.uk/project/nagdp/
-I used that to find all openly-available Antarctic surveys. Click on a line, then click "Metadata" to be taken to the rammada page.
+## KOPRI (via Zenodo)
 
-Individual surveys are hosted at rammada; I have not figured out how to automate scraping the download links, so manually download the indices:
+https://zenodo.org/records/3874655
 
-* Go to the landing page
-* click the "Folder" dropdown next to "netcdf"
-* Select "All Actions"
-* Select "CSV"; download into data/BAS/netcdf_indices; renaming file to [survey].csv
-* Relevant columns are "name" and "url"
+I have a rearrange_utig script that sorts granules into a consistent directory structure; but it looks like the database doesn't have expected relative path included....
 
-Landing pages for different Antarctic surveys with full radargrams available:
-* AGAP: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=a1abf071-85fc-4118-ad37-7f186b72c847
-* BBAS: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=db8bdbad-6893-4a77-9d12-a9bcb7325b70
-* FISS2015: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=3507901f-d03e-45a6-8d9b-59cf98a03e1d
-* FISS2016: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=0cb61583-3985-4875-b141-5743e68abe35
-* GRADES_IMAGE: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=c7ea5697-87e3-4529-a0dd-089a2ed638fb
-* ICEGRAV: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=c6324118-94a2-4e03-8715-b24b82322a57
-* IMAFI: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=f32b298b-7906-4360-9e34-16739af73bb7
-* ITGC_2019: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=e7aba676-1fdc-4c9a-b125-1ebe6124e5dc
-* POLARGAP: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=e8a29fa7-a245-4a04-8b56-098defa134b9
-* WISE_ISODYN: https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=70adab3d-3632-400d-9aa1-ddf2d62a11b3
-
-For Arctic surveys:
-* GOG3 (ice thickness only): https://ramadda.data.bas.ac.uk/repository/entry/show?entryid=d31550de-13c2-4779-aa10-9e0a43bbeb1a
-
-Download:
-
-```
-python3 download_bas.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
-```
-
+TODO: consider just leaving it as-is, unzipped into KOPRI/KRT1 folder?
 
 ## UTIG
 
-UTIG's data is spread across multiple data centers, including:
-* Texas Data Repository -- more recent releases
-* NSIDC -- any of their NASA funded work
-* AAD - much of ICECAP; unfortunately, only available as single large zip file
-* USAP-DC; AGASEA + LVS; not automatable (access by email / captcha)
 
 ### TDR (Texas Data Repository)
 
-TDR is the simplest:
-```
-python3 download_utig_tdr.py ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
-```
-
 ### NSIDC
 
-NSIDC is a two-step process that requres authentication; generating the list of files (slow), then downloading them:
-
-**Autentication**
-
-NASA's Earthdata requires a login to download. I prefer bearer token to avoid saving passwords in plain text (in case users have re-used passwords).
-  * go to: https://urs.earthdata.nasa.gov/profile and log in
-  * click "Generate Token"
-  * Create ~/.netrc file containing a single line (replace [token] with your token)
-      machine urs.earthdata.nasa.gov user token password [token]
-  * make ~/.netrc only readable by the user: `chmod 600 ~/.netrc`  (on Linux or MacOS; TODO: how to do this on windows?)
-  * NB: tokens expire after 1 year; will need to prompt users to re-generate if necessary.
-
-**Generate index**:
-
-```
-python3 generate_utig_nsidc_index.py
-```
-
-**Download data**:
-
-(This script is slow because we compare the local filesize to the size reported by the NSIDC server before deciding whether to download it. The other scripts simply check that the destination file exists, then skip the download if it does.)
-
-TODO: Consider refactoring; only copying the file to its final destination after download succeeds makes the file size check less important.
-
-```
-python3 download_utig_nsidc.py ~/RadarData qiceradar_antarctic_index.gpkg
-```
 
 ## CReSIS
 
-ALL of CReSIS's data appears to be available from their KU servers.
-Some of it is also at NSIDC, and some of it is the COLDEX data that's also available (processed by UTIG) at TDR.
-
-Rather than decide which is the canonical format, we simply index all versions.
-
 ### KU
-
-```
-python3 download_cresis_ku.py --reindex ~/RadarData qiceradar_antarctic_index.gpkg qiceradar_arctic_index.gpkg
-```
 
 ### NSIDC
 
