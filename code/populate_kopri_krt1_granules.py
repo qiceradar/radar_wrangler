@@ -9,15 +9,19 @@ import re
 import sqlite3
 
 
-def main(data_dir: str, index: str,) -> None:
+def main(
+    data_dir: str,
+    index: str,
+) -> None:
     campaign_basedir = pathlib.Path(f"{data_dir}/ANTARCTIC/KOPRI/KRT1")
 
-    granule_filepaths = list(campaign_basedir.glob("*.nc"))
+    granule_filepaths = [
+        fp for fp in campaign_basedir.glob("*.nc") if not fp.name.startswith(".")
+    ]
 
     if len(granule_filepaths) == 0:
         print(f"Unable to find any netCDFs under {campaign_basedir}")
         return
-
 
     connection = sqlite3.connect(index)
     cursor = connection.cursor()
@@ -43,10 +47,9 @@ def main(data_dir: str, index: str,) -> None:
             continue
 
         relpath = f"{region}/{institution}/{campaign}/{filename}"
-        segment = f"{mm['project']}/{mm['set']}/{mm['transect']}"
-        granule_seq = mm['granule']
+        segment = f"{mm['project']}_{mm['set']}_{mm['transect']}"
+        granule_seq = mm["granule"]
         granule_name = f"{institution}_{campaign}_{segment}_{granule_seq}"
-
 
         cursor.execute(
             "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
