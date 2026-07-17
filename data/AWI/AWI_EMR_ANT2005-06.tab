@@ -1,0 +1,98 @@
+/* DATA DESCRIPTION:
+Citation:	Jokat, Wilfried; Miller, Heinrich; Nixdorf, Uwe; Nogi, Yoshifumi (2025): ANT 2005/06: AWI airborne Radio-Echo Sounding data over the Ekström Isen and Shireas Glacier Basin, Eastern DML (ANTSYO project) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.974441
+Abstract:	This dataset contains airborne radar data acquired using the AWI EMR system during the Antarctic season of 2005/06. The profiles extend across the Dronning Maud Land over the Ekström Isen and over the Shireas Glacier Basin. The data are available as netCDF files (including waveforms and metadata), KML files of the profile line locations, and quicklook images of the radargrams.
+Keyword(s):	AWI EMR Radar; Dronning Maud Land; East Antarctica; Ekström; Ice Sheet; Ice shelf; Polar 2; radio-echo sounding
+Related to:	Eisen, Olaf; Steinhage, Daniel; Franke, Steven; Helm, Veit; Binder, Tobias; Drews, Reinhard; Eagles, Graeme; Humbert, Angelika; Jansen, Daniela; Jokat, Wilfried; Lambrecht, Astrid; Mieth, Matthias; Riedel, Sven; Miller, Heinrich (2024): Collection of datasets from AWI's radio-echo sounding systems on ice sheets and glaciers [dataset bibliography]. PANGAEA, https://doi.org/10.1594/PANGAEA.972094
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Binder, Tobias; Nixdorf, Uwe; Miller, Heinrich; Humbert, Angelika; Jansen, Daniela; Eagles, Graeme; Eisermann, Hannes; Jokat, Wilfried; Ruppel, Antonia; Drews, Reinhard; Zuhr, Alexandra; Driemel, Amelie; Walter, Andreas; Konopatzky, Peter; Heß, Robin; Haas, Antonie; Koppe, Roland; Andreas, Pascal H; Eisen, Olaf (2026): Review article: 30 years of airborne radar surveys on the Antarctic and Greenland ice sheets by the Alfred Wegener Institute. The Cryosphere, 20(4), 2485-2530, https://doi.org/10.5194/tc-20-2485-2026
+	Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+	Nogi, Yoshifumi; Jokat, Wilfried; Kitada, Kazuya; Steinhage, Daniel (2013): Geological structures inferred from airborne geophysical surveys around Lützow-Holm Bay, East Antarctica. Precambrian Research, 234, 279-287, https://doi.org/10.1016/j.precamres.2013.02.008
+Additional metadata:	O2A Registry: Metadata for radar system Ice Thickness Radar 150 MHz at current version. Alfred Wegener Institut Helmholtz Centre for Polar and Marine Research, https://registry.o2a-data.de/items/6794
+Project(s):	Antarctic Flight Missions at Syowa Region (ANTSYO)
+Coverage:	MEDIAN LATITUDE: -69.188986 * MEDIAN LONGITUDE: 36.482850 * SOUTH-BOUND LATITUDE: -70.636230 * WEST-BOUND LONGITUDE: -8.267103 * NORTH-BOUND LATITUDE: -68.728203 * EAST-BOUND LONGITUDE: 41.990536
+	DATE/TIME START: 2005-12-27T13:07:24 * DATE/TIME END: 2006-01-29T14:48:13
+Event(s):	ANT_2005/06_01 * LATITUDE START: -70.636208 * LONGITUDE START: -8.266857 * LATITUDE END: -70.636230 * LONGITUDE END: -8.266855 * DATE/TIME START: 2005-12-27T13:07:24 * DATE/TIME END: 2005-12-27T17:00:49 * LOCATION: Weddell Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_02 * LATITUDE START: -70.636230 * LONGITUDE START: -8.266845 * LATITUDE END: -70.636223 * LONGITUDE END: -8.267103 * DATE/TIME START: 2005-12-30T10:01:30 * DATE/TIME END: 2005-12-30T13:10:19 * LOCATION: Weddell Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_03 * LATITUDE START: -69.027367 * LONGITUDE START: 40.091343 * LATITUDE END: -69.026321 * LONGITUDE END: 40.089417 * DATE/TIME START: 2006-01-05T15:48:15 * DATE/TIME END: 2006-01-05T20:13:25 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_04 * LATITUDE START: -69.027359 * LONGITUDE START: 40.091354 * LATITUDE END: -70.034714 * LONGITUDE END: 38.537304 * DATE/TIME START: 2006-01-06T07:39:10 * DATE/TIME END: 2006-01-06T08:24:17 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_05 * LATITUDE START: -69.027328 * LONGITUDE START: 40.091328 * LATITUDE END: -69.025894 * LONGITUDE END: 40.089611 * DATE/TIME START: 2006-01-08T12:19:44 * DATE/TIME END: 2006-01-08T16:46:35 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_07 * LATITUDE START: -69.027374 * LONGITUDE START: 40.091434 * LATITUDE END: -69.025734 * LONGITUDE END: 40.096443 * DATE/TIME START: 2006-01-09T13:59:13 * DATE/TIME END: 2006-01-09T18:09:12 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_08 * LATITUDE START: -69.027344 * LONGITUDE START: 40.091381 * LATITUDE END: -69.026047 * LONGITUDE END: 40.089680 * DATE/TIME START: 2006-01-10T07:36:57 * DATE/TIME END: 2006-01-10T11:59:20 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_09 * LATITUDE START: -69.027374 * LONGITUDE START: 40.091454 * LATITUDE END: -69.027443 * LONGITUDE END: 40.091492 * DATE/TIME START: 2006-01-10T13:20:00 * DATE/TIME END: 2006-01-10T17:42:02 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_11 * LATITUDE START: -68.987297 * LONGITUDE START: 39.584740 * LATITUDE END: -70.189568 * LONGITUDE END: 37.079967 * DATE/TIME START: 2006-01-13T07:51:19 * DATE/TIME END: 2006-01-13T08:46:13 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_12 * LATITUDE START: -68.728203 * LONGITUDE START: 41.990536 * LATITUDE END: -69.026733 * LONGITUDE END: 40.127178 * DATE/TIME START: 2006-01-13T14:04:54 * DATE/TIME END: 2006-01-13T14:42:00 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_13 * LATITUDE START: -69.027458 * LONGITUDE START: 40.091465 * LATITUDE END: -69.025673 * LONGITUDE END: 40.100094 * DATE/TIME START: 2006-01-14T13:19:03 * DATE/TIME END: 2006-01-14T17:48:29 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_14 * LATITUDE START: -69.027473 * LONGITUDE START: 40.091492 * LATITUDE END: -69.025826 * LONGITUDE END: 40.101177 * DATE/TIME START: 2006-01-19T07:32:29 * DATE/TIME END: 2006-01-19T12:07:52 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_15 * LATITUDE START: -69.027420 * LONGITUDE START: 40.093090 * LATITUDE END: -69.025772 * LONGITUDE END: 40.098255 * DATE/TIME START: 2006-01-19T13:49:03 * DATE/TIME END: 2006-01-19T18:41:09 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_16 * LATITUDE START: -69.027428 * LONGITUDE START: 40.093025 * LATITUDE END: -69.027428 * LONGITUDE END: 40.093124 * DATE/TIME START: 2006-01-20T07:37:54 * DATE/TIME END: 2006-01-20T12:32:54 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_17 * LATITUDE START: -69.027420 * LONGITUDE START: 40.093159 * LATITUDE END: -69.027443 * LONGITUDE END: 40.093170 * DATE/TIME START: 2006-01-21T08:35:13 * DATE/TIME END: 2006-01-21T13:21:28 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_18 * LATITUDE START: -69.027451 * LONGITUDE START: 40.093163 * LATITUDE END: -69.027435 * LONGITUDE END: 40.093262 * DATE/TIME START: 2006-01-22T07:26:58 * DATE/TIME END: 2006-01-22T11:59:06 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_19 * LATITUDE START: -69.027435 * LONGITUDE START: 40.093296 * LATITUDE END: -69.027435 * LONGITUDE END: 40.093079 * DATE/TIME START: 2006-01-22T13:20:58 * DATE/TIME END: 2006-01-22T17:55:25 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_20 * LATITUDE START: -69.027435 * LONGITUDE START: 40.093117 * LATITUDE END: -69.027435 * LONGITUDE END: 40.093178 * DATE/TIME START: 2006-01-23T13:01:43 * DATE/TIME END: 2006-01-23T17:57:34 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_21 * LATITUDE START: -69.027451 * LONGITUDE START: 40.093182 * LATITUDE END: -69.027443 * LONGITUDE END: 40.093193 * DATE/TIME START: 2006-01-24T07:27:40 * DATE/TIME END: 2006-01-24T12:12:40 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_22 * LATITUDE START: -69.027451 * LONGITUDE START: 40.093204 * LATITUDE END: -69.026917 * LONGITUDE END: 40.091763 * DATE/TIME START: 2006-01-24T13:23:50 * DATE/TIME END: 2006-01-24T17:51:05 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_23 * LATITUDE START: -69.027473 * LONGITUDE START: 40.093163 * LATITUDE END: -69.027458 * LONGITUDE END: 40.093098 * DATE/TIME START: 2006-01-25T07:32:42 * DATE/TIME END: 2006-01-25T12:08:16 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_24 * LATITUDE START: -69.027451 * LONGITUDE START: 40.093109 * LATITUDE END: -69.027473 * LONGITUDE END: 40.093021 * DATE/TIME START: 2006-01-25T13:28:22 * DATE/TIME END: 2006-01-25T18:08:40 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_25 * LATITUDE START: -69.027443 * LONGITUDE START: 40.093243 * LATITUDE END: -69.027420 * LONGITUDE END: 40.093121 * DATE/TIME START: 2006-01-27T07:37:47 * DATE/TIME END: 2006-01-27T12:17:01 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_26 * LATITUDE START: -69.027458 * LONGITUDE START: 40.093159 * LATITUDE END: -69.027466 * LONGITUDE END: 40.092957 * DATE/TIME START: 2006-01-27T13:33:57 * DATE/TIME END: 2006-01-27T17:58:54 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_27 * LATITUDE START: -69.027443 * LONGITUDE START: 40.093224 * LATITUDE END: -69.027435 * LONGITUDE END: 40.093170 * DATE/TIME START: 2006-01-28T07:26:01 * DATE/TIME END: 2006-01-28T11:51:41 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_28 * LATITUDE START: -69.027443 * LONGITUDE START: 40.093208 * LATITUDE END: -69.027443 * LONGITUDE END: 40.093185 * DATE/TIME START: 2006-01-29T07:26:51 * DATE/TIME END: 2006-01-29T10:14:25 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	ANT_2005/06_29 * LATITUDE START: -69.498199 * LONGITUDE START: 41.727562 * LATITUDE END: -69.027428 * LONGITUDE END: 40.093204 * DATE/TIME START: 2006-01-29T12:36:06 * DATE/TIME END: 2006-01-29T14:48:13 * LOCATION: Cosmonauts Sea * CAMPAIGN: ANT_2005/06 * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+Comment:	Project PIs: Wilfried Jokat (AWI), Uwe Nixdorf (AWI)
+	Contact persons for AWI Radio-echo sounding data: Daniel Steinhage (daniel.steinhage@awi.de), Veit Helm (veit.helm@awi.de), Olaf Eisen (olaf.eisen@awi.de) 
+	----
+	The netCDF files contain the following variables:
+	altitude: Platform altitude (WGS84) in meters
+	bed_elevation: Bed elevation for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	bed_pick: picked Bed location for each trace, expressed as twt in seconds from time zero
+	data: Radar data (Values in dBm after DC conversion)
+	data_agc: Scaled radar data using automatic gain control (AGC)
+	distance: Along-track distance in meters
+	ice_thickness: Ice thickness for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	lat: Latitude in decimal degrees (WGS84)
+	lon: Longitude in decimal degrees (WGS84)
+	range: Range between sensor and surface in meters
+	spacing: Along-track trace to trace spacing in meters
+	surface: Surface elevation derived from radar (WGS84) in meters
+	surface_pick: Picked surface reflection in two-way travel time in seconds
+	time: Seconds of day
+	twt: Two-way travel time (twt) in seconds
+	--
+	The KML files are in EPSG:4326, and the quicklook images show the AGC product of the radargram.
+Parameter(s):	Season (Season) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html)
+	Profile ID (Profile ID) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html)
+	Instrument (Instrument) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	Radar product (Radar prod) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	netCDF file (netCDF) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	netCDF file (File Size) [Bytes] (netCDF (Size)) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	GIS file (GIS) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: KML Files
+	Image (IMAGE) * PI: Jokat, Wilfried (https://orcid.org/0000-0002-7793-5854, wilfried.jokat@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/wilfried-jokat.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: Quicklook
+License:	Creative Commons Attribution 4.0 International (CC-BY-4.0) (URI: https://creativecommons.org/licenses/by/4.0/)
+Status:	Curation Level: Enhanced curation (URI: https://wiki.pangaea.de/wiki/Curation_levels)
+Size:	168 data points
+Files:	All files referred to in data matrix can be downloaded in one go as ZIP <https://download.pangaea.de/dataset/974441/allfiles.zip> or TAR <https://download.pangaea.de/dataset/974441/allfiles.tar> (PANGAEA user account required). To download single files, use the filename from data matrix appended to "https://download.pangaea.de/dataset/974441/files/".
+*/
+Season	Profile ID	Instrument	Radar prod	netCDF	netCDF (Size) [Bytes]	GIS	IMAGE
+ANT 2005/06	20062008	EMR	600 ns pulse	20062008_stp10.nc	649.5 MBytes	20062008_stp10.kml	20062008_stp10.jpg
+ANT 2005/06	20062009	EMR	600 ns pulse	20062009_stp10.nc	503.9 MBytes	20062009_stp10.kml	20062009_stp10.jpg
+ANT 2005/06	20062010	EMR	600 ns pulse	20062010_stp10.nc	574.2 MBytes	20062010_stp10.kml	20062010_stp10.jpg
+ANT 2005/06	20062011	EMR	600 ns pulse	20062011_stp10.nc	549.4 MBytes	20062011_stp10.kml	20062011_stp10.jpg
+ANT 2005/06	20062012	EMR	600 ns pulse	20062012_stp10.nc	460.5 MBytes	20062012_stp10.kml	20062012_stp10.jpg
+ANT 2005/06	20062013	EMR	600 ns pulse	20062013_stp10.nc	68.9 MBytes	20062013_stp10.kml	20062013_stp10.jpg
+ANT 2005/06	20062014	EMR	600 ns pulse	20062014_stp10.nc	117.3 MBytes	20062014_stp10.kml	20062014_stp10.jpg
+ANT 2005/06	20062015	EMR	600 ns pulse	20062015_stp10.nc	647.4 MBytes	20062015_stp10.kml	20062015_stp10.jpg
+ANT 2005/06	20062016	EMR	600 ns pulse	20062016_stp10.nc	460.5 MBytes	20062016_stp10.kml	20062016_stp10.jpg
+ANT 2005/06	20062017	EMR	600 ns pulse	20062017_stp10.nc	760.1 MBytes	20062017_stp10.kml	20062017_stp10.jpg
+ANT 2005/06	20062018	EMR	600 ns pulse	20062018_stp10.nc	499.4 MBytes	20062018_stp10.kml	20062018_stp10.jpg
+ANT 2005/06	20062102	EMR	600 ns pulse	20062102_stp10.nc	202.7 MBytes	20062102_stp10.kml	20062102_stp10.jpg
+ANT 2005/06	20062103	EMR	600 ns pulse	20062103_stp10.nc	76.5 MBytes	20062103_stp10.kml	20062103_stp10.jpg
+ANT 2005/06	20062104	EMR	600 ns pulse	20062104_stp10.nc	45.7 MBytes	20062104_stp10.kml	20062104_stp10.jpg
+ANT 2005/06	20062105	EMR	600 ns pulse	20062105_stp10.nc	298 MBytes	20062105_stp10.kml	20062105_stp10.jpg
+ANT 2005/06	20062106	EMR	600 ns pulse	20062106_stp10.nc	358.6 MBytes	20062106_stp10.kml	20062106_stp10.jpg
+ANT 2005/06	20062107	EMR	600 ns pulse	20062107_stp10.nc	291.7 MBytes	20062107_stp10.kml	20062107_stp10.jpg
+ANT 2005/06	20063001	EMR	60 ns pulse	20063001_stp10.nc	20.8 MBytes	20063001_stp10.kml	20063001_stp10.jpg
+ANT 2005/06	20063102	EMR	60 ns pulse	20063102_stp10.nc	199.3 MBytes	20063102_stp10.kml	20063102_stp10.jpg
+ANT 2005/06	20063103	EMR	60 ns pulse	20063103_stp10.nc	75.5 MBytes	20063103_stp10.kml	20063103_stp10.jpg
+ANT 2005/06	20063104	EMR	60 ns pulse	20063104_stp10.nc	45.6 MBytes	20063104_stp10.kml	20063104_stp10.jpg
+ANT 2005/06	20063105	EMR	60 ns pulse	20063105_stp10.nc	294.2 MBytes	20063105_stp10.kml	20063105_stp10.jpg
+ANT 2005/06	20063106	EMR	60 ns pulse	20063106_stp10.nc	352 MBytes	20063106_stp10.kml	20063106_stp10.jpg
+ANT 2005/06	20063107	EMR	60 ns pulse	20063107_stp10.nc	281.5 MBytes	20063107_stp10.kml	20063107_stp10.jpg

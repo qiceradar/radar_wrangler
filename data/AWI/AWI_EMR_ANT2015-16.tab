@@ -1,0 +1,80 @@
+/* DATA DESCRIPTION:
+Citation:	Eagles, Graeme; Ruppel, Antonia; Läufer, Andreas; Steinhage, Daniel; Helm, Veit (2025): ANT 2015/16: AWI airborne Radio-Echo Sounding data western DML over the Maud Belt and Ekström Ice Shelf (GEA-V-FMA project) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.987347
+Abstract:	This dataset contains airborne radar data acquired using the AWI EMR system (Nixdorf et al., 1999) during the Arctic season of 2015. The profiles extend western DML over the Maud Belt and Ekström Ice Shelf to investigate the geodynamic evolution of East Antarctica, the Forster magnetic anomaly (GEA-V-FMA). The data are available as netCDF files (including waveforms and metadata), KML files of the profile line locations, and quicklook images of the radargrams.
+Keyword(s):	AWI EMR; DML; Dronning Maud Land; Ekström Isen; Maud Belt; Polar 5; radio-echo sounding
+Related to:	Eisen, Olaf; Steinhage, Daniel; Franke, Steven; Helm, Veit; Binder, Tobias; Drews, Reinhard; Eagles, Graeme; Humbert, Angelika; Jansen, Daniela; Jokat, Wilfried; Lambrecht, Astrid; Mieth, Matthias; Riedel, Sven; Miller, Heinrich (2024): Collection of datasets from AWI's radio-echo sounding systems on ice sheets and glaciers [dataset bibliography]. PANGAEA, https://doi.org/10.1594/PANGAEA.972094
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Binder, Tobias; Nixdorf, Uwe; Miller, Heinrich; Humbert, Angelika; Jansen, Daniela; Eagles, Graeme; Eisermann, Hannes; Jokat, Wilfried; Ruppel, Antonia; Drews, Reinhard; Zuhr, Alexandra; Driemel, Amelie; Walter, Andreas; Konopatzky, Peter; Heß, Robin; Haas, Antonie; Koppe, Roland; Andreas, Pascal H; Eisen, Olaf (2026): Review article: 30 years of airborne radar surveys on the Antarctic and Greenland ice sheets by the Alfred Wegener Institute. The Cryosphere, 20(4), 2485-2530, https://doi.org/10.5194/tc-20-2485-2026
+	Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+Additional metadata:	O2A Registry: Metadata for radar system Ice Thickness Radar 150 MHz at current version. Alfred Wegener Institut Helmholtz Centre for Polar and Marine Research, https://registry.o2a-data.de/items/6794
+Funding:	Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research, Bremerhaven (AWI) (URI: https://www.awi.de/), grant/award no. AWI_PA_02077: P5-200_ANT_2015_2016, GEA-V-FMA
+Coverage:	MEDIAN LATITUDE: -62.450690 * MEDIAN LONGITUDE: -6.058398 * SOUTH-BOUND LATITUDE: -71.717889 * WEST-BOUND LONGITUDE: -8.282642 * NORTH-BOUND LATITUDE: 53.503692 * EAST-BOUND LONGITUDE: 11.642147
+	DATE/TIME START: 2015-09-24T09:49:38 * DATE/TIME END: 2016-01-04T12:59:20
+Event(s):	P5_200_ANT_2015_2016_1509240101 * LATITUDE START: 53.503692 * LONGITUDE START: 8.570948 * LATITUDE END: 53.503555 * LONGITUDE END: 8.571269 * DATE/TIME START: 2015-09-24T09:49:38 * DATE/TIME END: 2015-09-24T11:42:37 * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC) * COMMENT: Certification flight
+	P5_200_ANT_2015_2016_1512140201 * LATITUDE START: -70.669046 * LONGITUDE START: -8.282642 * LATITUDE END: -70.669076 * LONGITUDE END: -8.281962 * DATE/TIME START: 2015-12-14T09:22:15 * DATE/TIME END: 2015-12-14T10:51:13 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512150301 * LATITUDE START: -70.669077 * LONGITUDE START: -8.281964 * LATITUDE END: -70.669083 * LONGITUDE END: -8.281950 * DATE/TIME START: 2015-12-15T08:43:50 * DATE/TIME END: 2015-12-15T09:57:48 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512150401 * LATITUDE START: -70.669077 * LONGITUDE START: -8.281934 * LATITUDE END: -70.669082 * LONGITUDE END: -8.282153 * DATE/TIME START: 2015-12-15T12:00:47 * DATE/TIME END: 2015-12-15T17:22:46 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512160501 * LATITUDE START: -70.669086 * LONGITUDE START: -8.282161 * LATITUDE END: -71.717889 * LONGITUDE END: 1.900963 * DATE/TIME START: 2015-12-16T14:46:38 * DATE/TIME END: 2015-12-16T18:48:36 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512180601 * LATITUDE START: -70.669056 * LONGITUDE START: -8.282212 * LATITUDE END: -70.669065 * LONGITUDE END: -8.282262 * DATE/TIME START: 2015-12-18T10:27:01 * DATE/TIME END: 2015-12-18T15:56:59 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512190701 * LATITUDE START: -70.669059 * LONGITUDE START: -8.282247 * LATITUDE END: -70.669043 * LONGITUDE END: -8.282269 * DATE/TIME START: 2015-12-19T09:56:21 * DATE/TIME END: 2015-12-19T15:17:19 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512230901 * LATITUDE START: -70.669030 * LONGITUDE START: -8.282257 * LATITUDE END: -70.669030 * LONGITUDE END: -8.282321 * DATE/TIME START: 2015-12-23T09:25:36 * DATE/TIME END: 2015-12-23T15:09:33 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512241001 * LATITUDE START: -70.669043 * LONGITUDE START: -8.282353 * LATITUDE END: -70.669040 * LONGITUDE END: -8.282230 * DATE/TIME START: 2015-12-24T09:24:30 * DATE/TIME END: 2015-12-24T15:14:30 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512271101 * LATITUDE START: -70.669030 * LONGITUDE START: -8.282223 * LATITUDE END: -70.669044 * LONGITUDE END: -8.282281 * DATE/TIME START: 2015-12-27T09:17:41 * DATE/TIME END: 2015-12-27T15:08:19 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512281201 * LATITUDE START: -70.666610 * LONGITUDE START: -8.282612 * LATITUDE END: -70.669019 * LONGITUDE END: -8.282281 * DATE/TIME START: 2015-12-28T09:15:58 * DATE/TIME END: 2015-12-28T14:52:57 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1512291301 * LATITUDE START: -70.669022 * LONGITUDE START: -8.282282 * LATITUDE END: -70.669030 * LONGITUDE END: -8.282342 * DATE/TIME START: 2015-12-29T09:17:51 * DATE/TIME END: 2015-12-29T13:47:19 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1601021401 * LATITUDE START: -70.669015 * LONGITUDE START: -8.282297 * LATITUDE END: -70.669021 * LONGITUDE END: -8.282299 * DATE/TIME START: 2016-01-02T10:56:48 * DATE/TIME END: 2016-01-02T16:23:49 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1601031501 * LATITUDE START: -71.262364 * LONGITUDE START: -5.381258 * LATITUDE END: -70.669007 * LONGITUDE END: -8.282226 * DATE/TIME START: 2016-01-03T10:13:34 * DATE/TIME END: 2016-01-03T15:09:19 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	P5_200_ANT_2015_2016_1601041601 * LATITUDE START: -70.668995 * LONGITUDE START: -8.282241 * LATITUDE END: -70.824011 * LONGITUDE END: 11.642147 * DATE/TIME START: 2016-01-04T09:51:03 * DATE/TIME END: 2016-01-04T12:59:20 * LOCATION: Antarctica * CAMPAIGN: P5-200_ANT_2015_2016 (GEA-V-FMA, P5-ANT_GEA_2015_2016) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+Comment:	Project PI: Graeme Eagles (AWI)
+	Contact persons for AWI Radio-echo sounding data: Daniel Steinhage (daniel.steinhage@awi.de), Veit Helm (veit.helm@awi.de), Olaf Eisen (olaf.eisen@awi.de)
+	--
+	The netCDF files contain the following variables:
+	altitude: Platform altitude (WGS84) in meters
+	bed_elevation: Bed elevation for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	bed_pick: picked Bed location for each trace, expressed as twt in seconds from time zero
+	data: Radar data (Values in dBm after DC conversion)
+	data_agc: Scaled radar data using automatic gain control (AGC)
+	distance: Along-track distance in meters
+	ice_thickness: Ice thickness for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	lat: Latitude in decimal degrees (WGS84)
+	lon: Longitude in decimal degrees (WGS84)
+	range: Range between sensor and surface in meters
+	spacing: Along-track trace to trace spacing in meters
+	surface: Surface elevation derived from radar (WGS84) in meters
+	surface_pick: Picked surface reflection in two-way travel time in seconds
+	time: Seconds of day
+	twt: Two-way travel time (twt) in seconds
+	--
+	The KML files are in EPSG:4326, and the quicklook images show the AGC product of the radargram.
+Parameter(s):	Season (Season) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de)
+	Profile ID (Profile ID) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de)
+	Instrument (Instrument) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de)
+	Radar product (Radar prod) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de)
+	netCDF file (netCDF) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	netCDF file (File Size) [Bytes] (netCDF (Size)) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	GIS file (GIS) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: KML Files
+	Image (IMAGE) * PI: Eagles, Graeme (https://orcid.org/0000-0001-5325-0810, graeme.eagles@awi.de) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: Quicklook
+License:	Creative Commons Attribution 4.0 International (CC-BY-4.0) (URI: https://creativecommons.org/licenses/by/4.0/)
+Status:	Curation Level: Enhanced curation (URI: https://wiki.pangaea.de/wiki/Curation_levels)
+Size:	133 data points
+Files:	All files referred to in data matrix can be downloaded in one go as ZIP <https://download.pangaea.de/dataset/987347/allfiles.zip> or TAR <https://download.pangaea.de/dataset/987347/allfiles.tar> (PANGAEA user account required). To download single files, use the filename from data matrix appended to "https://download.pangaea.de/dataset/987347/files/".
+*/
+Season	Profile ID	Instrument	Radar prod	netCDF	netCDF (Size) [Bytes]	GIS	IMAGE
+ANT 2016/16	20162002	EMR	600 ns pulse	20162002_stp7.nc	144.6 MBytes	20162002_stp7.kml	20162002_stp7.jpg
+ANT 2016/16	20162003	EMR	600 ns pulse	20162003_stp7.nc	465.6 MBytes	20162003_stp7.kml	20162003_stp7.jpg
+ANT 2016/16	20162004	EMR	600 ns pulse	20162004_stp7.nc	618.5 MBytes	20162004_stp7.kml	20162004_stp7.jpg
+ANT 2016/16	20162005	EMR	600 ns pulse	20162005_stp7.nc	496.4 MBytes	20162005_stp7.kml	20162005_stp7.jpg
+ANT 2016/16	20162006	EMR	600 ns pulse	20162006_stp7.nc	159 MBytes	20162006_stp7.kml	20162006_stp7.jpg
+ANT 2016/16	20162007	EMR	600 ns pulse	20162007_stp7.nc	542.1 MBytes	20162007_stp7.kml	20162007_stp7.jpg
+ANT 2016/16	20162008	EMR	600 ns pulse	20162008_stp7.nc	371.6 MBytes	20162008_stp7.kml	20162008_stp7.jpg
+ANT 2016/16	20162009	EMR	600 ns pulse	20162009_stp7.nc	2.6 MBytes	20162009_stp7.kml	20162009_stp7.jpg
+ANT 2016/16	20162010	EMR	600 ns pulse	20162010_stp7.nc	169 MBytes	20162010_stp7.kml	20162010_stp7.jpg
+ANT 2016/16	20162011	EMR	600 ns pulse	20162011_stp7.nc	193.5 MBytes	20162011_stp7.kml	20162011_stp7.jpg
+ANT 2016/16	20162012	EMR	600 ns pulse	20162012_stp7.nc	34.1 MBytes	20162012_stp7.kml	20162012_stp7.jpg
+ANT 2016/16	20162013	EMR	600 ns pulse	20162013_stp7.nc	21.8 MBytes	20162013_stp7.kml	20162013_stp7.jpg
+ANT 2016/16	20162014	EMR	600 ns pulse	20162014_stp7.nc	126.1 MBytes	20162014_stp7.kml	20162014_stp7.jpg
+ANT 2016/16	20162015	EMR	600 ns pulse	20162015_stp7.nc	21.2 MBytes	20162015_stp7.kml	20162015_stp7.jpg
+ANT 2016/16	20162016	EMR	600 ns pulse	20162016_stp7.nc	187.2 MBytes	20162016_stp7.kml	20162016_stp7.jpg
+ANT 2016/16	20162017	EMR	600 ns pulse	20162017_stp7.nc	652 MBytes	20162017_stp7.kml	20162017_stp7.jpg
+ANT 2016/16	20162018	EMR	600 ns pulse	20162018_stp7.nc	476.6 MBytes	20162018_stp7.kml	20162018_stp7.jpg
+ANT 2016/16	20162019	EMR	600 ns pulse	20162019_stp7.nc	574.6 MBytes	20162019_stp7.kml	20162019_stp7.jpg
+ANT 2016/16	20162020	EMR	600 ns pulse	20162020_stp7.nc	623.1 MBytes	20162020_stp7.kml	20162020_stp7.jpg

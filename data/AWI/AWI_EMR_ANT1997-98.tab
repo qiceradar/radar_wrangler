@@ -1,0 +1,168 @@
+/* DATA DESCRIPTION:
+Citation:	Miller, Heinrich; Meyer, Uwe F; Helm, Veit; Steinhage, Daniel (2025): ANT 1997/98 : AWI airborne Radio-Echo Sounding data over western Dronning Maund Land for the EPICA DML ice core site selection and Ekström Isen (EPICA project) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.974295
+Abstract:	This dataset contains airborne radar data acquired using the AWI EMR system during the Antarctic season of 1997/98. The profiles extend across the western Dronning Maud around the EPICA DML ice core site. The data are available as netCDF files (including waveforms and metadata), KML files of the profile line locations, and quicklook images of the radargrams.
+Keyword(s):	AWI EMR Radar; Dronning Maud Land; East Antarctica; EDML; Ekström; Ice core; Ice Sheet; Ice shelf; Polar 2; radio-echo sounding
+Related to:	Eisen, Olaf; Steinhage, Daniel; Franke, Steven; Helm, Veit; Binder, Tobias; Drews, Reinhard; Eagles, Graeme; Humbert, Angelika; Jansen, Daniela; Jokat, Wilfried; Lambrecht, Astrid; Mieth, Matthias; Riedel, Sven; Miller, Heinrich (2024): Collection of datasets from AWI's radio-echo sounding systems on ice sheets and glaciers [dataset bibliography]. PANGAEA, https://doi.org/10.1594/PANGAEA.972094
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Binder, Tobias; Nixdorf, Uwe; Miller, Heinrich; Humbert, Angelika; Jansen, Daniela; Eagles, Graeme; Eisermann, Hannes; Jokat, Wilfried; Ruppel, Antonia; Drews, Reinhard; Zuhr, Alexandra; Driemel, Amelie; Walter, Andreas; Konopatzky, Peter; Heß, Robin; Haas, Antonie; Koppe, Roland; Andreas, Pascal H; Eisen, Olaf (2026): Review article: 30 years of airborne radar surveys on the Antarctic and Greenland ice sheets by the Alfred Wegener Institute. The Cryosphere, 20(4), 2485-2530, https://doi.org/10.5194/tc-20-2485-2026
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Zuhr, Alexandra; Bodart, Julien A; Eisen, Olaf; Bons, Paul D (2025): Age-depth distribution in western Dronning Maud Land, East Antarctica, and Antarctic-wide comparisons of internal reflection horizons. The Cryosphere, 19(3), 1153-1180, https://doi.org/10.5194/tc-19-1153-2025
+	Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+	Steinhage, Daniel (2001): Beiträge aus geophysikalischen Messungen in Dronning Maud Land, Antarktis, zur Auffindung eines optimalen Bohrpunktes für eine Eiskerntiefbohrung (Contributions of geophysical measurements in Dronning Maud Land, Antarctica, locating an optimal drill site for a deep ice core drilling). Berichte zur Polar- und Meeresforschung = Reports on Polar and Marine Research, 384, 91 pp, https://doi.org/10.2312/BzPM_0384_2001
+	Steinhage, Daniel; Nixdorf, Uwe; Meyer, Uwe F; Miller, Heinrich (1999): New maps of the ice thickness and subglacial topography in Dronning Maud Land, Antarctica, determined by means of airborne radio-echo sounding. Annals of Glaciology, 29, 267-272, https://doi.org/10.3189/172756499781821409
+	Steinhage, Daniel; Nixdorf, Uwe; Meyer, Uwe F; Miller, Heinrich (2001): Subglacial topography and internal structure of central and western Dronning Maud Land, Antarctica, determined from airborne radio echo sounding. Journal of Applied Geophysics, 47(3-4), 183-189, https://doi.org/10.1016/S0926-9851(01)00063-5
+Additional metadata:	O2A Registry: Metadata for radar system Ice Thickness Radar 150 MHz at current version. Alfred Wegener Institut Helmholtz Centre for Polar and Marine Research, https://registry.o2a-data.de/items/6794
+Project(s):	European Project for Ice Coring in Antarctica (EPICA) (URI: https://en.wikipedia.org/wiki/European_Project_for_Ice_Coring_in_Antarctica)
+Funding:	Fifth Framework Programme (FP5), grant/award no. EVK2-CT-2000-00077: European Project for Ice Coring in Antarctica (URI: https://cordis.europa.eu/project/id/EVK2-CT-2000-00077)
+	Fourth Framework Programme (FP4), grant/award no. ENV4980702: European Project for Ice Coring in Antarctica (URI: https://cordis.europa.eu/project/id/ENV4980702)
+Coverage:	MEDIAN LATITUDE: -72.271305 * MEDIAN LONGITUDE: -8.481584 * SOUTH-BOUND LATITUDE: -75.393494 * WEST-BOUND LONGITUDE: -14.015240 * NORTH-BOUND LATITUDE: -70.644829 * EAST-BOUND LONGITUDE: -2.099593
+	DATE/TIME START: 1997-12-08T10:58:49 * DATE/TIME END: 1997-12-29T19:46:50
+Event(s):	EPICA_III_01 * LATITUDE START: -70.647102 * LONGITUDE START: -8.259798 * LATITUDE END: -70.647362 * LONGITUDE END: -8.260563 * DATE/TIME START: 1997-12-08T10:58:49 * DATE/TIME END: 1997-12-08T14:26:21 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_02 * LATITUDE START: -70.647690 * LONGITUDE START: -8.260140 * LATITUDE END: -70.647606 * LONGITUDE END: -8.261416 * DATE/TIME START: 1997-12-09T10:57:00 * DATE/TIME END: 1997-12-09T14:37:00 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_03 * LATITUDE START: -70.647766 * LONGITUDE START: -8.260125 * LATITUDE END: -70.647316 * LONGITUDE END: -8.260529 * DATE/TIME START: 1997-12-10T10:30:49 * DATE/TIME END: 1997-12-10T15:48:36 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_04 * LATITUDE START: -75.393494 * LONGITUDE START: -4.582603 * LATITUDE END: -74.204201 * LONGITUDE END: -9.747510 * DATE/TIME START: 1997-12-12T14:56:54 * DATE/TIME END: 1997-12-12T16:10:01 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_05 * LATITUDE START: -74.204063 * LONGITUDE START: -9.747519 * LATITUDE END: -70.647530 * LONGITUDE END: -8.260489 * DATE/TIME START: 1997-12-12T18:30:27 * DATE/TIME END: 1997-12-12T21:09:06 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_06 * LATITUDE START: -70.647461 * LONGITUDE START: -8.260405 * LATITUDE END: -70.647476 * LONGITUDE END: -8.260326 * DATE/TIME START: 1997-12-14T10:09:57 * DATE/TIME END: 1997-12-14T14:56:51 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_07 * LATITUDE START: -75.113617 * LONGITUDE START: -4.654935 * LATITUDE END: -74.879944 * LONGITUDE END: -2.099593 * DATE/TIME START: 1997-12-15T13:35:23 * DATE/TIME END: 1997-12-15T15:17:46 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_08 * LATITUDE START: -74.204552 * LONGITUDE START: -9.747882 * LATITUDE END: -70.647530 * LONGITUDE END: -8.260160 * DATE/TIME START: 1997-12-15T17:55:34 * DATE/TIME END: 1997-12-15T20:36:18 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_09 * LATITUDE START: -70.647781 * LONGITUDE START: -8.260857 * LATITUDE END: -74.204247 * LONGITUDE END: -9.747680 * DATE/TIME START: 1997-12-16T11:56:29 * DATE/TIME END: 1997-12-16T17:14:14 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_10 * LATITUDE START: -74.204361 * LONGITUDE START: -9.746549 * LATITUDE END: -70.647682 * LONGITUDE END: -8.260647 * DATE/TIME START: 1997-12-16T18:51:05 * DATE/TIME END: 1997-12-16T21:25:05 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_11 * LATITUDE START: -70.647491 * LONGITUDE START: -8.260262 * LATITUDE END: -71.860817 * LONGITUDE END: -5.018840 * DATE/TIME START: 1997-12-19T14:03:36 * DATE/TIME END: 1997-12-19T17:50:03 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_12 * LATITUDE START: -70.647583 * LONGITUDE START: -8.260342 * LATITUDE END: -74.204391 * LONGITUDE END: -9.746467 * DATE/TIME START: 1997-12-24T09:52:07 * DATE/TIME END: 1997-12-24T15:11:10 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_13 * LATITUDE START: -74.204689 * LONGITUDE START: -9.747665 * LATITUDE END: -70.647194 * LONGITUDE END: -8.260837 * DATE/TIME START: 1997-12-24T16:59:46 * DATE/TIME END: 1997-12-24T19:26:37 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_14 * LATITUDE START: -70.647392 * LONGITUDE START: -8.261057 * LATITUDE END: -74.204170 * LONGITUDE END: -9.746634 * DATE/TIME START: 1997-12-27T13:17:04 * DATE/TIME END: 1997-12-27T18:18:33 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_15 * LATITUDE START: -74.204315 * LONGITUDE START: -9.747038 * LATITUDE END: -70.647308 * LONGITUDE END: -8.260672 * DATE/TIME START: 1997-12-27T19:44:35 * DATE/TIME END: 1997-12-27T22:18:41 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_16 * LATITUDE START: -70.647690 * LONGITUDE START: -8.260815 * LATITUDE END: -74.204269 * LONGITUDE END: -9.747087 * DATE/TIME START: 1997-12-28T14:32:48 * DATE/TIME END: 1997-12-28T19:41:37 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_17 * LATITUDE START: -74.204002 * LONGITUDE START: -9.746815 * LATITUDE END: -71.459190 * LONGITUDE END: -14.015240 * DATE/TIME START: 1997-12-28T21:14:20 * DATE/TIME END: 1997-12-28T22:56:37 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_18 * LATITUDE START: -70.647476 * LONGITUDE START: -8.260674 * LATITUDE END: -74.204155 * LONGITUDE END: -9.747332 * DATE/TIME START: 1997-12-29T10:06:29 * DATE/TIME END: 1997-12-29T15:04:09 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+	EPICA_III_19 * LATITUDE START: -74.203857 * LONGITUDE START: -9.746188 * LATITUDE END: -70.644829 * LONGITUDE END: -8.266494 * DATE/TIME START: 1997-12-29T16:34:12 * DATE/TIME END: 1997-12-29T19:46:50 * LOCATION: Weddell Sea * CAMPAIGN: EPICA_III * BASIS: POLAR 2 * METHOD/DEVICE: Aircraft (AC)
+Comment:	Project PIs: Heinrich Miller (AWI)
+	Contact persons for AWI Radio-echo sounding data: Daniel Steinhage (daniel.steinhage@awi.de), Veit Helm (veit.helm@awi.de), Olaf Eisen (olaf.eisen@awi.de) 
+	---
+	The netCDF files contain the following variables:
+	altitude: Platform altitude (WGS84) in meters
+	bed_elevation: Bed elevation for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	bed_pick: picked Bed location for each trace, expressed as twt in seconds from time zero
+	data: Radar data (Values in dBm after DC conversion)
+	data_agc: Scaled radar data using automatic gain control (AGC)
+	distance: Along-track distance in meters
+	ice_thickness: Ice thickness for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	lat: Latitude in decimal degrees (WGS84)
+	lon: Longitude in decimal degrees (WGS84)
+	range: Range between sensor and surface in meters
+	spacing: Along-track trace to trace spacing in meters
+	surface: Surface elevation derived from radar (WGS84) in meters
+	surface_pick: Picked surface reflection in two-way travel time in seconds
+	time: Seconds of day
+	twt: Two-way travel time (twt) in seconds
+	--
+	The KML files are in EPSG:4326, and the quicklook images show the AGC product of the radargram.
+Parameter(s):	Season (Season) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html)
+	Profile ID (Profile ID) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html)
+	Instrument (Instrument) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html)
+	Radar product (Radar prod) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html)
+	netCDF file (netCDF) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	netCDF file (File Size) [Bytes] (netCDF (Size)) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	GIS file (GIS) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: KML Files
+	Image (IMAGE) * PI: Miller, Heinrich (https://orcid.org/0000-0003-1015-2828, Heinrich.Miller@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/heinrich-miller.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: Quicklook
+License:	Creative Commons Attribution 4.0 International (CC-BY-4.0) (URI: https://creativecommons.org/licenses/by/4.0/)
+Status:	Curation Level: Enhanced curation (URI: https://wiki.pangaea.de/wiki/Curation_levels)
+Size:	679 data points
+Files:	All files referred to in data matrix can be downloaded in one go as ZIP <https://download.pangaea.de/dataset/974295/allfiles.zip> or TAR <https://download.pangaea.de/dataset/974295/allfiles.tar> (PANGAEA user account required). To download single files, use the filename from data matrix appended to "https://download.pangaea.de/dataset/974295/files/".
+*/
+Season	Profile ID	Instrument	Radar prod	netCDF	netCDF (Size) [Bytes]	GIS	IMAGE
+ANT 1997/98	19982101	EMR	600 ns pulse	19982101_stp10.nc	89.1 MBytes	19982101_stp10.kml	19982101_stp10.jpg
+ANT 1997/98	19982102	EMR	600 ns pulse	19982102_stp10.nc	123.2 MBytes	19982102_stp10.kml	19982102_stp10.jpg
+ANT 1997/98	19982201	EMR	600 ns pulse	19982201_stp10.nc	21 MBytes	19982201_stp10.kml	19982201_stp10.jpg
+ANT 1997/98	19982202	EMR	600 ns pulse	19982202_stp10.nc	7.9 MBytes	19982202_stp10.kml	19982202_stp10.jpg
+ANT 1997/98	19982203	EMR	600 ns pulse	19982203_stp10.nc	20 MBytes	19982203_stp10.kml	19982203_stp10.jpg
+ANT 1997/98	19982204	EMR	600 ns pulse	19982204_stp10.nc	61.1 MBytes	19982204_stp10.kml	19982204_stp10.jpg
+ANT 1997/98	19982205	EMR	600 ns pulse	19982205_stp10.nc	66.1 MBytes	19982205_stp10.kml	19982205_stp10.jpg
+ANT 1997/98	19982206	EMR	600 ns pulse	19982206_stp10.nc	44.3 MBytes	19982206_stp10.kml	19982206_stp10.jpg
+ANT 1997/98	19982207	EMR	600 ns pulse	19982207_stp10.nc	101.2 MBytes	19982207_stp10.kml	19982207_stp10.jpg
+ANT 1997/98	19982208	EMR	600 ns pulse	19982208_stp10.nc	58.5 MBytes	19982208_stp10.kml	19982208_stp10.jpg
+ANT 1997/98	19982252	EMR	600 ns pulse	19982252_stp10.nc	43.9 MBytes	19982252_stp10.kml	19982252_stp10.jpg
+ANT 1997/98	19982301	EMR	600 ns pulse	19982301_stp10.nc	48.4 MBytes	19982301_stp10.kml	19982301_stp10.jpg
+ANT 1997/98	19982302	EMR	600 ns pulse	19982302_stp10.nc	72.2 MBytes	19982302_stp10.kml	19982302_stp10.jpg
+ANT 1997/98	19982402	EMR	600 ns pulse	19982402_stp10.nc	39.7 MBytes	19982402_stp10.kml	19982402_stp10.jpg
+ANT 1997/98	19982404	EMR	600 ns pulse	19982404_stp10.nc	56.6 MBytes	19982404_stp10.kml	19982404_stp10.jpg
+ANT 1997/98	19982405	EMR	600 ns pulse	19982405_stp10.nc	114 MBytes	19982405_stp10.kml	19982405_stp10.jpg
+ANT 1997/98	19982406	EMR	600 ns pulse	19982406_stp10.nc	56.4 MBytes	19982406_stp10.kml	19982406_stp10.jpg
+ANT 1997/98	19982407	EMR	600 ns pulse	19982407_stp10.nc	68.7 MBytes	19982407_stp10.kml	19982407_stp10.jpg
+ANT 1997/98	19982408	EMR	600 ns pulse	19982408_stp10.nc	75.4 MBytes	19982408_stp10.kml	19982408_stp10.jpg
+ANT 1997/98	19982418	EMR	600 ns pulse	19982418_stp10.nc	43.1 MBytes	19982418_stp10.kml	19982418_stp10.jpg
+ANT 1997/98	19983001	EMR	60 ns pulse	19983001_stp10.nc	153.1 MBytes	19983001_stp10.kml	19983001_stp10.jpg
+ANT 1997/98	19983002	EMR	60 ns pulse	19983002_stp10.nc	143.8 MBytes	19983002_stp10.kml	19983002_stp10.jpg
+ANT 1997/98	19983003	EMR	60 ns pulse	19983003_stp10.nc	224.2 MBytes	19983003_stp10.kml	19983003_stp10.jpg
+ANT 1997/98	19983004	EMR	60 ns pulse	19983004_stp10.nc	214.6 MBytes	19983004_stp10.kml	19983004_stp10.jpg
+ANT 1997/98	19983005	EMR	60 ns pulse	19983005_stp10.nc	218.8 MBytes	19983005_stp10.kml	19983005_stp10.jpg
+ANT 1997/98	19983006	EMR	60 ns pulse	19983006_stp10.nc	97.2 MBytes	19983006_stp10.kml	19983006_stp10.jpg
+ANT 1997/98	19983007	EMR	60 ns pulse	19983007_stp10.nc	227.5 MBytes	19983007_stp10.kml	19983007_stp10.jpg
+ANT 1997/98	19983008	EMR	60 ns pulse	19983008_stp10.nc	185.5 MBytes	19983008_stp10.kml	19983008_stp10.jpg
+ANT 1997/98	19983009	EMR	60 ns pulse	19983009_stp10.nc	145.6 MBytes	19983009_stp10.kml	19983009_stp10.jpg
+ANT 1997/98	19983010	EMR	60 ns pulse	19983010_stp10.nc	147.3 MBytes	19983010_stp10.kml	19983010_stp10.jpg
+ANT 1997/98	19983011	EMR	60 ns pulse	19983011_stp10.nc	154.8 MBytes	19983011_stp10.kml	19983011_stp10.jpg
+ANT 1997/98	19983012	EMR	60 ns pulse	19983012_stp10.nc	172.5 MBytes	19983012_stp10.kml	19983012_stp10.jpg
+ANT 1997/98	19983013	EMR	60 ns pulse	19983013_stp10.nc	144.8 MBytes	19983013_stp10.kml	19983013_stp10.jpg
+ANT 1997/98	19983014	EMR	60 ns pulse	19983014_stp10.nc	146.2 MBytes	19983014_stp10.kml	19983014_stp10.jpg
+ANT 1997/98	19983015	EMR	60 ns pulse	19983015_stp10.nc	96.1 MBytes	19983015_stp10.kml	19983015_stp10.jpg
+ANT 1997/98	19983016	EMR	60 ns pulse	19983016_stp10.nc	148.7 MBytes	19983016_stp10.kml	19983016_stp10.jpg
+ANT 1997/98	19983017	EMR	60 ns pulse	19983017_stp10.nc	181.7 MBytes	19983017_stp10.kml	19983017_stp10.jpg
+ANT 1997/98	19983018	EMR	60 ns pulse	19983018_stp10.nc	278.3 MBytes	19983018_stp10.kml	19983018_stp10.jpg
+ANT 1997/98	19983019	EMR	60 ns pulse	19983019_stp10.nc	165.9 MBytes	19983019_stp10.kml	19983019_stp10.jpg
+ANT 1997/98	19983051	EMR	60 ns pulse	19983051_stp10.nc	96.4 MBytes	19983051_stp10.kml	19983051_stp10.jpg
+ANT 1997/98	19983052	EMR	60 ns pulse	19983052_stp10.nc	74.3 MBytes	19983052_stp10.kml	19983052_stp10.jpg
+ANT 1997/98	19983053	EMR	60 ns pulse	19983053_stp10.nc	63.6 MBytes	19983053_stp10.kml	19983053_stp10.jpg
+ANT 1997/98	19983054	EMR	60 ns pulse	19983054_stp10.nc	207.3 MBytes	19983054_stp10.kml	19983054_stp10.jpg
+ANT 1997/98	19983055	EMR	60 ns pulse	19983055_stp10.nc	97.3 MBytes	19983055_stp10.kml	19983055_stp10.jpg
+ANT 1997/98	19983056	EMR	60 ns pulse	19983056_stp10.nc	164.1 MBytes	19983056_stp10.kml	19983056_stp10.jpg
+ANT 1997/98	19983057	EMR	60 ns pulse	19983057_stp10.nc	156.9 MBytes	19983057_stp10.kml	19983057_stp10.jpg
+ANT 1997/98	19983058	EMR	60 ns pulse	19983058_stp10.nc	124.3 MBytes	19983058_stp10.kml	19983058_stp10.jpg
+ANT 1997/98	19983059	EMR	60 ns pulse	19983059_stp10.nc	125.5 MBytes	19983059_stp10.kml	19983059_stp10.jpg
+ANT 1997/98	19983060	EMR	60 ns pulse	19983060_stp10.nc	93.8 MBytes	19983060_stp10.kml	19983060_stp10.jpg
+ANT 1997/98	19983061	EMR	60 ns pulse	19983061_stp10.nc	84.4 MBytes	19983061_stp10.kml	19983061_stp10.jpg
+ANT 1997/98	19983062	EMR	60 ns pulse	19983062_stp10.nc	81.2 MBytes	19983062_stp10.kml	19983062_stp10.jpg
+ANT 1997/98	19983063	EMR	60 ns pulse	19983063_stp10.nc	36.5 MBytes	19983063_stp10.kml	19983063_stp10.jpg
+ANT 1997/98	19983064	EMR	60 ns pulse	19983064_stp10.nc	54.7 MBytes	19983064_stp10.kml	19983064_stp10.jpg
+ANT 1997/98	19983065	EMR	60 ns pulse	19983065_stp10.nc	67.9 MBytes	19983065_stp10.kml	19983065_stp10.jpg
+ANT 1997/98	19983066	EMR	60 ns pulse	19983066_stp10.nc	86.4 MBytes	19983066_stp10.kml	19983066_stp10.jpg
+ANT 1997/98	19983067	EMR	60 ns pulse	19983067_stp10.nc	78.7 MBytes	19983067_stp10.kml	19983067_stp10.jpg
+ANT 1997/98	19983068	EMR	60 ns pulse	19983068_stp10.nc	117.6 MBytes	19983068_stp10.kml	19983068_stp10.jpg
+ANT 1997/98	19983069	EMR	60 ns pulse	19983069_stp10.nc	90.1 MBytes	19983069_stp10.kml	19983069_stp10.jpg
+ANT 1997/98	19983070	EMR	60 ns pulse	19983070_stp10.nc	69.5 MBytes	19983070_stp10.kml	19983070_stp10.jpg
+ANT 1997/98	19983101	EMR	60 ns pulse	19983101_stp10.nc	88.7 MBytes	19983101_stp10.kml	19983101_stp10.jpg
+ANT 1997/98	19983102	EMR	60 ns pulse	19983102_stp10.nc	122 MBytes	19983102_stp10.kml	19983102_stp10.jpg
+ANT 1997/98	19983201	EMR	60 ns pulse	19983201_stp10.nc	20.9 MBytes	19983201_stp10.kml	19983201_stp10.jpg
+ANT 1997/98	19983202	EMR	60 ns pulse	19983202_stp10.nc	7.8 MBytes	19983202_stp10.kml	19983202_stp10.jpg
+ANT 1997/98	19983203	EMR	60 ns pulse	19983203_stp10.nc	20.2 MBytes	19983203_stp10.kml	19983203_stp10.jpg
+ANT 1997/98	19983204	EMR	60 ns pulse	19983204_stp10.nc	60.3 MBytes	19983204_stp10.kml	19983204_stp10.jpg
+ANT 1997/98	19983205	EMR	60 ns pulse	19983205_stp10.nc	65.2 MBytes	19983205_stp10.kml	19983205_stp10.jpg
+ANT 1997/98	19983206	EMR	60 ns pulse	19983206_stp10.nc	43.8 MBytes	19983206_stp10.kml	19983206_stp10.jpg
+ANT 1997/98	19983207	EMR	60 ns pulse	19983207_stp10.nc	99.9 MBytes	19983207_stp10.kml	19983207_stp10.jpg
+ANT 1997/98	19983208	EMR	60 ns pulse	19983208_stp10.nc	58.1 MBytes	19983208_stp10.kml	19983208_stp10.jpg
+ANT 1997/98	19983251	EMR	60 ns pulse	19983251_stp10.nc	27.4 MBytes	19983251_stp10.kml	19983251_stp10.jpg
+ANT 1997/98	19983252	EMR	60 ns pulse	19983252_stp10.nc	43.5 MBytes	19983252_stp10.kml	19983252_stp10.jpg
+ANT 1997/98	19983253	EMR	60 ns pulse	19983253_stp10.nc	100 MBytes	19983253_stp10.kml	19983253_stp10.jpg
+ANT 1997/98	19983254	EMR	60 ns pulse	19983254_stp10.nc	113.1 MBytes	19983254_stp10.kml	19983254_stp10.jpg
+ANT 1997/98	19983255	EMR	60 ns pulse	19983255_stp10.nc	98.7 MBytes	19983255_stp10.kml	19983255_stp10.jpg
+ANT 1997/98	19983256	EMR	60 ns pulse	19983256_stp10.nc	187.9 MBytes	19983256_stp10.kml	19983256_stp10.jpg
+ANT 1997/98	19983257	EMR	60 ns pulse	19983257_stp10.nc	52.4 MBytes	19983257_stp10.kml	19983257_stp10.jpg
+ANT 1997/98	19983258	EMR	60 ns pulse	19983258_stp10.nc	83.3 MBytes	19983258_stp10.kml	19983258_stp10.jpg
+ANT 1997/98	19983351	EMR	60 ns pulse	19983351_stp10.nc	71.6 MBytes	19983351_stp10.kml	19983351_stp10.jpg
+ANT 1997/98	19983401	EMR	60 ns pulse	19983401_stp10.nc	134.6 MBytes	19983401_stp10.kml	19983401_stp10.jpg
+ANT 1997/98	19983402	EMR	60 ns pulse	19983402_stp10.nc	39.4 MBytes	19983402_stp10.kml	19983402_stp10.jpg
+ANT 1997/98	19983403	EMR	60 ns pulse	19983403_stp10.nc	111.4 MBytes	19983403_stp10.kml	19983403_stp10.jpg
+ANT 1997/98	19983404	EMR	60 ns pulse	19983404_stp10.nc	56.1 MBytes	19983404_stp10.kml	19983404_stp10.jpg
+ANT 1997/98	19983406	EMR	60 ns pulse	19983406_stp10.nc	56 MBytes	19983406_stp10.kml	19983406_stp10.jpg
+ANT 1997/98	19983407	EMR	60 ns pulse	19983407_stp10.nc	68.2 MBytes	19983407_stp10.kml	19983407_stp10.jpg
+ANT 1997/98	19983408	EMR	60 ns pulse	19983408_stp10.nc	74.6 MBytes	19983408_stp10.kml	19983408_stp10.jpg
+ANT 1997/98	19983409	EMR	60 ns pulse	19983409_stp10.nc	141.6 MBytes	19983409_stp10.kml	19983409_stp10.jpg
+ANT 1997/98	19983410	EMR	60 ns pulse	19983410_stp10.nc	111.7 MBytes	19983410_stp10.kml	19983410_stp10.jpg
+ANT 1997/98	19983411	EMR	60 ns pulse	19983411_stp10.nc	106.7 MBytes	19983411_stp10.kml	19983411_stp10.jpg
+ANT 1997/98	19983412	EMR	60 ns pulse	19983412_stp10.nc	68.1 MBytes	19983412_stp10.kml	19983412_stp10.jpg
+ANT 1997/98	19983413	EMR	60 ns pulse	19983413_stp10.nc	63.9 MBytes	19983413_stp10.kml	19983413_stp10.jpg
+ANT 1997/98	19983414	EMR	60 ns pulse	19983414_stp10.nc	70.9 MBytes	19983414_stp10.kml	19983414_stp10.jpg
+ANT 1997/98	19983416	EMR	60 ns pulse	19983416_stp10.nc	44 MBytes	19983416_stp10.kml	19983416_stp10.jpg
+ANT 1997/98	19983417	EMR	60 ns pulse	19983417_stp10.nc	55.9 MBytes	19983417_stp10.kml	19983417_stp10.jpg
+ANT 1997/98	19983418	EMR	60 ns pulse	19983418_stp10.nc	42.9 MBytes	19983418_stp10.kml	19983418_stp10.jpg
+ANT 1997/98	19983454	EMR	60 ns pulse	19983454_stp10.nc	18.2 MBytes	19983454_stp10.kml	19983454_stp10.jpg
+ANT 1997/98	19983456	EMR	60 ns pulse	19983456_stp10.nc	142.5 MBytes	19983456_stp10.kml	19983456_stp10.jpg
+ANT 1997/98	19983457	EMR	60 ns pulse	19983457_stp10.nc	80.5 MBytes	19983457_stp10.kml	19983457_stp10.jpg

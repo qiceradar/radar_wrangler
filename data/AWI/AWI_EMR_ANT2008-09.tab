@@ -1,0 +1,99 @@
+/* DATA DESCRIPTION:
+Citation:	Eisen, Olaf; Jokat, Wilfried; Steinhage, Daniel; Helm, Veit; Hindmarsh, Richard C A (2025): ANT 2008/09: AWI airborne Radio-Echo Sounding data over eastern Dronning Maund Land and East Antarctica and Berkner Island (RBI and WEGAS Projects) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.974453
+Abstract:	This dataset contains airborne radar data acquired using the AWI EMR system during the Antarctic season of 2008/09. The profiles extend across the eastern Dronning Maud Land , the ice shelfes and Berkner Island. The data are available as netCDF files (including waveforms and metadata), KML files of the profile line locations, and quicklook images of the radargrams.
+Keyword(s):	AWI EMR Radar; Berkner Island; Dronning Maud Land; East Antarctica; ice divide; Ice Sheet; Ice shelf; Polar 5; radio-echo sounding
+Related to:	Eisen, Olaf; Steinhage, Daniel; Franke, Steven; Helm, Veit; Binder, Tobias; Drews, Reinhard; Eagles, Graeme; Humbert, Angelika; Jansen, Daniela; Jokat, Wilfried; Lambrecht, Astrid; Mieth, Matthias; Riedel, Sven; Miller, Heinrich (2024): Collection of datasets from AWI's radio-echo sounding systems on ice sheets and glaciers [dataset bibliography]. PANGAEA, https://doi.org/10.1594/PANGAEA.972094
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Binder, Tobias; Nixdorf, Uwe; Miller, Heinrich; Humbert, Angelika; Jansen, Daniela; Eagles, Graeme; Eisermann, Hannes; Jokat, Wilfried; Ruppel, Antonia; Drews, Reinhard; Zuhr, Alexandra; Driemel, Amelie; Walter, Andreas; Konopatzky, Peter; Heß, Robin; Haas, Antonie; Koppe, Roland; Andreas, Pascal H; Eisen, Olaf (2026): Review article: 30 years of airborne radar surveys on the Antarctic and Greenland ice sheets by the Alfred Wegener Institute. The Cryosphere, 20(4), 2485-2530, https://doi.org/10.5194/tc-20-2485-2026
+	Mieth, Matthias; Jacobs, Joachim; Ruppel, Antonia; Damaske, Detlef; Läufer, Andreas; Jokat, Wilfried (2014): New detailed aeromagnetic and geological data of eastern Dronning Maud Land: Implications for refining the tectonic and structural framework of Sør Rondane, East Antarctica. Precambrian Research, 245, 174-185, https://doi.org/10.1016/j.precamres.2014.02.009
+	Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+Additional metadata:	O2A Registry: Metadata for radar system Ice Thickness Radar 150 MHz at current version. Alfred Wegener Institut Helmholtz Centre for Polar and Marine Research, https://registry.o2a-data.de/items/6794
+Funding:	Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research, Bremerhaven (AWI) (URI: https://www.awi.de/), grant/award no. AWI_PA_02009: RBI 2008/09
+	Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research, Bremerhaven (AWI) (URI: https://www.awi.de/), grant/award no. AWI_PA_02010: WEGAS 2008/09
+	Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research, Bremerhaven (AWI) (URI: https://www.awi.de/), grant/award no. AWI_PA_02011: WEGAS, ANT_2008/09
+Coverage:	MEDIAN LATITUDE: -71.420826 * MEDIAN LONGITUDE: 4.972688 * SOUTH-BOUND LATITUDE: -75.563896 * WEST-BOUND LONGITUDE: -26.730227 * NORTH-BOUND LATITUDE: -70.611710 * EAST-BOUND LONGITUDE: 15.663040
+	DATE/TIME START: 2009-01-06T14:27:16 * DATE/TIME END: 2009-01-23T19:16:54
+Event(s):	ANT_2008/09_06 * LATITUDE START: -70.632179 * LONGITUDE START: -8.267140 * LATITUDE END: -75.563889 * LONGITUDE END: -26.730206 * DATE/TIME START: 2009-01-06T14:27:16 * DATE/TIME END: 2009-01-06T18:21:00 * LOCATION: Weddell Sea * CAMPAIGN: RBI_2008/09 (Reconnaissance Berkner Island) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_07 * LATITUDE START: -75.563896 * LONGITUDE START: -26.730227 * LATITUDE END: -75.563828 * LONGITUDE END: -26.730118 * DATE/TIME START: 2009-01-07T12:14:44 * DATE/TIME END: 2009-01-07T20:10:53 * LOCATION: Weddell Sea * CAMPAIGN: RBI_2008/09 (Reconnaissance Berkner Island) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_08 * LATITUDE START: -75.563828 * LONGITUDE START: -26.730152 * LATITUDE END: -70.632492 * LONGITUDE END: -8.266255 * DATE/TIME START: 2009-01-07T21:42:34 * DATE/TIME END: 2009-01-08T01:24:29 * LOCATION: Weddell Sea * CAMPAIGN: RBI_2008/09 (Reconnaissance Berkner Island) * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_09 * LATITUDE START: -70.631958 * LONGITUDE START: -8.267707 * LATITUDE END: -70.824379 * LONGITUDE END: 11.641597 * DATE/TIME START: 2009-01-09T21:05:11 * DATE/TIME END: 2009-01-10T00:38:25 * LOCATION: Weddell Sea * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_10 * LATITUDE START: -70.631960 * LONGITUDE START: -8.267710 * LATITUDE END: -70.824380 * LONGITUDE END: 11.641600 * DATE/TIME START: 2009-01-09T21:05:12 * DATE/TIME END: 2009-01-10T00:37:05 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_11 * LATITUDE START: -70.824360 * LONGITUDE START: 11.641600 * LATITUDE END: -70.824490 * LONGITUDE END: 11.642020 * DATE/TIME START: 2009-01-10T17:40:48 * DATE/TIME END: 2009-01-11T00:57:23 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_12 * LATITUDE START: -70.824480 * LONGITUDE START: 11.641980 * LATITUDE END: -70.824670 * LONGITUDE END: 11.641980 * DATE/TIME START: 2009-01-11T12:48:38 * DATE/TIME END: 2009-01-11T20:15:45 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_13 * LATITUDE START: -70.824700 * LONGITUDE START: 11.642250 * LATITUDE END: -70.824650 * LONGITUDE END: 11.641410 * DATE/TIME START: 2009-01-12T12:44:17 * DATE/TIME END: 2009-01-12T19:48:46 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_14 * LATITUDE START: -70.824650 * LONGITUDE START: 11.641420 * LATITUDE END: -70.824420 * LONGITUDE END: 11.641750 * DATE/TIME START: 2009-01-13T10:06:08 * DATE/TIME END: 2009-01-13T18:11:58 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_15 * LATITUDE START: -72.696210 * LONGITUDE START: 15.663040 * LATITUDE END: -70.611710 * LONGITUDE END: 12.626940 * DATE/TIME START: 2009-01-14T16:14:26 * DATE/TIME END: 2009-01-14T17:28:58 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_16 * LATITUDE START: -70.824720 * LONGITUDE START: 11.642170 * LATITUDE END: -70.824410 * LONGITUDE END: 11.641590 * DATE/TIME START: 2009-01-15T10:45:31 * DATE/TIME END: 2009-01-15T18:09:00 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_17 * LATITUDE START: -70.824410 * LONGITUDE START: 11.641600 * LATITUDE END: -70.824450 * LONGITUDE END: 11.641720 * DATE/TIME START: 2009-01-16T11:01:00 * DATE/TIME END: 2009-01-16T18:08:53 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_18 * LATITUDE START: -70.824450 * LONGITUDE START: 11.641750 * LATITUDE END: -70.824410 * LONGITUDE END: 11.641710 * DATE/TIME START: 2009-01-17T10:28:17 * DATE/TIME END: 2009-01-17T15:57:54 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_19 * LATITUDE START: -71.253050 * LONGITUDE START: 13.010820 * LATITUDE END: -70.824440 * LONGITUDE END: 11.641690 * DATE/TIME START: 2009-01-20T15:26:13 * DATE/TIME END: 2009-01-20T21:25:54 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_20 * LATITUDE START: -70.824430 * LONGITUDE START: 11.641700 * LATITUDE END: -70.824430 * LONGITUDE END: 11.641690 * DATE/TIME START: 2009-01-21T10:35:14 * DATE/TIME END: 2009-01-21T17:54:01 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_21 * LATITUDE START: -70.824440 * LONGITUDE START: 11.641720 * LATITUDE END: -70.824450 * LONGITUDE END: 11.641740 * DATE/TIME START: 2009-01-22T10:26:57 * DATE/TIME END: 2009-01-22T17:43:11 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	ANT_2008/09_22 * LATITUDE START: -70.824440 * LONGITUDE START: 11.641750 * LATITUDE END: -70.824440 * LONGITUDE END: 11.641670 * DATE/TIME START: 2009-01-23T11:57:47 * DATE/TIME END: 2009-01-23T19:16:54 * LOCATION: Antarctica, East * CAMPAIGN: WEGAS_2008/09 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+Comment:	Project PI (RBI 2008/09): Olaf Eisen (AWI)
+	Project PI (WEGAS, WEGAS 2008/09): Wilfried Jokat (AWI)
+	Contact persons for AWI Radio-echo sounding data: Daniel Steinhage (daniel.steinhage@awi.de), Veit Helm (veit.helm@awi.de), Olaf Eisen (olaf.eisen@awi.de)
+	----
+	The netCDF files contain the following variables:
+	altitude: Platform altitude (WGS84) in meters
+	bed_elevation: Bed elevation for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	bed_pick: picked Bed location for each trace, expressed as twt in seconds from time zero
+	data: Radar data (Values in dBm after DC conversion)
+	data_agc: Scaled radar data using automatic gain control (AGC)
+	distance: Along-track distance in meters
+	ice_thickness: Ice thickness for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	lat: Latitude in decimal degrees (WGS84)
+	lon: Longitude in decimal degrees (WGS84)
+	range: Range between sensor and surface in meters
+	spacing: Along-track trace to trace spacing in meters
+	surface: Surface elevation derived from radar (WGS84) in meters
+	surface_pick: Picked surface reflection in two-way travel time in seconds
+	time: Seconds of day
+	twt: Two-way travel time (twt) in seconds
+	--
+	The KML files are in EPSG:4326, and the quicklook images show the AGC product of the radargram.
+Parameter(s):	Season (Season) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html)
+	Profile ID (Profile ID) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html)
+	Instrument (Instrument) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html)
+	Radar product (Radar prod) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html)
+	netCDF file (netCDF) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	netCDF file (File Size) [Bytes] (netCDF (Size)) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	GIS file (GIS) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: KML Files
+	Image (IMAGE) * PI: Eisen, Olaf (https://orcid.org/0000-0002-6380-962X, olaf.eisen@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/olaf-eisen.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: Quicklook
+License:	Creative Commons Attribution 4.0 International (CC-BY-4.0) (URI: https://creativecommons.org/licenses/by/4.0/)
+Status:	Curation Level: Enhanced curation (URI: https://wiki.pangaea.de/wiki/Curation_levels)
+Size:	224 data points
+Files:	All files referred to in data matrix can be downloaded in one go as ZIP <https://download.pangaea.de/dataset/974453/allfiles.zip> or TAR <https://download.pangaea.de/dataset/974453/allfiles.tar> (PANGAEA user account required). To download single files, use the filename from data matrix appended to "https://download.pangaea.de/dataset/974453/files/".
+*/
+Season	Profile ID	Instrument	Radar prod	netCDF	netCDF (Size) [Bytes]	GIS	IMAGE
+ANT 2008/09	20092101	EMR	600 ns pulse	20092101_stp10.nc	123 MBytes	20092101_stp10.kml	20092101_stp10.jpg
+ANT 2008/09	20092102	EMR	600 ns pulse	20092102_stp10.nc	281.8 MBytes	20092102_stp10.kml	20092102_stp10.jpg
+ANT 2008/09	20092103	EMR	600 ns pulse	20092103_stp10.nc	233.2 MBytes	20092103_stp10.kml	20092103_stp10.jpg
+ANT 2008/09	20092104	EMR	600 ns pulse	20092104_stp10.nc	223.7 MBytes	20092104_stp10.kml	20092104_stp10.jpg
+ANT 2008/09	20092105	EMR	600 ns pulse	20092105_stp10.nc	500.8 MBytes	20092105_stp10.kml	20092105_stp10.jpg
+ANT 2008/09	20092106	EMR	600 ns pulse	20092106_stp10.nc	502.5 MBytes	20092106_stp10.kml	20092106_stp10.jpg
+ANT 2008/09	20092107	EMR	600 ns pulse	20092107_stp10.nc	409.7 MBytes	20092107_stp10.kml	20092107_stp10.jpg
+ANT 2008/09	20092108	EMR	600 ns pulse	20092108_stp10.nc	545.4 MBytes	20092108_stp10.kml	20092108_stp10.jpg
+ANT 2008/09	20092109	EMR	600 ns pulse	20092109_stp10.nc	66.3 MBytes	20092109_stp10.kml	20092109_stp10.jpg
+ANT 2008/09	20092110	EMR	600 ns pulse	20092110_stp10.nc	514.8 MBytes	20092110_stp10.kml	20092110_stp10.jpg
+ANT 2008/09	20092111	EMR	600 ns pulse	20092111_stp10.nc	497.6 MBytes	20092111_stp10.kml	20092111_stp10.jpg
+ANT 2008/09	20092112	EMR	600 ns pulse	20092112_stp10.nc	390.4 MBytes	20092112_stp10.kml	20092112_stp10.jpg
+ANT 2008/09	20092113	EMR	600 ns pulse	20092113_stp10.nc	450 MBytes	20092113_stp10.kml	20092113_stp10.jpg
+ANT 2008/09	20092114	EMR	600 ns pulse	20092114_stp10.nc	508.1 MBytes	20092114_stp10.kml	20092114_stp10.jpg
+ANT 2008/09	20092115	EMR	600 ns pulse	20092115_stp10.nc	509.4 MBytes	20092115_stp10.kml	20092115_stp10.jpg
+ANT 2008/09	20092116	EMR	600 ns pulse	20092116_stp10.nc	471 MBytes	20092116_stp10.kml	20092116_stp10.jpg
+ANT 2008/09	20093101	EMR	60 ns pulse	20093101_stp10.nc	122.4 MBytes	20093101_stp10.kml	20093101_stp10.jpg
+ANT 2008/09	20093102	EMR	60 ns pulse	20093102_stp10.nc	279.2 MBytes	20093102_stp10.kml	20093102_stp10.jpg
+ANT 2008/09	20093103	EMR	60 ns pulse	20093103_stp10.nc	231.5 MBytes	20093103_stp10.kml	20093103_stp10.jpg
+ANT 2008/09	20093104	EMR	60 ns pulse	20093104_stp10.nc	222.1 MBytes	20093104_stp10.kml	20093104_stp10.jpg
+ANT 2008/09	20093105	EMR	60 ns pulse	20093105_stp10.nc	495.5 MBytes	20093105_stp10.kml	20093105_stp10.jpg
+ANT 2008/09	20093106	EMR	60 ns pulse	20093106_stp10.nc	497 MBytes	20093106_stp10.kml	20093106_stp10.jpg
+ANT 2008/09	20093107	EMR	60 ns pulse	20093107_stp10.nc	440.6 MBytes	20093107_stp10.kml	20093107_stp10.jpg
+ANT 2008/09	20093108	EMR	60 ns pulse	20093108_stp10.nc	540.5 MBytes	20093108_stp10.kml	20093108_stp10.jpg
+ANT 2008/09	20093109	EMR	60 ns pulse	20093109_stp10.nc	65.8 MBytes	20093109_stp10.kml	20093109_stp10.jpg
+ANT 2008/09	20093110	EMR	60 ns pulse	20093110_stp10.nc	510.5 MBytes	20093110_stp10.kml	20093110_stp10.jpg
+ANT 2008/09	20093111	EMR	60 ns pulse	20093111_stp10.nc	493.7 MBytes	20093111_stp10.kml	20093111_stp10.jpg
+ANT 2008/09	20093112	EMR	60 ns pulse	20093112_stp10.nc	385.4 MBytes	20093112_stp10.kml	20093112_stp10.jpg
+ANT 2008/09	20093113	EMR	60 ns pulse	20093113_stp10.nc	446.2 MBytes	20093113_stp10.kml	20093113_stp10.jpg
+ANT 2008/09	20093114	EMR	60 ns pulse	20093114_stp10.nc	504.2 MBytes	20093114_stp10.kml	20093114_stp10.jpg
+ANT 2008/09	20093115	EMR	60 ns pulse	20093115_stp10.nc	505.6 MBytes	20093115_stp10.kml	20093115_stp10.jpg
+ANT 2008/09	20093116	EMR	60 ns pulse	20093116_stp10.nc	467.4 MBytes	20093116_stp10.kml	20093116_stp10.jpg

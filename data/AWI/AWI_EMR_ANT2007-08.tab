@@ -1,0 +1,118 @@
+/* DATA DESCRIPTION:
+Citation:	Steinhage, Daniel; Jokat, Wilfried; Helm, Veit (2025): ANT 2007/08: AWI airborne Radio-Echo Sounding data over central Dronning Maund Land and East Antarctica connecting the Vostok, Dome C and Talus Dome ice core sites (DoCo and VISA projects) [dataset]. PANGAEA, https://doi.org/10.1594/PANGAEA.974448
+Abstract:	This dataset contains airborne radar data acquired using the AWI EMR system during the Antarctic season of 2007/08. The profiles extend across the Dronning Maud Land and central East Antarctica connecting the EPICA Dome C (EDC), Talos Dome and Vostok ice core sites as well as Dome A. The data are available as netCDF files (including waveforms and metadata), KML files of the profile line locations, and quicklook images of the radargrams.
+Keyword(s):	AWI EMR Radar; Dome A; Dronning Maud Land; East Antarctica; EDC; EPICA Dome C ice core; Ice core; Ice Sheet; Polar 5; radio-echo sounding; Talos Dome; Vostok
+Related to:	Eisen, Olaf; Steinhage, Daniel; Franke, Steven; Helm, Veit; Binder, Tobias; Drews, Reinhard; Eagles, Graeme; Humbert, Angelika; Jansen, Daniela; Jokat, Wilfried; Lambrecht, Astrid; Mieth, Matthias; Riedel, Sven; Miller, Heinrich (2024): Collection of datasets from AWI's radio-echo sounding systems on ice sheets and glaciers [dataset bibliography]. PANGAEA, https://doi.org/10.1594/PANGAEA.972094
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Binder, Tobias; Nixdorf, Uwe; Miller, Heinrich; Humbert, Angelika; Jansen, Daniela; Eagles, Graeme; Eisermann, Hannes; Jokat, Wilfried; Ruppel, Antonia; Drews, Reinhard; Zuhr, Alexandra; Driemel, Amelie; Walter, Andreas; Konopatzky, Peter; Heß, Robin; Haas, Antonie; Koppe, Roland; Andreas, Pascal H; Eisen, Olaf (2026): Review article: 30 years of airborne radar surveys on the Antarctic and Greenland ice sheets by the Alfred Wegener Institute. The Cryosphere, 20(4), 2485-2530, https://doi.org/10.5194/tc-20-2485-2026
+	Franke, Steven; Steinhage, Daniel; Helm, Veit; Zuhr, Alexandra; Bodart, Julien A; Eisen, Olaf; Bons, Paul D (2025): Age-depth distribution in western Dronning Maud Land, East Antarctica, and Antarctic-wide comparisons of internal reflection horizons. The Cryosphere, 19(3), 1153-1180, https://doi.org/10.5194/tc-19-1153-2025
+	Nixdorf, Uwe; Steinhage, Daniel; Meyer, Uwe F; Hempel, L; Jenett, Martin; Wachs, P; Miller, Heinrich (1999): The newly developed airborne radio-echo sounding system of the AWI as a glaciological tool. Annals of Glaciology, 29, 231-238, https://doi.org/10.3189/172756499781821346
+	Winter, Anna; Steinhage, Daniel; Arnold, Emily J; Blankenship, Donald D; Cavitte, Marie G P; Corr, Hugh F J; Paden, John D; Urbini, Stefano; Young, Duncan A; Eisen, Olaf (2017): Comparison of measurements from different radio-echo sounding systems and synchronization with the ice core at Dome C, Antarctica. The Cryosphere, 11(1), 653-668, https://doi.org/10.5194/tc-11-653-2017
+	Winter, Anna; Steinhage, Daniel; Creyts, Timothy T; Kleiner, Thomas; Eisen, Olaf (2019): Age stratigraphy in the East Antarctic Ice Sheet inferred from radio-echo sounding horizons. Earth System Science Data, 11(3), 1069-1081, https://doi.org/10.5194/essd-11-1069-2019
+Additional metadata:	O2A Registry: Metadata for radar system Ice Thickness Radar 150 MHz at current version. Alfred Wegener Institut Helmholtz Centre for Polar and Marine Research, https://registry.o2a-data.de/items/6794
+Funding:	Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research, Bremerhaven (AWI) (URI: https://www.awi.de/), grant/award no. AWI_PA_02003: VISA 2007/08
+	Alfred Wegener Institute, Helmholtz Centre for Polar and Marine Research, Bremerhaven (AWI) (URI: https://www.awi.de/), grant/award no. AWI_PA_02004: DoCo 2007/08
+Coverage:	MEDIAN LATITUDE: -72.950570 * MEDIAN LONGITUDE: 63.526557 * SOUTH-BOUND LATITUDE: -80.520000 * WEST-BOUND LONGITUDE: 10.935998 * NORTH-BOUND LATITUDE: -69.025871 * EAST-BOUND LONGITUDE: 163.913696
+	DATE/TIME START: 2008-01-10T15:42:11 * DATE/TIME END: 2008-02-01T17:53:54
+Event(s):	DoCo_2007/08_06 * LATITUDE START: -69.027306 * LONGITUDE START: 40.089062 * LATITUDE END: -69.431107 * LONGITUDE END: 76.340141 * DATE/TIME START: 2008-01-16T12:09:47 * DATE/TIME END: 2008-01-16T16:52:30 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_07 * LATITUDE START: -69.432144 * LONGITUDE START: 76.335930 * LATITUDE END: -75.140663 * LONGITUDE END: 123.430313 * DATE/TIME START: 2008-01-17T07:55:18 * DATE/TIME END: 2008-01-17T14:28:28 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_08 * LATITUDE START: -75.100403 * LONGITUDE START: 123.345383 * LATITUDE END: -74.664314 * LONGITUDE END: 163.461212 * DATE/TIME START: 2008-01-18T01:39:50 * DATE/TIME END: 2008-01-18T06:31:24 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_09 * LATITUDE START: -74.622948 * LONGITUDE START: 163.913696 * LATITUDE END: -75.100662 * LONGITUDE END: 123.344337 * DATE/TIME START: 2008-01-18T08:46:44 * DATE/TIME END: 2008-01-18T15:29:52 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_10 * LATITUDE START: -75.108864 * LONGITUDE START: 123.352287 * LATITUDE END: -78.447815 * LONGITUDE END: 106.660736 * DATE/TIME START: 2008-01-20T00:00:48 * DATE/TIME END: 2008-01-20T02:21:54 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_11 * LATITUDE START: -78.458595 * LONGITUDE START: 106.869453 * LATITUDE END: -78.516403 * LONGITUDE END: 106.967171 * DATE/TIME START: 2008-01-20T03:51:08 * DATE/TIME END: 2008-01-20T08:51:44 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_12 * LATITUDE START: -78.458557 * LONGITUDE START: 106.869614 * LATITUDE END: -75.102127 * LONGITUDE END: 123.358994 * DATE/TIME START: 2008-01-20T09:44:17 * DATE/TIME END: 2008-01-20T12:12:47 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_13 * LATITUDE START: -75.097076 * LONGITUDE START: 123.365494 * LATITUDE END: -69.284874 * LONGITUDE END: 76.515053 * DATE/TIME START: 2008-01-21T03:53:26 * DATE/TIME END: 2008-01-21T09:59:48 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_14 * LATITUDE START: -69.420692 * LONGITUDE START: 76.336487 * LATITUDE END: -69.174301 * LONGITUDE END: 40.609474 * DATE/TIME START: 2008-01-22T07:10:57 * DATE/TIME END: 2008-01-22T11:38:57 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_15 * LATITUDE START: -69.025871 * LONGITUDE START: 40.091454 * LATITUDE END: -70.823204 * LONGITUDE END: 11.612695 * DATE/TIME START: 2008-01-22T12:50:58 * DATE/TIME END: 2008-01-22T16:17:18 * LOCATION: Antarctica, East * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_083118 * LATITUDE START: -78.540000 * LONGITUDE START: 106.320000 * LATITUDE END: -75.050000 * LONGITUDE END: 123.870000 * DATE/TIME START: 2008-01-20T00:00:00 * DATE/TIME END: 2008-01-20T00:00:00 * LOCATION: Antarctica * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	DoCo_2007/08_083119 * LATITUDE START: -80.520000 * LONGITUDE START: 76.870000 * LATITUDE END: -78.350000 * LONGITUDE END: 106.960000 * DATE/TIME START: 2008-01-20T00:00:00 * DATE/TIME END: 2008-01-20T00:00:00 * LOCATION: Antarctica * CAMPAIGN: DoCo_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2007/08_16 (DoCo_2007/08_16) * LATITUDE START: -74.262383 * LONGITUDE START: 20.388987 * LATITUDE END: -70.825691 * LONGITUDE END: 11.637220 * DATE/TIME START: 2008-01-30T19:52:57 * DATE/TIME END: 2008-01-30T23:06:14 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2007/08_17 (DoCo_2007/08_17) * LATITUDE START: -70.825249 * LONGITUDE START: 11.642823 * LATITUDE END: -70.825584 * LONGITUDE END: 11.635783 * DATE/TIME START: 2008-01-31T11:55:36 * DATE/TIME END: 2008-01-31T18:54:59 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2007/08_18 (DoCo_2007/08_18) * LATITUDE START: -70.825272 * LONGITUDE START: 11.642865 * LATITUDE END: -70.824997 * LONGITUDE END: 11.630330 * DATE/TIME START: 2008-02-01T10:50:06 * DATE/TIME END: 2008-02-01T17:53:54 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2008_01 * LATITUDE START: -70.822800 * LONGITUDE START: 11.629699 * LATITUDE END: -70.329620 * LONGITUDE END: 10.935998 * DATE/TIME START: 2008-01-10T15:42:11 * DATE/TIME END: 2008-01-10T19:05:24 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2008_02 * LATITUDE START: -70.822823 * LONGITUDE START: 11.629642 * LATITUDE END: -70.822670 * LONGITUDE END: 11.628622 * DATE/TIME START: 2008-01-11T14:41:51 * DATE/TIME END: 2008-01-11T20:34:00 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2008_03 * LATITUDE START: -70.822800 * LONGITUDE START: 11.629725 * LATITUDE END: -70.822792 * LONGITUDE END: 11.629817 * DATE/TIME START: 2008-01-12T15:09:37 * DATE/TIME END: 2008-01-12T19:39:17 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2008_04 * LATITUDE START: -70.822769 * LONGITUDE START: 11.629793 * LATITUDE END: -70.822784 * LONGITUDE END: 11.629784 * DATE/TIME START: 2008-01-13T11:45:37 * DATE/TIME END: 2008-01-13T19:00:10 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+	VISA_2008_05 * LATITUDE START: -70.822784 * LONGITUDE START: 11.629777 * LATITUDE END: -70.823845 * LONGITUDE END: 11.622440 * DATE/TIME START: 2008-01-14T12:22:20 * DATE/TIME END: 2008-01-14T19:36:46 * LOCATION: Antarctica, East * CAMPAIGN: VISA_2007/08 * BASIS: POLAR 5 (URI: https://doi.org/10.17815/jlsrf-2-153) * METHOD/DEVICE: Aircraft (AC)
+Comment:	Project PI (VISA 2007/08): Wilfried Jokat (AWI)
+	Project PI (DoCo 2007/08): Daniel Steinhage (AWI)
+	Contact persons for AWI Radio-echo sounding data: Daniel Steinhage (daniel.steinhage@awi.de), Veit Helm (veit.helm@awi.de), Olaf Eisen (olaf.eisen@awi.de) 
+	----
+	The netCDF files contain the following variables:
+	altitude: Platform altitude (WGS84) in meters
+	bed_elevation: Bed elevation for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	bed_pick: picked Bed location for each trace, expressed as twt in seconds from time zero
+	data: Radar data (Values in dBm after DC conversion)
+	data_agc: Scaled radar data using automatic gain control (AGC)
+	distance: Along-track distance in meters
+	ice_thickness: Ice thickness for each trace (without applying a firn correction and permitivity of ice: 3.15) in meters
+	lat: Latitude in decimal degrees (WGS84)
+	lon: Longitude in decimal degrees (WGS84)
+	range: Range between sensor and surface in meters
+	spacing: Along-track trace to trace spacing in meters
+	surface: Surface elevation derived from radar (WGS84) in meters
+	surface_pick: Picked surface reflection in two-way travel time in seconds
+	time: Seconds of day
+	twt: Two-way travel time (twt) in seconds
+	--
+	The KML files are in EPSG:4326, and the quicklook images show the AGC product of the radargram.
+Parameter(s):	Season (Season) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html)
+	Profile ID (Profile ID) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html)
+	Instrument (Instrument) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html)
+	Radar product (Radar prod) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html)
+	netCDF file (netCDF) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	netCDF file (File Size) [Bytes] (netCDF (Size)) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346)
+	GIS file (GIS) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: KML Files
+	Image (IMAGE) * PI: Steinhage, Daniel (Daniel.Steinhage@awi.de, https://www.awi.de/en/about-us/organisation/staff/single-view/daniel-steinhage.html) * METHOD/DEVICE: Ice Thickness Radar radio-echo sounding RES [Nixdorf et al. 1999] (URI: https://doi.org/10.3189/172756499781821346) * COMMENT: Quicklook
+License:	Creative Commons Attribution 4.0 International (CC-BY-4.0) (URI: https://creativecommons.org/licenses/by/4.0/)
+Status:	Curation Level: Enhanced curation (URI: https://wiki.pangaea.de/wiki/Curation_levels)
+Size:	329 data points
+Files:	All files referred to in data matrix can be downloaded in one go as ZIP <https://download.pangaea.de/dataset/974448/allfiles.zip> or TAR <https://download.pangaea.de/dataset/974448/allfiles.tar> (PANGAEA user account required). To download single files, use the filename from data matrix appended to "https://download.pangaea.de/dataset/974448/files/".
+*/
+Season	Profile ID	Instrument	Radar prod	netCDF	netCDF (Size) [Bytes]	GIS	IMAGE
+ANT 2007/08	20082001	EMR	600 ns pulse	20082001_stp10.nc	595.3 MBytes	20082001_stp10.kml	20082001_stp10.jpg
+ANT 2007/08	20082003	EMR	600 ns pulse	20082003_stp10.nc	89.9 MBytes	20082003_stp10.kml	20082003_stp10.jpg
+ANT 2007/08	20082004	EMR	600 ns pulse	20082004_stp10.nc	228.2 MBytes	20082004_stp10.kml	20082004_stp10.jpg
+ANT 2007/08	20082006	EMR	600 ns pulse	20082006_stp10.nc	1 GBytes	20082006_stp10.kml	20082006_stp10.jpg
+ANT 2007/08	20082008	EMR	600 ns pulse	20082008_stp10.nc	823.6 MBytes	20082008_stp10.kml	20082008_stp10.jpg
+ANT 2007/08	20082011	EMR	600 ns pulse	20082011_stp10.nc	14.2 MBytes	20082011_stp10.kml	20082011_stp10.jpg
+ANT 2007/08	20082014	EMR	600 ns pulse	20082014_stp10.nc	448.1 MBytes	20082014_stp10.kml	20082014_stp10.jpg
+ANT 2007/08	20082027	EMR	600 ns pulse	20082027_stp10.nc	959.7 MBytes	20082027_stp10.kml	20082027_stp10.jpg
+ANT 2007/08	20082029	EMR	600 ns pulse	20082029_stp10.nc	668.8 MBytes	20082029_stp10.kml	20082029_stp10.jpg
+ANT 2007/08	20082102	EMR	600 ns pulse	20082102_stp10.nc	114 MBytes	20082102_stp10.kml	20082102_stp10.jpg
+ANT 2007/08	20082105	EMR	600 ns pulse	20082105_stp10.nc	72.5 MBytes	20082105_stp10.kml	20082105_stp10.jpg
+ANT 2007/08	20082107	EMR	600 ns pulse	20082107_stp10.nc	51.3 MBytes	20082107_stp10.kml	20082107_stp10.jpg
+ANT 2007/08	20082109	EMR	600 ns pulse	20082109_stp10.nc	65.9 MBytes	20082109_stp10.kml	20082109_stp10.jpg
+ANT 2007/08	20082110	EMR	600 ns pulse	20082110_stp10.nc	9.1 MBytes	20082110_stp10.kml	20082110_stp10.jpg
+ANT 2007/08	20082112	EMR	600 ns pulse	20082112_stp10.nc	343.3 MBytes	20082112_stp10.kml	20082112_stp10.jpg
+ANT 2007/08	20082113	EMR	600 ns pulse	20082113_stp10.nc	37.6 MBytes	20082113_stp10.kml	20082113_stp10.jpg
+ANT 2007/08	20082115	EMR	600 ns pulse	20082115_stp10.nc	242.3 MBytes	20082115_stp10.kml	20082115_stp10.jpg
+ANT 2007/08	20082116	EMR	600 ns pulse	20082116_stp10.nc	346.7 MBytes	20082116_stp10.kml	20082116_stp10.jpg
+ANT 2007/08	20082117	EMR	600 ns pulse	20082117_stp10.nc	493.6 MBytes	20082117_stp10.kml	20082117_stp10.jpg
+ANT 2007/08	20082118	EMR	600 ns pulse	20082118_stp10.nc	175 MBytes	20082118_stp10.kml	20082118_stp10.jpg
+ANT 2007/08	20082119	EMR	600 ns pulse	20082119_stp10.nc	384.9 MBytes	20082119_stp10.kml	20082119_stp10.jpg
+ANT 2007/08	20082120	EMR	600 ns pulse	20082120_stp10.nc	161.8 MBytes	20082120_stp10.kml	20082120_stp10.jpg
+ANT 2007/08	20082121	EMR	600 ns pulse	20082121_stp10.nc	476.1 MBytes	20082121_stp10.kml	20082121_stp10.jpg
+ANT 2007/08	20082122	EMR	600 ns pulse	20082122_stp10.nc	356.1 MBytes	20082122_stp10.kml	20082122_stp10.jpg
+ANT 2007/08	20082123	EMR	600 ns pulse	20082123_stp10.nc	243.6 MBytes	20082123_stp10.kml	20082123_stp10.jpg
+ANT 2007/08	20082126	EMR	600 ns pulse	20082126_stp10.nc	151.4 MBytes	20082126_stp10.kml	20082126_stp10.jpg
+ANT 2007/08	20082128	EMR	600 ns pulse	20082128_stp10.nc	29.5 MBytes	20082128_stp10.kml	20082128_stp10.jpg
+ANT 2007/08	20082130	EMR	600 ns pulse	20082130_stp10.nc	39.3 MBytes	20082130_stp10.kml	20082130_stp10.jpg
+ANT 2007/08	20083102	EMR	60 ns pulse	20083102_stp10.nc	110.8 MBytes	20083102_stp10.kml	20083102_stp10.jpg
+ANT 2007/08	20083105	EMR	60 ns pulse	20083105_stp10.nc	71.1 MBytes	20083105_stp10.kml	20083105_stp10.jpg
+ANT 2007/08	20083107	EMR	60 ns pulse	20083107_stp10.nc	50.1 MBytes	20083107_stp10.kml	20083107_stp10.jpg
+ANT 2007/08	20083109	EMR	60 ns pulse	20083109_stp10.nc	63.7 MBytes	20083109_stp10.kml	20083109_stp10.jpg
+ANT 2007/08	20083110	EMR	60 ns pulse	20083110_stp10.nc	9.1 MBytes	20083110_stp10.kml	20083110_stp10.jpg
+ANT 2007/08	20083112	EMR	60 ns pulse	20083112_stp10.nc	337.7 MBytes	20083112_stp10.kml	20083112_stp10.jpg
+ANT 2007/08	20083113	EMR	60 ns pulse	20083113_stp10.nc	37.2 MBytes	20083113_stp10.kml	20083113_stp10.jpg
+ANT 2007/08	20083115	EMR	60 ns pulse	20083115_stp10.nc	239.3 MBytes	20083115_stp10.kml	20083115_stp10.jpg
+ANT 2007/08	20083116	EMR	60 ns pulse	20083116_stp10.nc	342.3 MBytes	20083116_stp10.kml	20083116_stp10.jpg
+ANT 2007/08	20083117	EMR	60 ns pulse	20083117_stp10.nc	487.4 MBytes	20083117_stp10.kml	20083117_stp10.jpg
+ANT 2007/08	20083118	EMR	60 ns pulse	20083118_stp10.nc	172.7 MBytes	20083118_stp10.kml	20083118_stp10.jpg
+ANT 2007/08	20083119	EMR	60 ns pulse	20083119_stp10.nc	379.6 MBytes	20083119_stp10.kml	20083119_stp10.jpg
+ANT 2007/08	20083120	EMR	60 ns pulse	20083120_stp10.nc	159.7 MBytes	20083120_stp10.kml	20083120_stp10.jpg
+ANT 2007/08	20083121	EMR	60 ns pulse	20083121_stp10.nc	469.8 MBytes	20083121_stp10.kml	20083121_stp10.jpg
+ANT 2007/08	20083122	EMR	60 ns pulse	20083122_stp10.nc	350 MBytes	20083122_stp10.kml	20083122_stp10.jpg
+ANT 2007/08	20083123	EMR	60 ns pulse	20083123_stp10.nc	239.2 MBytes	20083123_stp10.kml	20083123_stp10.jpg
+ANT 2007/08	20083126	EMR	60 ns pulse	20083126_stp10.nc	149.2 MBytes	20083126_stp10.kml	20083126_stp10.jpg
+ANT 2007/08	20083128	EMR	60 ns pulse	20083128_stp10.nc	29 MBytes	20083128_stp10.kml	20083128_stp10.jpg
+ANT 2007/08	20083130	EMR	60 ns pulse	20083130_stp10.nc	37.8 MBytes	20083130_stp10.kml	20083130_stp10.jpg

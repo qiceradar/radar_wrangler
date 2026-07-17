@@ -17,8 +17,36 @@ import tempfile
 # mapping from campaign to dataset
 datasets = {}
 datasets["ANT_95_96"] = 995486
-# datasets["JuRaS_2018"] = 962670
-# datasets["CHIRP_2019"] = 963264
+datasets["ANT_96_97"] = 974229
+datasets["ANT_97_98"] = 974295
+datasets["ANT_98_99"] = 974402
+
+datasets["ANT_00_01"] = 974431
+datasets["ANT_01_02"] = 974432
+datasets["ANT_02_03"] = 982598
+
+datasets["ANT_05_06"] = 974441
+
+datasets["ANT_07_08"] = 974448
+datasets["ANT_08_09"] = 974453
+
+datasets["ANT_10_11"] = 974319
+
+datasets["ANT_15_16"] = 987347
+datasets["ANT_16_17"] = 984741
+
+# datasets["JuRaS_2018"] = 962670 -- this one was replaced by 976759
+datasets["ANT_18_19_JURAS"] = 976759
+# datasets["CHIRP_2019"] = 963264 -- this one was replaced by 982515
+datasets["ANT_18_19"] = 982515
+
+datasets["ANT_22_23"] = 971622 # Embargoed until 2027
+datasets["ANT_23_24_CHARISO"] = 990049
+datasets["ANT_23_24"] = 981128
+datasets["ANT_24_25_CHARISO"] = 991465
+
+
+
 
 
 def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
@@ -40,9 +68,15 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
 
     # For the MCoRDS data
     mcords_expr = "Data_(?P<flight>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3})_standard.nc"
-    # Filenames for the EMR data
+    # Filenames for the 1995/96 EMR data
     # antr1996_9602102402_EMR600_19960210_00.nc
-    emr_expr = "antr[0-9]{4}_(?P<ymd>[0-9]{6})(?P<hs>[0-9]{4})_(?P<emr>EMR[0-9]{2,3})_[0-9]{8}_(?P<granule>[0-9]{2})\.nc"
+    emr95_expr = "antr[0-9]{4}_(?P<ymd>[0-9]{6})(?P<hs>[0-9]{4})_(?P<emr>EMR[0-9]{2,3})_[0-9]{8}_(?P<granule>[0-9]{2})\.nc"
+    # Filenames for the 1996/97 EMR data. And 97/98.
+    # It appears that the 5th digit indicates system: 2 for EMR600, 3 for EMR60
+    # 19973209_stp10.nc
+    emr96_expr = "(?P<flight>[0-9]{8})_stp10.nc"
+    emr15_expr = "(?P<flight>[0-9]{8})_stp7.nc"
+
 
     try:
         pp = pathlib.Path(dest_dir)
@@ -55,19 +89,23 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
         filename = ff.strip()
 
         mcords_match = re.match(mcords_expr, filename)
-        emr_match = re.match(emr_expr, filename)
+        emr95_match = re.match(emr95_expr, filename)
+        emr96_match = re.match(emr96_expr, filename)
 
-        if mcords_match is None and emr_match is None:
+        if mcords_match is None and emr95_match is None and emr96_match is None:
             print(f"Unable to extract flight and segment from {filename}. Continuing")
             continue
         elif mcords_match is not None:
             flight = mcords_match.group('flight')
             granule = mcords_match.group('granule')
-        elif emr_match is not None:
+        elif emr95_match is not None:
             # supporting both versions of data, but calling them different flights
             # "FLIGHT" will be YYMMDD_EMR##
-            flight = emr_match.group('ymd') + '_' + emr_match.group('emr')
-            granule = emr_match.group('hs')
+            flight = emr95_match.group('ymd') + '_' + emr95_match.group('emr')
+            granule = emr95_match.group('hs')
+        elif emr96_match is not None:
+            flight = emr96_match.group('flight')
+            granule = "0"
 
         granule_name = pathlib.Path(f"{institution}_{campaign}_{flight}_{granule}")
         # wget doesn't work for these, but curl does!
@@ -92,6 +130,7 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
                     filesize = os.path.getsize(dest_filepath)
             except subprocess.CalledProcessError as ex:
                 print(f"Failed to download {dataset}, {filename}: {ex}")
+
         cursor.execute(
             "INSERT OR REPLACE INTO granules VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
