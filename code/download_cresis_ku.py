@@ -15,12 +15,16 @@ import tempfile
 from radar_wrangler_utils import Granule, read_granule_list
 
 
-def download_cresis(data_dir: str, granules: list[Granule]):
+def download_cresis(antarctic: bool, data_dir: str, granules: list[Granule]):
     """
     Download all CReSIS data from the KU servers.
     """
 
     for granule in granules:
+        if antarctic and granule.region != "ANTARCTIC":
+            print(f"Skipping {granule.granule_name} ... wrong continent!")
+            continue
+
         dest_filepath = pathlib.Path(data_dir, granule.relative_filepath)
         try:
             pp = dest_filepath.parent
@@ -29,7 +33,9 @@ def download_cresis(data_dir: str, granules: list[Granule]):
             raise Exception("Could not create {}.".format(pp))
             continue
 
-        if not dest_filepath.is_file():
+        if dest_filepath.is_file():
+            print(f"Skipping {granule.granule_name}; already downloaded")
+        else:
             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
                 wget_cmd = [
                     "wget",
@@ -61,12 +67,12 @@ def download_cresis(data_dir: str, granules: list[Granule]):
             print(f"Cannot find downloaded file {dest_filepath}")
 
 
-def main(data_dir: str) -> None:
-    index_filepath = "../data/cresis_granules.csv"
+def main(antarctic: bool, data_dir: str) -> None:
+    index_filepath = "../data/CReSIS/cresis_granules.csv"
 
     cresis_granules = read_granule_list(index_filepath)
 
-    download_cresis(data_dir, cresis_granules)
+    download_cresis(antarctic, data_dir, cresis_granules)
 
 
 if __name__ == "__main__":
@@ -74,10 +80,21 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("--antarctic", action="store_true")
+    parser.add_argument("--arctic", action="store_true")
+
     parser.add_argument(
         "data_directory", help="Root directory for all QIceRadar-managed radargrams."
     )
 
     args = parser.parse_args()
+    antarctic = False
+    if args.antarctic:
+        antarctic = True
+    elif args.arctic:
+        antarctic = False
+    else:
+        print(f"ERROR: Must specify either --antarctic or --arctic")
+        exit(-1)
 
-    main(args.data_directory)
+    main(antarctic, args.data_directory)
