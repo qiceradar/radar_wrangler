@@ -16,8 +16,9 @@ import tempfile
 
 # mapping from campaign to dataset
 datasets = {}
-datasets["JuRaS_2018"] = 962670
-datasets["CHIRP_2019"] = 963264
+datasets["ANT_95_96"] = 995486
+# datasets["JuRaS_2018"] = 962670
+# datasets["CHIRP_2019"] = 963264
 
 
 def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
@@ -37,7 +38,11 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
     #   (That would match how UTIG/CReSIS organize their granules.)
     dest_dir = os.path.join(root_dir, region, institution, campaign)
 
-    expr = "Data_(?P<flight>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3})_standard.nc"
+    # For the MCoRDS data
+    mcords_expr = "Data_(?P<flight>[0-9]{8}_[0-9]{2})_(?P<granule>[0-9]{3})_standard.nc"
+    # Filenames for the EMR data
+    # antr1996_9602102402_EMR600_19960210_00.nc
+    emr_expr = "antr[0-9]{4}_(?P<ymd>[0-9]{6})(?P<hs>[0-9]{4})_(?P<emr>EMR[0-9]{2,3})_[0-9]{8}_(?P<granule>[0-9]{2})\.nc"
 
     try:
         pp = pathlib.Path(dest_dir)
@@ -49,12 +54,21 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
     for ff in open(f"../data/AWI/dataset_{dataset}_files.txt", 'r'):
         filename = ff.strip()
 
-        mm = re.match(expr, filename)
-        if mm is None:
+        mcords_match = re.match(mcords_expr, filename)
+        emr_match = re.match(emr_expr, filename)
+
+        if mcords_match is None and emr_match is None:
             print(f"Unable to extract flight and segment from {filename}. Continuing")
             continue
-        flight = mm.group('flight')
-        granule = mm.group('granule')
+        elif mcords_match is not None:
+            flight = mcords_match.group('flight')
+            granule = mcords_match.group('granule')
+        elif emr_match is not None:
+            # supporting both versions of data, but calling them different flights
+            # "FLIGHT" will be YYMMDD_EMR##
+            flight = emr_match.group('ymd') + '_' + emr_match.group('emr')
+            granule = emr_match.group('hs')
+
         granule_name = pathlib.Path(f"{institution}_{campaign}_{flight}_{granule}")
         # wget doesn't work for these, but curl does!
         dest_filepath = f"{dest_dir}/{filename}"
