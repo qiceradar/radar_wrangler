@@ -6,10 +6,16 @@ import pathlib
 import numpy as np
 import pandas as pd
 import pyproj
+
 from radar_index_utils import count_skip_lines, subsample_tracks_rdp
 
 
-def extract_flightlines(data_directory, index_directory, epsilon, force):
+def extract_flightlines(
+    data_directory: pathlib.Path,
+    index_directory: pathlib.Path,
+    epsilon: float,
+    force: bool,
+):
     """
     Traverse the RadarData directories and extract flight paths for any
     icethickness-only data that are found.
@@ -24,31 +30,36 @@ def extract_flightlines(data_directory, index_directory, epsilon, force):
             "radarfilmstudio/antarctica_original_positioning",
             "SPRI_NSF_TUD",
         ),
-        ("ANTARCTIC", "UTIG", "LVS/vostok_radar_nav_lines", "SOAR_LVS"),
+        # Odd one out -- since SEGY files do not include nav, it makes more
+        # sense to put this here, even though we do have radargrams for them.
+        ("ANTARCTIC", "UTIG", "LVS/vostok_radar_nav_lines", "LVS"),
     ]
 
     for region, provider, data_dir, campaign in icethicknesses:
-        input_dir = os.path.join(data_directory, region, provider, data_dir)
+        input_dir = data_directory / region / provider / data_dir
         print(input_dir)
 
         # Downloaded data format was a bunch of CSVs
         if provider == "STANFORD":
-            filepaths = pathlib.Path(input_dir).glob("*.csv")
-        elif provider == "UTIG" and campaign == "SOAR_LVS":
-            filepaths = pathlib.Path(input_dir).glob("*.nav")
+            filepaths = [
+                ff for ff in input_dir.glob("*.csv") if not ff.name.startswith(".")
+            ]
+        elif provider == "UTIG" and campaign == "LVS":
+            filepaths = [
+                ff for ff in input_dir.glob("*.nav") if not ff.name.startswith(".")
+            ]
         else:
             print(f"Cannot extract campaign {campaign}")
             return
         for filepath in filepaths:
-            segment = pathlib.Path(filepath).stem
-            output_filepath = os.path.join(
-                index_directory, region, provider, campaign, segment + ".csv"
+            segment = filepath.stem
+            output_filepath = (
+                index_directory / region / provider / campaign / (segment + ".csv")
             )
+
             if force or not os.path.exists(output_filepath):
                 print(f"Processing {filepath} -> {output_filepath}".format(filepath))
-                extract_file(
-                    region, provider, filepath, output_filepath, epsilon
-                )
+                extract_file(region, provider, filepath, output_filepath, epsilon)
             else:
                 print(f"SKipping {filepath}")
 
@@ -142,7 +153,7 @@ def extract_lvs_coords(filepath):
     # tab-separated file with fields: [line, trace, lon, lat, alt]
     data = pd.read_csv(filepath)
     field_names = ["line", "trace", "LON", "LAT", "ALT"]
-    data = pd.read_csv(filepath, sep='\s+', names=field_names)  # noqa: W605
+    data = pd.read_csv(filepath, sep="\s+", names=field_names)  # noqa: W605
     lat = data["LAT"]
     lon = data["LON"]
     return np.array(lon), np.array(lat)
@@ -252,9 +263,9 @@ def main():
 
     # This is in the hopes that we'll have more data showing up as CSVs
     # For now, only does SPRI
-    extract_flightlines(
-        args.data_directory, args.index_directory, args.epsilon, args.force
-    )
+    data_dir = pathlib.Path(args.data_directory)
+    index_dir = pathlib.Path(args.index_directory)
+    extract_flightlines(data_dir, index_dir, args.epsilon, args.force)
 
     # BAS's format for respac data is special and won't generalize.
     extract_bas_respac(args.data_directory, args.index_directory, args.epsilon)
