@@ -53,8 +53,8 @@ datasets["ANT_24_25_CHARISO"] = 991465
 
 
 # experimentally determined. 15 wasn't ever enough; 20 has been mixed.
-# The longest wait I've seen so far is 100 seconds.
-TAPE_RETRY_WAIT = 20  # seconds
+# The longest (successful) wait I've seen so far is 100 seconds.
+TAPE_RETRY_WAIT = 45  # seconds
 MAX_TAPE_RETRIES = 10  # 10 retries
 BUFFER_SIZE = 10
 
@@ -241,8 +241,11 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
     buffer = []  # list of (file_info, retry_count)
 
     # Initial fill: try new files until buffer is full or queue is empty
+    round_start = time.time()
+
     while len(buffer) < BUFFER_SIZE and len(download_queue) > 0:
         file_info = download_queue.popleft()
+        print(f"First try at downloading {file_info['filename']}")
         result = try_download(
             file_info["url"], file_info["dest_filepath"], file_info["filename"], dataset
         )
@@ -259,12 +262,23 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
         elif result == "tape":
             buffer.append((file_info, 0))
 
+    if buffer:
+        elapsed = time.time() - round_start
+        remaining = TAPE_RETRY_WAIT - elapsed
+        if remaining > 0:
+            print(
+                f"Waiting {remaining:.0f}s for {len(buffer)} files "
+                f"to be staged from tape..."
+            )
+            time.sleep(remaining)
+
     while len(buffer) > 0:
         round_start = time.time()
 
         # 1. Retry everything in the buffer
         new_buffer = []
         for file_info, retries in buffer:
+            print(f"Trying to download {file_info['filename']} (Take {retries})")
             result = try_download(
                 file_info["url"],
                 file_info["dest_filepath"],
