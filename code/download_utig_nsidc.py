@@ -193,6 +193,7 @@ def nsidc_download(dest_filepath, url) -> int:
             credentials, token = get_login_credentials()
 
     try:
+        print(f"Trying to download {dest_filepath} from {url}")
         # This check is really slow
         response = get_login_response(url, credentials, token)
         length = int(response.headers["content-length"])
@@ -299,7 +300,7 @@ if __name__ == "__main__":
     import argparse
 
     # CSV file specifying URLs for all radargrams
-    url_list = "../../data/UTIG/utig_nsidc_index.csv"
+    url_list = "../data/UTIG/utig_nsidc_index.csv"
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
