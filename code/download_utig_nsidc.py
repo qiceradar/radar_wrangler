@@ -307,9 +307,9 @@ if __name__ == "__main__":
         "data_directory", help="Root directory for all QIceRadar-managed radargrams."
     )
     parser.add_argument(
-        "antarctic_index",
+        "index",
         help="Geopackage database to update with metadata about Antarctic campaigns and granules",
     )
 
     args = parser.parse_args()
-    main(url_list, args.data_directory, args.antarctic_index)
+    main(url_list, args.data_directory, args.index)
