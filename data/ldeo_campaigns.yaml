@@ -1,0 +1,10 @@
+- campaign: ROSETTA
+  region: ANTARCTIC
+  institution: LDEO
+  data_citation: |
+     Frearson, N., Dhakal, T., Bertinato, C., Chu, W., Das, I., Cordero, I., Bell, R., et al. (2024) "Deep ICE (DICE) Radar Dataset from Ross Ice Shelf (ROSETTA-Ice)" U.S. Antarctic Program (USAP) Data Center. doi: https://doi.org/None.
+  science_citation: |
+    Tinto, K.J., Padman, L., Siddoway, C.S. et al. Ross Ice Shelf response to climate driven by the tectonic imprint on seafloor bathymetry. Nat. Geosci. 12, 441–449 (2019). (doi:10.1038/s41561-019-0370-2)
+
+    Das, I., Padman, L., Bell, R. E., Fricker, H. A., Tinto, K. J., Hulbe, C. L., et al ( 2020). Multi‐decadal basal melt rates and structure of the Ross Ice Shelf, Antarctica using airborne ice penetrating radar. Journal of Geophysical Research: Earth Surface, 125 (doi:10.1029/2019JF005241)
+

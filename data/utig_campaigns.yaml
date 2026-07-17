@@ -69,6 +69,7 @@
   region: ANTARCTIC
   institution: UTIG
   data_citation: |
+    Studinger, M. S., & Bell, R. (2020) "SOAR-Lake Vostok Survey airborne radar data" U.S. Antarctic Program (USAP) Data Center. doi: https://doi.org/10.1594/IEDA/306568.
 
   science_citation: |
     Holt, J. W., D. D. Blankenship, D. L. Morse, D. A. Young, M. E. Peters, S. D. Kempf, T. G. Richter, D. G. Vaughan, and H. F. J. Corr (2006), New boundary conditions for the West Antarctic Ice Sheet: Subglacial topography of the Thwaites and Smith glacier catchments, Geophys. Res. Lett., 33, L09502, doi:10.1029/2005GL025561.
