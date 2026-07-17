@@ -60,8 +60,7 @@ def create_gpkg(empty_file: str, output_file: str):
     result = cursor.execute("SELECT * from data_formats")
     print(f"Available data formats: {result.fetchall()}")
 
-    # AADC has multiple data arrangements; OIA is accessible per-file, EAGLE is one big zip
-    download_methods = ["curl", "wget", "nsidc", "usapdc_email", "usapdc_captcha", "aad_oia", "aad_eagle"]
+    download_methods = ["curl", "wget", "nsidc", "usapdc_email", "usapdc_captcha", "aad_oia", "aad_eagle", "zenodo_krt1"]
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS download_methods (name TEXT PRIMARY KEY)"
     )

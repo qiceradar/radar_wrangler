@@ -13,3 +13,11 @@
     Lee, Won Sang; Lee, Choon-Ki; Beem, Lucas; Buhl, Dillon; Rutishauser, Anja; Wolfenbarger, Natalie; Young, Duncan Alexander; Blankenship, Donald, 2026, "ASE3/ANA10B (January-February 2020) LIONESS-TG Helicopter Radar (HeRa) 1D Focused Radargrams", https://doi.org/10.18738/T8/730HSL, Texas Data Repository, V1
   science_citation: |
     Pierce C, Skidmore M, Beem L, et al. Characterizing the subglacial environment of lower Thwaites Glacier using radar modeling. Journal of Glaciology. 2026;72:e46. doi:10.1017/jog.2026.10160doi: 10.1017/jog.2026.10160
+
+- campaign: KRT1
+  region: ANTARCTIC
+  institution: KOPRI
+  data_citation: |
+    Won Sang Lee, Jong Ik Lee, Laura E. Lindzey, Lucas H. Beem, Duncan A. Young, Enrica Quartini, Donald D. Blankenship, Choon-Ki Lee, Joohan Lee& Scott D. Kempf. (2020). Radar observations of an active subglacial lake system in the David Glacier catchment, Antarctica [Dataset]. Zenodo. https://doi.org/10.5281/zenodo.3874655
+  science_citation: |
+     Lindzey, L. E., Beem, L. H., Young, D. A., Quartini, E., Blankenship, D. D., Lee, C.-K., Lee, W. S., Lee, J. I., and Lee, J.: Aerogeophysical characterization of an active subglacial lake system in the David Glacier catchment, Antarctica, The Cryosphere, 14, 2217–2233, https://doi.org/10.5194/tc-14-2217-2020, 2020.
