@@ -205,7 +205,11 @@ def add_campaign_directory_gpkg(
     t2 = time.time()
     # This takes > 1 sec/write, which seems excessive. It looks like some work
     # has been done speeding this up, but it's in Fiona 1.9/2.x
-    gdf.to_file(gpkg_filepath, driver="GPKG", layer=layer_name, crs=gdf.crs)
+    # 2025-06-25: It looks like geopandas has added support for pyogrio;
+    # this got rid of the crs argument. However, it also looks like attributes
+    # aren't being handled properly? Maybe they need to be provided as "metadata"?
+    # gdf.to_file(gpkg_filepath, driver="GPKG", layer=layer_name, crs=gdf.crs)
+    gdf.to_file(gpkg_filepath, driver="GPKG", layer=layer_name)
     t3 = time.time()
     print(
         "{:0.4f} s loading geometry; {:0.4f} sec creating GeoDataFrame; {:0.4f} adding to GeoPackage".format(
