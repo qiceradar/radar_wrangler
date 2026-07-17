@@ -6,13 +6,26 @@ In order for qgis to be importable, I'm running this in a shell after:
 OLD_PATH=$PATH
 OLD_PYTHONPATH=$PYTHONPATH
 
-QGIS_VERSION="QGIS-LTR"
+QGIS_VERSION="QGIS-LTR-3.40"
 
 export PATH=/Applications/${QGIS_VERSION}.app/Contents/MacOS/bin:${PATH}
 export PYTHONPATH=/Applications/${QGIS_VERSION}.app/Contents/Resources/python/:/Applications/${QGIS_VERSION}.app/Contents/Resources/python/plugins:${OLD_PYTHONPATH}
 export QGIS_PREFIX_PATH=/Applications/${QGIS_VERSION}.app/Contents/MacOS
 export QT_QPA_PLATFORM_PLUGIN_PATH=/Applications/${QGIS_VERSION}.app/Contents/PlugIns/platforms/
 export DYLD_INSERT_LIBRARIES=/Applications/${QGIS_VERSION}.app/Contents/MacOS/lib/libsqlite3.dylib
+~~~
+
+Ugh. They changed the organization of that in 3.44:
+~~~
+QGIS_VERSION="QGIS-LTR-3.44"
+export PATH=/Applications/QGIS-LTR-3.44.app/Contents/MacOS:${PATH}
+export PYTHONPATH=/Applications/QGIS-LTR-3.44.app/Contents/Resources/qgis/python/:/Applications/QGIS-LTR-3.44.app/Contents/Resources/qgis/python/plugins:${OLD_PYTHONPATH}
+export QGIS_PREFIX_PATH=/Applications/QGIS-LTR-3.44.app/Contents/MacOS
+export QT_QPA_PLATFORM_PLUGIN_PATH=/Applications/QGIS-LTR-3.44.app/Contents/PlugIns/platforms/
+export DYLD_INSERT_LIBRARIES=/Applications/QGIS-LTR-3.44.app/Contents/Frameworks/libsqlite3.dfind ylib
+export
+export PROJ_LIB=/Applications/QGIS-LTR-3.44.app/Contents/Resources/qgis/proj
+
 ~~~
 
 HOWEVER, doing this makes other python stuff break.
