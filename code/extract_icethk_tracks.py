@@ -155,11 +155,15 @@ def extract_lvs_coords(filepath):
     return np.array(lon), np.array(lat)
 
 
-def extract_bas_respac(data_directory, index_directory, epsilon):
+def extract_bas_respac(
+    data_directory: pathlib.Path,
+    index_directory: pathlib.Path,
+    epsilon: float,
+    force: bool,
+):
     # Import data, grouping it into seasons.
-    bas_filepath = os.path.join(
-        data_directory, "ANTARCTIC", "BAS", "BAS_RESPAC_Radar.xyz"
-    )
+    bas_filepath = data_directory / "ANTARCTIC" / "BAS" / "BAS_RESPAC_Radar.xyz"
+
     seasons = {}
     season = None
     curr_line = None
@@ -198,10 +202,10 @@ def extract_bas_respac(data_directory, index_directory, epsilon):
     for season, points in seasons.items():
         season_name = f"BAS_19{season[0:2]}_19{season[2:4]}"
         print(season_name)
-        season_dir = os.path.join(index_directory, "ANTARCTIC", "BAS", season_name)
+        season_dir = index_directory / "ANTARCTIC" / "BAS" / season_name
 
         try:
-            pathlib.Path(season_dir).mkdir(parents=True, exist_ok=True)
+            season_dir.mkdir(parents=True, exist_ok=True)
         except FileExistsError:
             print(f"Could not create {season_dir}")
             raise
@@ -227,18 +231,19 @@ def extract_bas_respac(data_directory, index_directory, epsilon):
         for segment in segments:
             if len(segment) <= 1:
                 continue
-            segment_filepath = os.path.join(
-                season_dir, f"segment{segment_count:03d}.csv"
-            )
-            segment_count += 1
-            lon = segment[:, 0]
-            lat = segment[:, 1]
-            xx, yy = ps71.transform(lon, lat)
-            sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
-            with open(segment_filepath, "w") as fp:
-                fp.write("ps71_easting,ps71_northing\n")
-                data = [f"{pt[0]},{pt[1]}\n" for pt in zip(sx, sy)]
-                fp.writelines(data)
+            segment_filepath = season_dir / f"segment{segment_count:03d}.csv"
+            if force or not segment_filepath.exists():
+                segment_count += 1
+                lon = segment[:, 0]
+                lat = segment[:, 1]
+                xx, yy = ps71.transform(lon, lat)
+                sx, sy = subsample_tracks_rdp(xx, yy, epsilon)
+                with open(segment_filepath, "w") as fp:
+                    fp.write("ps71_easting,ps71_northing\n")
+                    data = [f"{pt[0]},{pt[1]}\n" for pt in zip(sx, sy)]
+                    fp.writelines(data)
+            else:
+                print(f"Skipping {segment_filepath}")
 
 
 def main():
@@ -261,10 +266,11 @@ def main():
     # For now, only does SPRI
     data_dir = pathlib.Path(args.data_directory)
     index_dir = pathlib.Path(args.index_directory)
+    # These DON'T go to the icethk dir, since vostok has radargrams too
     extract_flightlines(data_dir, index_dir, args.epsilon, args.force)
 
     # BAS's format for respac data is special and won't generalize.
-    extract_bas_respac(args.data_directory, args.index_directory, args.epsilon)
+    extract_bas_respac(data_dir, index_dir / "icethk", args.epsilon, args.force)
 
 
 if __name__ == "__main__":
