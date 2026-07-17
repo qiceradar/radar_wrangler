@@ -183,11 +183,9 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
         mcords_match = re.match(mcords_expr, filename)
         emr95_match = re.match(emr95_expr, filename)
         emr96_match = re.match(emr96_expr, filename)
+        emr15_match = re.match(emr15_expr, filename)
 
-        if mcords_match is None and emr95_match is None and emr96_match is None:
-            print(f"Unable to extract flight and segment from {filename}. Continuing")
-            continue
-        elif mcords_match is not None:
+        if mcords_match is not None:
             flight = mcords_match.group("flight")
             granule = mcords_match.group("granule")
         elif emr95_match is not None:
@@ -198,6 +196,12 @@ def download_awi(root_dir: str, antarctic_index: str, campaign: str) -> None:
         elif emr96_match is not None:
             flight = emr96_match.group("flight")
             granule = "0"
+        elif emr15_match is not None:
+            flight = emr15_match.group("flight")
+            granule = "0"
+        else:
+            print(f"Unable to extract flight and segment from {filename}. Continuing")
+            continue
 
         granule_name = pathlib.Path(f"{institution}_{campaign}_{flight}_{granule}")
         # wget doesn't work for these, but curl does!
