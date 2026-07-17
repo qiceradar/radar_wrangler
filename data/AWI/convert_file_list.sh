@@ -29,4 +29,4 @@ cat AWI_UWB_ANT2018-19.tab | grep -o 'Data_.*_standard\.nc' > dataset_982515_fil
 
 cat AWI_UWB_ANT2023-24_CHARISO.tab | grep -o 'Data_.*_standard\.nc' > dataset_990049_files.txt
 cat AWI_UWB_ANT2024.tab | grep -o 'Data_.*_standard\.nc' > dataset_981128_files.txt
-cat AWI_UWB_ANT2024-25_CHARISO.tab | grep -o 'Data_.*_standard\.nc' > dataset_981465_files.txt
+cat AWI_UWB_ANT2024-25_CHARISO.tab | grep -o 'Data_.*_standard\.nc' > dataset_991465_files.txt
