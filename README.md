@@ -30,30 +30,35 @@ for instructions on downloading the index and getting started using it.
 The rest of this document describes the steps below in more detail,
 but here are the actual commands to run to generate the index,
 assuming the root data directory is at `~/RadarData`.
+Rather than having a single script that does everything, we break it up
+in to smaller chunks that can be run incrementally and more quickly as an
+aid to development.
+(I'd love to have a buil system for data pipelines like this so I could do a
+one-liner that is incremental, but I haven't found one that fits.)
 
-This does not include the various often-manual index-generation steps,
+This tl;dr version does not include the various often-manual index-generation steps,
 because their result is committed into the repository
 (but see relevant sections for instructions.)
 
 Run these commands in the `code` directory after activating the `uv` environment:
 `source .venv/bin/activate`
 
-
 ```
 # Set up .gpkg with non-geometry tables
-python initialize_gpkg.py ~/RadarData ../indices/test_antarctica.gpkg
+python initialize_gpkg.py ../data/empty.gpkg ../indices/test_antarctica.gpkg
 
 # Populate database with metadata about the campaigns
 python populate_campaigns.py --antarctic ../indices/test_antarctica.gpkg
 
 # Download AWI's data and add granule metadata to database
-`python download_awi_pangaea.py ~/RadarData ../indices/test_antarctica.gpkg`
+python download_awi_pangaea.py ~/RadarData ../indices/test_antarctica.gpkg
 
 # Download BAS's data + update database with metadata
-python3 download_bas.py --antarctic ~/RadarData ../indices/test_antarctica.gpk
+python download_bas.py --antarctic ~/RadarData ../indices/test_antarctica.gpkg
+
 # Download CReSIS data then fill in CReSIS granule metadata from the index
 python download_cresis_ku.py --antarctic ~/RadarData
-python populate_cresis_granules.py --antarctic ../indices/test_antarctica.gpkg
+python populate_cresis_granules.py --antarctic ~/RadarData ../indices/test_antarctica.gpkg
 
 # Download KOPRI data and some of UTIG's transects; add granule metadata to index
 python download_tdr.py ~/RadarData ../indices/test_antarctica.gpkg
@@ -62,16 +67,50 @@ python download_tdr.py ~/RadarData ../indices/test_antarctica.gpkg
 python download_utig_nsidc.py ~/RadarData ../indices/test_antarctica.gpkg
 
 # Download UTIG's data from AADC:
-python3 download_utig_aad_oia_eagle.py ~/RadarData ../indices/test_antarctica.gpkg
+python download_utig_aad_oia_eagle.py ~/RadarData ../indices/test_antarctica.gpkg
 
 # Manually download and extract:
 # * UTIG/LVS (captchas): https://www.usap-dc.org/view/dataset/601300
 # * UTIG/AGASEA (email exchange): https://www.usap-dc.org/view/dataset/601436
 # * KOPRI/KRT1 (9G tarball from Zenodo): https://zenodo.org/records/3874655
 # Then run:
-python3 populate_kopri_krt1_granules.py ~/RadarData ../indices/test_antarctica.gpkg
-python3 populate_utig_agasea_granules.py ~/RadarData ../indices/test_antarctica.gpkg
-python3 populate_soar_lvs_granules.py ~/RadarData ../indices/test_antarctica.gpkg
+python populate_kopri_krt1_granules.py ~/RadarData ../indices/test_antarctica.gpkg
+python populate_utig_agasea_granules.py ~/RadarData ../indices/test_antarctica.gpkg
+python populate_soar_lvs_granules.py ~/RadarData ../indices/test_antarctica.gpkg
+
+# Download the Bedmap datasets
+# TODO: Fix link-rot in this script
+python download_bedmap.py ~/RadarData
+
+# Figure out which points should be included from Bedmap1
+python detangle_bedmap.py ~/RadarData
+
+# Extract/subsample published Bedmap tracks
+python extract_bedmap_tracks.py ~/RadarData ~/RadarData/targ
+# Extract/subsample Stanford's SPRI, BAS's RESPAC, and SOAR LVS tracks
+python extract_icethk_tracks.py ~/RadarData ~/RadarData/targ
+# Extract/subsample track lines for all of the radargram formats we support
+python extract_radargram_tracks.py --antarctic ~/RadarData ~/RadarData/targ
+
+# Add geometry for each track to the geopackage
+python create_geopackage_index.py --antarctic ~/RadarData/targ ../indices/test_antarctica.gpkg
+```
+
+The final steps require using a QGIS environment, not the uv one from above.
+The arrangement of resources in the .app folder changes between QGIS versions,
+so the below commands will NOT work for e.g. LTR-3.40.
+```
+export PATH=/Applications/QGIS-LTR-3.44.app/Contents/MacOS:${PATH}
+export PYTHONPATH=/Applications/QGIS-LTR-3.44.app/Contents/Resources/qgis/python/:/Applications/QGIS-LTR-3.44.app/Contents/Resources/qgis/python/plugins:${OLD_PYTHONPATH}
+export QGIS_PREFIX_PATH=/Applications/QGIS-LTR-3.44.app/Contents/MacOS
+export QT_QPA_PLATFORM_PLUGIN_PATH=/Applications/QGIS-LTR-3.44.app/Contents/PlugIns/platforms/
+export DYLD_INSERT_LIBRARIES=/Applications/QGIS-LTR-3.44.app/Contents/Frameworks/libsqlite3.dfind ylib
+export
+export PROJ_LIB=/Applications/QGIS-LTR-3.44.app/Contents/Resources/qgis/proj
+```
+Then, organize layers by campaign and color by availability
+```
+python ../code/style_geopackage_index.py ANTARCTIC ~/Documents/QIceRadar/code/radar_wrangler/indices/test_antarctica.gpkg ~/Documents/QIceRadar/code/radar_wrangler/indices/test_antarctica.qlr
 ```
 
 
@@ -185,7 +224,7 @@ For Arctic surveys:
 Download:
 
 ```
-python3 download_bas.py --antarctic /path/to/RADAR_DATA ../indices/test_antarctica.gpkg
+python download_bas.py --antarctic /path/to/RADAR_DATA ../indices/test_antarctica.gpkg
 ```
 
 #### CReSIS -- Kansas servers
@@ -289,7 +328,7 @@ export OIA_SECRET_KEY=[your secret key]
 ```
 
 Then run:
-`python3 download_utig_aad_oia_eagle.py ~/RadarData ../indices/test_antarctica.gpkg`
+`python download_utig_aad_oia_eagle.py ~/RadarData ../indices/test_antarctica.gpkg`
 
 #### USAP_DC: some UTIG, some LDEO
 
@@ -309,7 +348,7 @@ Do that, unzip the files, and copy them to:
 
 Then run:
 
-`python3 populate_utig_agasea_granules.py ~/RadarData ../indices/test_antarctica.gpkg `
+`python populate_utig_agasea_granules.py ~/RadarData ../indices/test_antarctica.gpkg `
 
 **LVS**
 
@@ -322,13 +361,15 @@ Download lines, unzip, and copy to:
 `${RADAR_DATA}/ANTARCTIC/UTIG/LVS/{X,Y}##{a,b,c}.segy`
 
 Then run:
-`python3 populate_soar_lvs_granules.py ~/RadarData ../indices/test_antarctica.gpkg `
+`python populate_soar_lvs_granules.py ~/RadarData ../indices/test_antarctica.gpkg `
 
 #### Zenodo: some KOPRI
 
-The KOPRI KRT1 survey of the David active lakes is hosted at Zenodo: https://zenodo.org/records/3874655
+The KOPRI KRT1 survey of the David active lakes is hosted at Zenodo:
+https://zenodo.org/records/3874655
 
-Unfortunately, it is a 9.4G tgz file, and content-range is not supported, so we cannot support downloads of individual lines.
+Unfortunately, it is a 9.4G tgz file, and content-range is not supported,
+so we cannot support downloads of individual lines.
 
 Download it, and unzip the tarball so that the files are at e.g.
 
@@ -336,7 +377,62 @@ Download it, and unzip the tarball so that the files are at e.g.
 
 Then run:
 
-`python3 populate_kopri_krt1_granules.py ~/RadarData ../indices/test_antarctica.gpkg `
+`python populate_kopri_krt1_granules.py ~/RadarData ../indices/test_antarctica.gpkg `
+
+
+### Pull in Geographic Points
+
+We have a number of sources of geographic data for the granules; for any
+campaign, we include data in preference order:
+1. ground tracks extracted from raw radargrams
+2. ground tracks included in Bedmap2 or Bedmap3 (Bedmap1 points are not
+   attributed by institution)
+3. ground tracks from other published sources
+   - Stanford's SPRI digitization source
+4. Unorganized points from Bedmap1
+
+I personally have access to UTIG and RNRF groundtracks that haven't been
+published. So that data exists (fingers crossed for release with a DOI!),
+but I haven't integrated those into QIceRadar.
+
+Once all the component tracks have been extracted into a consistent format,
+we create QGIS layers and add them to the gpkg database.
+
+#### Extract ground tracks from misc sources
+
+* Stanford has reconstructed the SPRI ground tracks and attempted to
+  renavigate them for better geolocation. These are the best data source I've
+  been able to find for the actual SPRI tracks, so we use the lines that they
+  have published.
+
+* The SOAR-LVS segy survey has GPS tracks in separate files from the radargrams, so we deal with those here as well.
+
+#### Extract ground tracks from Radargrams
+
+Both UTIG and CReSIS published data with bad interpolation, leading to large umps in the tracklines. This appeared as polygons centered about the pole. We remove those so our published index isn't obviously incorrect.
+
+
+
+#### Bedmap
+
+The Bedmap3 data release is the most complete database of where ice penetrating
+radar data has been collected in Antarctica. We have used it our starting point
+for what data has been collected.
+
+In the most recent release, contributing institutions were required to at least
+publicly release ice thickness profiles. However, in Bedmap1, this was not the
+case, and the official bedmap release doesn't have points sorted by institution
+(or even necessarily as contiguous lines!)
+
+So, we attempt to "detangle" which points can be properly attributed based on
+later data releases, and which have to stay as "unknown institution" in the
+Bedmap1 layer. This is not only important for helping users track down data,
+but it is also
+
+TODO: The below script has rotted, figure out how to access these files in 2026
+`python detangle_bedmap.py ~/RadarData`
+
+
 
 ## Data Organization
 
@@ -389,14 +485,17 @@ data.cresis.ku.edu has everything (including some data that they host for other 
 Only some seasons are available.
 
 * KRT1 (16/17) - 9TB file on Zenodo; we do not assist with downloading this file.
-* KRT2 (17/18) - ??
-* ASE2 (18/19) - ??
-* ASE3 (20/21) - hosted at the Texas Data Repository (so handled by download_tdr.py)
-* ASE4 (22/23) - also at TDR
-* ASE5 (25/26) - not yet released.
+         (Full season not available -- it's missing the Nansen Ice Shelf (not even in Bedmap3 tracks) and Campbell Glacier surveys.
+* ASE2 (17/18?) - ?? I have groundtracks from Lucas
+* KRT2 (18/19?) - ?? I have groundtracks from Lucas
+* ASE3 (19/20) - hosted at the Texas Data Repository (so handled by download_tdr.py)
+* ASE4 (21/22) - also at TDR
+* ASE5 (23/24) - ???
+* ASE6 (25/26) - not yet released.
 
 KRT2 - was dense survey over one of the David Glacier active lakes; I've found the very raw files online, but nothing processed enough to use.
-ASE2 - They flew, but I don't know if they got any data.
+       Lucas send me flight paths, but I haven't yet gotten permission to include them in published data.
+ASE2 - They flew, but I only found one line released as m1d2 format. This was a survey over Dodson and Getz; they didn't make it to THW.
 ASE5 - still embargoed.
 
 ### LDEO
