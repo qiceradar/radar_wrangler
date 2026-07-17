@@ -1,13 +1,14 @@
 #! /usr/bin/env python3
 
 import argparse
-from bs4 import BeautifulSoup
 import os
 import os.path
 import pathlib
-import requests
 import subprocess
 import tempfile
+
+import requests
+from bs4 import BeautifulSoup
 
 
 def download_file(filename, url, dest_dir):
@@ -68,8 +69,12 @@ def download_rammada(doi, dest_dir):
     base_url = "https://ramadda.data.bas.ac.uk"
     prefix = "/repository/entry/get/"
 
+    print(data_link, prefix)
+
     all_urls = [link.get("href") for link in soup.find_all("a")]
+    print(f"BedmapN URLs: {all_urls}")
     download_urls = [base_url + url for url in all_urls if url.startswith(prefix)]
+    print(f"download_urls {download_urls}")
     filenames = [url.strip(base_url + prefix).split("?")[0] for url in download_urls]
 
     for ff, uu in zip(filenames, download_urls):
