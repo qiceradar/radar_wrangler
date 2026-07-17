@@ -1,14 +1,21 @@
 #! /usr/bin/env python3
 """
+The BEDMAP project has released all of the raw ice-thickness data points
+that went into creating their maps. They are organized by version of bedmap.
+* BEDMAP1: points are uncategorized and often unordered in a single CSV
+* BEDMAP2 & BEDMAP3: points are organized institution + campaign.
+There are some overlapping points where a campaign was included in BEDMAP1
+but then the ice thicknesses were released+attributed in BEDMAP2 or 3.
+
 The goal of this script is to de-duplicate the BEDMAP1 dataset
-so that layer in the index only corresponds to points where I
-don't know which institution collected them.
+so that layer in the index only corresponds to points where we haven't been
+able to find which institution collected them (via released ice thicknesses).
 
 This automated approach will miss some, because the ice thickness
 data released by institutions is not identital to that included in
 BEDMAP1, and there are often lines in BEDMAP1 that clearly correspond
-to an existing survey, but aren't in that dataset. Manually associating
-those points would take more work than it is worth.
+to an existing survey, but aren't in that survey's released dataset.
+Manually associating those points would take more work than it is worth.
 
 The automated approach first tries to find the closest survey point
 for each bedmap point, and if they are close enough, they are associated.
@@ -62,6 +69,8 @@ from shapely.geometry import (
 )  # Used for projecting BM1 points onto survey segments
 import time
 
+# Campaigns that were released in BEDMAP2/3 but whose points were also
+# included in BEDMAP1
 duplicate_bm2_campaigns = [
     "AWI_1994_DML1_AIR_BM2",
     "AWI_1995_DML2_AIR_BM2",
@@ -355,7 +364,7 @@ def plot_selected_indices(bm1_points, campaign_points, selected_idxs):
             ax.set_xlim(ax1.get_xlim())
             ax.set_ylim(ax1.get_ylim())
 
-        fig.savefig("../../figures/detangling_bedmap_{}.png".format(campaign))
+        fig.savefig("../figures/detangling_bedmap_{}.png".format(campaign))
 
 
 def export_segments(selected_idxs, filepath):
@@ -396,7 +405,7 @@ def main(data_directory, force):
     max_crosstrack_dists["NIPR_1992_JARE33_GRN_BM3"] = 500
 
     ########
-    # Find / plot /export the matched segments
+    # Find / plot / export the matched segments
     ######
     t0 = time.time()
     try:
